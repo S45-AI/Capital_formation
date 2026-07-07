@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>S45 DRHP Workspace — Fusion Klassroom Edutech Limited</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --surface:#F9F8F7;
+    --surface-2:#FFFFFF;
+    --surface-3:#F9F8F7;
+    --ink:#2C2C2B;
+    --ink-2:#2C2C2B;
+    --muted:#91918E;
+    --muted-2:#91918E;
+    --line:#E1DFDB;
+    --line-2:rgba(0,0,0,.0627);
+    --accent:#055D56;
+    --accent-soft:rgba(5,93,86,.10);
+    --accent-deep:#044842;
+    --teal:#055D56;
+    --teal-deep:#044842;
+    --teal-soft:rgba(5,93,86,.10);
+    --blue:#91918E;
+    --blue-soft:rgba(0,0,0,.0627);
+    --green:#055D56;
+    --green-soft:rgba(5,93,86,.10);
+    --amber:#91918E;
+    --amber-soft:rgba(0,0,0,.0627);
+    --red:#E56458;
+    --red-soft:rgba(229,100,88,.10);
+    --violet:#91918E;
+    --violet-soft:rgba(0,0,0,.0627);
+    --radius:14px;
+    --radius-sm:8px;
+    --shadow:0 1px 2px rgba(44,44,43,.04),0 6px 20px rgba(44,44,43,.05);
+    --shadow-lg:0 18px 50px rgba(44,44,43,.22);
+    --sans:'Geist',-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,sans-serif;
+    --serif:'Martina Plantijn',"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:'Geist Mono',"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--surface-2);
+    font-size:13px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#cfd6db;border-radius:8px;border:2px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-thumb:hover{background:#b6bfc6;background-clip:content-box}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ---------- App shell ---------- */
+  .app{display:grid;grid-template-columns:236px 1fr;height:100vh;overflow:hidden}
+
+  .sidebar{
+    background:rgba(250,250,252,.85);backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px);
+    color:var(--ink-2);display:flex;flex-direction:column;border-right:1px solid var(--line);
+  }
+  .brand{padding:17px 18px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px}
+  .brand .logo{
+    width:30px;height:30px;border-radius:9px;background:var(--ink);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12.5px;letter-spacing:-.5px;
+  }
+  .brand .bt{font-weight:700;color:var(--ink);font-size:13.5px;letter-spacing:-.1px}
+  .brand .bs{font-size:10px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;font-weight:700}
+  .nav{padding:12px 10px;flex:1;overflow:auto}
+  .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted-2);padding:14px 10px 7px;font-weight:700}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;color:var(--ink-2);
+    font-weight:500;font-size:13px;position:relative;margin-bottom:1px;transition:background .12s,color .12s;
+  }
+  .nav-item:hover{background:var(--surface-3)}
+  .nav-item.active{background:var(--accent-soft);color:var(--accent-deep);font-weight:600}
+  .nav-item .ic{width:18px;height:18px;flex:none;opacity:.9}
+  .nav-item.active .ic{opacity:1;color:var(--accent)}
+  .nav-item .badge{margin-left:auto;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--surface-3);color:var(--ink-2);min-width:20px;text-align:center}
+  .nav-item .badge.red{background:var(--red-soft);color:var(--red)}
+  .nav-item .badge.amber{background:var(--amber-soft);color:var(--amber)}
+  .side-foot{padding:12px 14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none}
+  .side-foot .nm{font-size:12px;color:var(--ink);font-weight:600}
+  .side-foot .rl{font-size:10px;color:var(--muted)}
+
+  .main{display:flex;flex-direction:column;min-width:0;background:var(--surface-2);overflow:hidden}
+
+  /* ---------- Top context bar ---------- */
+  .topbar{
+    background:var(--bg);border-bottom:1px solid var(--line);padding:0 22px;height:58px;
+    display:flex;align-items:center;gap:18px;flex:none;
+  }
+  .tb-co{display:flex;flex-direction:column;min-width:0}
+  .tb-co .nm{font-weight:700;font-size:14.5px;letter-spacing:-.1px;display:flex;align-items:center;gap:9px}
+  .tb-co .meta{font-size:11px;color:var(--muted);font-weight:500;display:flex;gap:7px;align-items:center}
+  .tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+  .tag.teal{background:var(--teal-soft);color:var(--teal-deep);border-color:#cfe6e4}
+  .tb-spacer{flex:1}
+  .tb-stat{display:flex;flex-direction:column;align-items:flex-end;padding:0 14px;border-left:1px solid var(--line)}
+  .tb-stat .v{font-weight:700;font-size:15px;line-height:1.1}
+  .tb-stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:1px}
+  .tb-stat .v.red{color:var(--red)} .tb-stat .v.green{color:var(--green)} .tb-stat .v.amber{color:var(--amber)}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;font-weight:600;font-size:12.5px;
+    background:var(--surface-2);color:var(--ink);border:1px solid var(--line-2);transition:background .12s,border-color .12s,box-shadow .12s;white-space:nowrap;
+  }
+  .btn:hover{background:var(--surface-3)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{background:var(--accent-deep)}
+  .btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .btn.blue:hover{filter:brightness(.94)}
+  .btn.ghost{background:transparent;border-color:transparent}
+  .btn.ghost:hover{background:var(--surface-2)}
+  .btn.sm{padding:5px 10px;font-size:11.5px;border-radius:7px}
+  .btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.danger{background:#fff;color:var(--red);border-color:#F3DEE1}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* ---------- Content scroll ---------- */
+  .content{flex:1;overflow:auto;min-height:0}
+  .pad{padding:26px 30px;max-width:1320px;margin:0 auto}
+  .page-h{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px}
+  .page-h h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
+  .page-h p{color:var(--muted);font-size:12.5px;margin-top:3px}
+
+  /* generic cards */
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .grid{display:grid;gap:16px}
+  .stat-grid{grid-template-columns:repeat(4,1fr)}
+  .stat{padding:16px 17px;display:flex;flex-direction:column;gap:7px}
+  .stat .top{display:flex;align-items:center;justify-content:space-between}
+  .stat .lab{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .stat .num{font-size:27px;font-weight:700;letter-spacing:-.6px;line-height:1}
+  .stat .sub{font-size:11.5px;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+  .dot.green{background:var(--green)} .dot.amber{background:var(--amber)} .dot.red{background:var(--red)}
+  .dot.blue{background:var(--blue)} .dot.teal{background:var(--teal)} .dot.grey{background:#b9c1c7}
+  .dot.violet{background:var(--violet)}
+
+  /* progress */
+  .pbar{height:6px;border-radius:6px;background:var(--surface-3);overflow:hidden}
+  .pbar > i{display:block;height:100%;border-radius:6px;background:var(--accent);transition:width .4s}
+  .pbar.green > i{background:var(--green)} .pbar.amber > i{background:var(--amber)} .pbar.blue > i{background:var(--blue)} .pbar.red>i{background:var(--red)}
+
+  /* badges / pills */
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:2.5px 8px;border-radius:20px;white-space:nowrap;border:1px solid transparent;letter-spacing:.1px}
+  .pill.grey{background:var(--surface-3);color:var(--ink-2)}
+  .pill.green{background:var(--green-soft);color:var(--green);border-color:rgba(5,93,86,.3)}
+  .pill.amber{background:var(--amber-soft);color:var(--amber);border-color:rgba(0,0,0,.18)}
+  .pill.red{background:var(--red-soft);color:var(--red);border-color:#F3DEE1}
+  .pill.blue{background:var(--blue-soft);color:var(--blue);border-color:rgba(0,0,0,.18)}
+  .pill.teal{background:var(--teal-soft);color:var(--teal-deep);border-color:#c6e3e0}
+  .pill.violet{background:var(--violet-soft);color:var(--violet);border-color:#d8cef2}
+
+  table.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:0}
+  table.tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  table.tbl tr:last-child td{border-bottom:none}
+  table.tbl tr.clickable{cursor:pointer}
+  table.tbl tr.clickable:hover td{background:var(--surface)}
+
+  .muted{color:var(--muted)}
+  .mono{font-family:var(--mono);font-size:11.5px}
+  .sec-title{font-size:13px;font-weight:700;letter-spacing:.1px}
+  .divider{height:1px;background:var(--line);margin:0}
+
+  /* ---------- Assembly editor 3-pane ---------- */
+  .assembly{display:grid;grid-template-columns:236px minmax(0,1fr) 322px;height:100%;overflow:hidden;transition:grid-template-columns .2s}
+  .assembly.collapsed{grid-template-columns:236px minmax(0,1fr) 46px}
+  .nav-pane{background:var(--bg);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .np-head{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+  .np-search{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+  .np-search input{border:none;background:none;outline:none;font-size:12px;width:100%;color:var(--ink)}
+  .np-list{overflow:auto;flex:1;padding:6px}
+  .np-group{font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted-2);font-weight:700;padding:11px 9px 5px}
+  .np-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;margin-bottom:1px;transition:background .1s}
+  .np-item:hover{background:var(--surface)}
+  .np-item.active{background:var(--accent-soft)}
+  .np-item.active .nt{color:var(--accent-deep);font-weight:700}
+  .np-item .nt{font-size:12px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .np-item .rp{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600}
+  .np-item .bk{font-size:9.5px;font-weight:800;color:#fff;background:var(--red);border-radius:20px;padding:0 5px;min-width:15px;text-align:center;height:15px;line-height:15px}
+
+  .doc-pane{overflow:auto;min-height:0;background:var(--surface-2);position:relative}
+  .doc-wrap{max-width:884px;margin:0 auto;padding:26px 20px 92px}
+  .sec-header{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .sec-header .row1{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .sec-header h2{font-size:18px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:10px}
+  .sec-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px}
+  .sec-meta .m{display:flex;flex-direction:column;gap:3px}
+  .sec-meta .m .k{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+  .sec-meta .m .v{font-size:12.5px;font-weight:600}
+  .reviewers{display:flex;gap:5px;align-items:center}
+  .rv-chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:2px 7px 2px 5px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line)}
+  .rv-chip .av{width:16px;height:16px;border-radius:50%;font-size:8.5px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  .rv-chip.ok{background:var(--green-soft);border-color:rgba(5,93,86,.3);color:var(--green)}
+  .rv-chip.wait{background:var(--surface-2)}
+
+  /* native work area */
+  .native{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden}
+  .native-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;background:var(--surface)}
+  .native-head .ti{font-size:12px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+  .native-head .sp{flex:1}
+  .native-body{padding:6px 0}
+
+  .timeline{position:relative;padding:6px 18px 10px 30px}
+  .tl-item{position:relative;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .tl-item:last-child{border-bottom:none}
+  .tl-item::before{content:"";position:absolute;left:-15px;top:16px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+  .tl-item::after{content:"";position:absolute;left:-11px;top:25px;bottom:-11px;width:1px;background:var(--line-2)}
+  .tl-item:last-child::after{display:none}
+  .tl-row{display:flex;align-items:center;gap:10px}
+  .tl-date{font-size:11px;font-weight:700;color:var(--accent-deep);width:86px;flex:none;font-variant-numeric:tabular-nums}
+  .tl-title{font-size:12.5px;font-weight:600;flex:1}
+  .tl-amt{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* disclosure block card */
+  .block{
+    background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow);
+    transition:border-color .12s,box-shadow .12s;cursor:pointer;position:relative;
+  }
+  .block:hover{border-color:var(--line-2)}
+  .block.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),var(--shadow)}
+  .block-head{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line)}
+  .block-head .bt{font-size:13px;font-weight:700;letter-spacing:-.1px}
+  .block-head .ty{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .block-head .sp{flex:1}
+  .block-body{padding:14px 17px}
+  .narr{font-family:var(--serif);font-size:14.5px;line-height:1.72;color:#1c2226}
+  .narr[contenteditable="true"]{outline:none;border-radius:6px;transition:background .1s}
+  .narr[contenteditable="true"]:focus{background:#FFFFFF;box-shadow:0 0 0 2px rgba(0,0,0,.18) inset}
+  .narr p{margin-bottom:11px}
+  .narr p:last-child{margin-bottom:0}
+  .ph{background:var(--amber-soft);color:var(--amber);font-weight:700;padding:0 4px;border-radius:4px;font-family:var(--sans);font-size:12.5px;cursor:help}
+  .ev-mark{background:#eef4ff;border-bottom:1.5px dotted var(--blue);cursor:pointer;padding:0 1px;border-radius:2px;font-family:var(--sans);font-size:13px}
+  .ev-mark:hover{background:#dde9ff}
+
+  /* excel-like table */
+  .xl{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+  .xl th{background:var(--surface-2);border:1px solid var(--line);padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);font-weight:700;text-align:right}
+  .xl th:first-child{text-align:left}
+  .xl td{border:1px solid var(--line);padding:0;text-align:right}
+  .xl td:first-child{text-align:left}
+  .xl td .cell{padding:8px 10px;outline:none;min-height:20px}
+  .xl td .cell[contenteditable="true"]:focus{background:#FFFFFF;box-shadow:0 0 0 2px var(--accent) inset}
+  .xl td.locked{background:var(--surface)}
+  .xl td.locked .cell{color:var(--ink);font-weight:600}
+  .xl tr.total td{background:var(--surface-2);font-weight:700}
+  .xl tr.total td .cell{color:var(--ink)}
+  .xl-foot{font-size:10.5px;color:var(--muted);padding:8px 12px;display:flex;align-items:center;gap:8px}
+  .lockic{display:inline-block;vertical-align:-1px}
+
+  .block-foot{display:flex;align-items:center;gap:8px;padding:10px 15px;border-top:1px solid var(--line);background:var(--surface);flex-wrap:wrap}
+  .conf{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink-2)}
+  .conf .bars{display:flex;gap:2px}
+  .conf .bars i{width:4px;height:11px;border-radius:1px;background:var(--surface-3)}
+  .conf.high .bars i{background:var(--green)} .conf.med .bars i:nth-child(-n+2){background:var(--amber)} .conf.low .bars i:nth-child(1){background:var(--red)}
+
+  /* update banner inside block */
+  .upd{display:flex;align-items:center;gap:11px;padding:10px 15px;background:var(--blue-soft);border-top:1px solid rgba(0,0,0,.18)}
+  .upd .txt{font-size:11.5px;color:#173e8f;font-weight:600;flex:1}
+  .upd .txt b{font-weight:800}
+  .conflict-banner{display:flex;gap:11px;padding:12px 15px;background:var(--red-soft);border-top:1px solid #F3DEE1;align-items:flex-start}
+  .conflict-banner .ic{color:var(--red);flex:none;margin-top:1px}
+  .conflict-banner .txt{font-size:11.5px;color:#7c211b;flex:1}
+  .conflict-banner .txt b{font-weight:800}
+
+  /* placeholder section shell */
+  .empty-shell{background:var(--bg);border:1px dashed var(--line-2);border-radius:var(--radius);padding:28px;text-align:center}
+  .empty-shell .ttl{font-size:15px;font-weight:700;margin-bottom:6px}
+  .req-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin:20px auto;max-width:560px}
+  .req-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:13px 15px}
+  .req-box .h{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:9px}
+  .req-box ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .req-box li{font-size:12px;display:flex;align-items:center;gap:8px}
+
+  /* ---------- right panel ---------- */
+  .insp{background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .insp-tabs{display:flex;border-bottom:1px solid var(--line);padding:0 8px;flex:none}
+  .insp-tab{padding:12px 11px;font-size:11.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s}
+  .insp-tab:hover{color:var(--ink-2)}
+  .insp-tab.active{color:var(--accent-deep);border-bottom-color:var(--accent)}
+  .insp-body{flex:1;overflow:auto;min-height:0}
+  .insp-sec{padding:15px 16px;border-bottom:1px solid var(--line)}
+  .insp-sec .lab{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+  .ev-card{display:flex;gap:11px;padding:11px;border:1px solid var(--line);border-radius:8px;margin-bottom:9px;cursor:pointer;transition:border-color .12s,background .12s}
+  .ev-card:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .ev-card .fic{width:30px;height:38px;flex:none;border-radius:4px;background:#fff;border:1px solid var(--line-2);display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden}
+  .ev-card .fic::before{content:"";position:absolute;top:0;right:0;border-width:0 9px 9px 0;border-style:solid;border-color:var(--surface-2) #fff}
+  .ev-card .fic .ext{font-size:7px;font-weight:800;color:#fff;background:var(--red);width:100%;text-align:center;padding:1px 0;letter-spacing:.2px}
+  .ev-card .fic.pdf .ext{background:#E56458} .ev-card .fic.xls .ext{background:#055D56} .ev-card .fic.doc .ext{background:#91918E}
+  .ev-card .info{min-width:0;flex:1}
+  .ev-card .info .nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ev-card .info .dt{font-size:10.5px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:12px;border-bottom:1px dashed var(--line)}
+  .kv:last-child{border-bottom:none}
+  .kv .k{color:var(--muted);font-weight:500}
+  .kv .v{font-weight:600;text-align:right}
+  .check-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .check-row:last-child{border-bottom:none}
+  .check-row .cb{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line-2);flex:none;display:flex;align-items:center;justify-content:center;background:#fff}
+  .check-row.done .cb{background:var(--green);border-color:var(--green)}
+  .check-row .nm{font-size:12px;font-weight:600;flex:1}
+  .check-row .who{font-size:10.5px;color:var(--muted)}
+  .comment{padding:11px 0;border-bottom:1px solid var(--line)}
+  .comment:last-child{border-bottom:none}
+  .comment .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .comment .top .av{width:22px;height:22px;border-radius:50%;font-size:9px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .comment .top .nm{font-size:11.5px;font-weight:700}
+  .comment .top .tm{font-size:10px;color:var(--muted-2);margin-left:auto}
+  .comment .bd{font-size:12px;color:var(--ink-2);line-height:1.55}
+  .ver-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:11.5px}
+  .ver-row:last-child{border-bottom:none}
+  .ver-row .vtag{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--teal-deep);flex:none;width:42px}
+  .insp-actions{padding:13px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px;flex:none;background:var(--surface)}
+  .insp-empty{padding:50px 26px;text-align:center;color:var(--muted)}
+  .insp-empty .ic{margin:0 auto 14px;opacity:.4}
+
+  /* ---------- drawer ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(12,20,22,.42);opacity:0;pointer-events:none;transition:opacity .22s;z-index:40}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:540px;max-width:92vw;background:var(--bg);box-shadow:var(--shadow-lg);
+    transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.1,1);z-index:50;display:flex;flex-direction:column}
+  .drawer.on{transform:none}
+  .dr-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex:none}
+  .dr-head .ti{font-weight:700;font-size:13.5px;flex:1;min-width:0}
+  .dr-head .ti .sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
+  .dr-body{flex:1;overflow:auto;padding:18px;background:var(--surface-2)}
+  .pdf-page{background:#fff;border:1px solid var(--line-2);border-radius:6px;box-shadow:var(--shadow);padding:34px 38px;font-family:var(--serif);font-size:12.5px;line-height:1.7;color:#2a3035;position:relative;min-height:520px}
+  .pdf-page .pg-no{position:absolute;top:12px;right:16px;font-size:10px;color:var(--muted-2);font-family:var(--sans)}
+  .pdf-page h4{font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;text-align:center}
+  .pdf-page .hl{background:rgba(5,93,86,.14);box-shadow:0 0 0 3px rgba(5,93,86,.14);border-radius:2px;outline:1.5px solid #055D56}
+  .pdf-page table{width:100%;border-collapse:collapse;margin:12px 0;font-size:11.5px}
+  .pdf-page table td,.pdf-page table th{border:1px solid #cfd6db;padding:5px 8px}
+  .extracted{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+  .extracted .h{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:10px}
+
+  /* ---------- modal ---------- */
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;padding:24px}
+  .modal.on{opacity:1;pointer-events:auto}
+  .modal .box{background:var(--bg);border-radius:14px;box-shadow:var(--shadow-lg);width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;transform:translateY(10px) scale(.99);transition:transform .2s}
+  .modal.on .box{transform:none}
+  .modal.wide .box{max-width:860px}
+  .mh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .mh .ti{font-size:15.5px;font-weight:700;flex:1}
+  .mh .ti .sub{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px}
+  .mb{padding:20px 22px;overflow:auto}
+  .mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;align-items:center}
+  .xbtn{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .xbtn:hover{background:var(--surface-2);color:var(--ink)}
+
+  .export-row{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--line);border-radius:9px;margin-bottom:9px;transition:border-color .12s}
+  .export-row:hover{border-color:var(--line-2)}
+  .export-row .eic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;font-weight:800;font-size:11px;color:#fff}
+  .export-row .info{flex:1;min-width:0}
+  .export-row .info .nm{font-size:13px;font-weight:600}
+  .export-row .info .ds{font-size:11px;color:var(--muted);margin-top:1px}
+
+  .conflict-side{flex:1;border:1px solid var(--line);border-radius:9px;padding:13px 15px;cursor:pointer;transition:border-color .12s,background .12s}
+  .conflict-side:hover{border-color:var(--blue)}
+  .conflict-side.pick{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent-soft)}
+  .conflict-side .src{font-size:11px;font-weight:700;color:var(--ink-2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .conflict-side .val{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* toast */
+  .toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:9px;align-items:center}
+  .toast{display:flex;align-items:center;gap:11px;background:#1d1d1f;color:#f5f5f7;padding:12px 17px;border-radius:11px;box-shadow:var(--shadow-lg);font-size:12.5px;font-weight:600;
+    animation:tin .3s cubic-bezier(.2,.8,.2,1);max-width:520px}
+  .toast .ic{flex:none;color:#7fb2ff}
+  .toast .sub{color:#a9adb4;font-weight:500;font-size:11px}
+  @keyframes tin{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+
+  .fade-out{animation:tout .3s forwards}
+  @keyframes tout{to{transform:translateY(14px);opacity:0}}
+
+  /* small helpers */
+  .row{display:flex;align-items:center;gap:10px}
+  .col{display:flex;flex-direction:column}
+  .gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap14{gap:14px}
+  .wrap{flex-wrap:wrap}
+  .right{margin-left:auto}
+  .nowrap{white-space:nowrap}
+  .hide{display:none !important}
+  .link{color:var(--blue);font-weight:600;cursor:pointer}
+  .link:hover{text-decoration:underline}
+  .hl-soft{background:var(--surface);border-radius:8px}
+  .tiny{font-size:10.5px}
+  .b{font-weight:700}
+  .stamp{font-family:var(--mono);font-size:10px;color:var(--muted-2);letter-spacing:.2px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .legend .li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:600}
+
+  /* ---------- Filing Command ---------- */
+  .cmd{padding:26px 30px 64px;max-width:1300px;margin:0 auto}
+  .cmd-hero{background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px 30px;display:flex;gap:34px;align-items:center;margin-bottom:22px}
+  .cmd-hero .eyebrow{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--accent);margin-bottom:13px;display:flex;align-items:center;gap:7px}
+  .cmd-hero h1{font-size:29px;line-height:1.2;font-weight:700;letter-spacing:-.7px;max-width:660px}
+  .cmd-hero h1 em{font-style:normal;color:var(--accent)}
+  .cmd-hero p{color:var(--muted);font-size:13px;margin-top:13px;max-width:610px;line-height:1.55}
+  .cmd-ring{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px}
+  .cmd-ring .pct{font-size:24px;font-weight:700;letter-spacing:-.6px}
+  .cmd-ring .cap{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+  .cmd-hero-stats{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:28px;flex:none}
+  .chs{display:flex;flex-direction:column;padding:9px 0;border-bottom:1px dashed var(--line);min-width:164px;gap:1px}
+  .chs:last-child{border-bottom:none}
+  .chs .v{font-size:19px;font-weight:700;letter-spacing:-.4px}
+  .chs .l{font-size:11px;color:var(--muted);font-weight:600}
+
+  .cmd-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;align-items:start}
+  .cmd-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+  .cmd-card .hd{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .cmd-card .hd .t{font-size:13.5px;font-weight:700;letter-spacing:-.1px}
+  .cmd-card .hd .s{font-size:11.5px;color:var(--muted);font-weight:500}
+
+  .step{display:flex;gap:15px;padding:17px 18px;border-bottom:1px solid var(--line);align-items:flex-start}
+  .step:last-child{border-bottom:none}
+  .step .idx{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;background:var(--surface-3);color:var(--ink-2)}
+  .step.blocker .idx{background:var(--red-soft);color:var(--red)}
+  .step.update .idx{background:var(--accent-soft);color:var(--accent-deep)}
+  .step.approval .idx{background:var(--amber-soft);color:var(--amber)}
+  .step .body{flex:1;min-width:0}
+  .step .ti{font-size:13.5px;font-weight:700;letter-spacing:-.1px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .step .why{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.55}
+  .step .unlock{font-size:11.5px;color:var(--accent-deep);font-weight:600;margin-top:9px;display:flex;align-items:center;gap:6px}
+  .step .act{margin-top:12px}
+
+  .bottleneck{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .bottleneck:last-child{border-bottom:none}
+  .bottleneck .nm{font-size:12.5px;font-weight:600}
+  .bottleneck .rl{font-size:11px;color:var(--muted)}
+  .bottleneck .cnt{margin-left:auto;font-size:11px;font-weight:700}
+
+  .change-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);align-items:flex-start}
+  .change-row:last-child{border-bottom:none}
+  .change-row .dot{margin-top:6px}
+  .change-row .tx{font-size:12px;color:var(--ink-2);line-height:1.5;flex:1}
+  .change-row .tx b{color:var(--ink);font-weight:700}
+
+  .sct-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:16px 18px}
+  .sct-col .h{font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+  .sct-chip{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12px;cursor:pointer}
+  .sct-chip:last-child{border-bottom:none}
+  .sct-chip:hover .snm{color:var(--accent)}
+  .sct-chip .snm{flex:1;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .export-ready{padding:16px 18px}
+  .er-row{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+  .er-row:last-child{margin-bottom:0}
+  .er-row .eic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none}
+  .er-row .eic.ok{background:var(--green-soft);color:var(--green)}
+  .er-row .eic.no{background:var(--amber-soft);color:var(--amber)}
+  .er-row .info{flex:1}
+  .er-row .info .t{font-size:12.5px;font-weight:700}
+  .er-row .info .s{font-size:11px;color:var(--muted);margin-top:1px}
+
+  /* ---------- conflict cockpit ---------- */
+  .cock-side{flex:1;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .14s,box-shadow .14s;overflow:hidden;background:#fff;position:relative}
+  .cock-side:hover{border-color:var(--accent)}
+  .cock-side.pick{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .cock-side.rec::after{content:"Recommended";position:absolute;top:11px;right:12px;font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--accent-deep);background:var(--accent-soft);padding:2px 8px;border-radius:20px}
+  .cock-side .ch{padding:13px 15px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .cock-side .src{font-size:11.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;padding-right:84px}
+  .cock-side .val{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;padding:14px 15px 8px;letter-spacing:-.3px;line-height:1.25}
+  .cock-side .meta{padding:0 15px 14px;display:flex;flex-direction:column;gap:8px}
+  .cock-side .mr{display:flex;align-items:center;gap:8px;font-size:11px}
+  .cock-side .mr .k{color:var(--muted);width:62px;flex:none}
+  .cock-side .mr .v{font-weight:600}
+  .cock-rec{display:flex;gap:9px;align-items:flex-start;background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin-top:16px}
+  .cock-rec .tx{font-size:12px;color:#0a3a86;line-height:1.5}
+  .note-in{background:#fff;border:1px solid var(--line-2);border-radius:9px;padding:10px 12px;width:100%;font-size:12.5px;font-family:inherit;outline:none;color:var(--ink)}
+  .note-in:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+  /* ---------- Live DRHP: mode switch, NBA, workboard ---------- */
+  .mode-switch{display:inline-flex;background:var(--surface-3);border-radius:11px;padding:3px;gap:3px;margin:0 2px 16px}
+  .mode{display:flex;flex-direction:column;align-items:flex-start;padding:7px 18px;border-radius:9px;font-size:13px;font-weight:600;color:var(--ink-2);transition:background .14s,box-shadow .14s,color .14s;min-width:138px}
+  .mode .sub{font-size:10px;font-weight:500;color:var(--muted);margin-top:1px}
+  .mode.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .mode.on .sub{color:var(--accent)}
+
+  .nba{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:13px 16px;margin:0 2px 16px;box-shadow:var(--shadow)}
+  .nba .ic{color:var(--accent);flex:none}
+  .nba .col{flex:1;min-width:0}
+  .nba .lb{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+  .nba .tt{font-size:13.5px;font-weight:700;margin-top:3px;letter-spacing:-.1px}
+  .nba .wy{font-size:11.5px;color:var(--ink-2);margin-top:3px;line-height:1.45}
+
+  .ai-panel{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+  .ai-col{padding:15px 17px}
+  .ai-col+.ai-col{border-left:1px solid var(--line)}
+  .ai-col .h{font-size:11px;font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-2)}
+  .ai-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .ai-col li{font-size:12px;color:var(--ink-2);display:flex;gap:9px;line-height:1.45}
+  .ai-col li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--line-2);margin-top:6px;flex:none}
+  .ai-col.done li::before{background:var(--green)}
+  .ai-col.todo li::before{background:var(--amber)}
+  .ai-objs{grid-column:1/-1;border-top:1px solid var(--line);background:var(--surface);padding:11px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ai-objs .lb{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-right:2px}
+  .obj-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+  .obj-chip .n{font-variant-numeric:tabular-nums;font-weight:800;color:var(--ink-2)}
+  .obj-chip.ok .n{color:var(--green)} .obj-chip.warn .n{color:var(--amber)} .obj-chip.conflict .n{color:var(--red)}
+
+  .draft-bar{display:flex;align-items:center;margin:0 2px 16px}
+  .seg{display:inline-flex;background:var(--surface-3);border-radius:9px;padding:3px;gap:3px}
+  .seg-b{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  .seg-b.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+
+  /* inspector additions */
+  .insp-head{padding:14px 16px 12px;border-bottom:1px solid var(--line)}
+  .tb-badge{margin-left:6px;font-size:9px;font-weight:800;background:var(--red);color:#fff;border-radius:20px;padding:0 5px;min-width:15px;display:inline-block;text-align:center;line-height:15px;vertical-align:1px}
+  .issue-row{display:flex;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:flex-start}
+  .issue-row:last-child{border-bottom:none}
+  .issue-row .dot{margin-top:5px}
+  .appr-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);align-items:flex-start}
+  .appr-row:last-child{border-bottom:none}
+  .insp-tab{padding:11px 9px;font-size:11.5px}
+
+  /* middle-pane dominance: collapsed inspector rail */
+  .insp-rail{border-left:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;align-items:center;gap:16px;padding:18px 0;cursor:pointer;color:var(--muted)}
+  .insp-rail:hover{background:var(--surface);color:var(--ink-2)}
+  .insp-rail .lbl{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+
+  /* DRHP Draft — living filing document */
+  .filing{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:38px 54px 26px;margin:0 2px}
+  .filing-h{border-bottom:2px solid var(--ink);padding-bottom:15px;margin-bottom:6px}
+  .filing-h .kicker{font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+  .filing-h h1{font-size:23px;font-weight:700;letter-spacing:-.4px;margin-top:7px}
+  .filing-h .filing-sub{font-size:12px;color:var(--muted);margin-top:5px}
+  .filing-foot{text-align:center;color:var(--muted-2);font-size:11px;font-family:var(--serif);font-style:italic;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  .filing .block{background:transparent;border:none;border-radius:0;box-shadow:none;margin:0 -18px;padding:2px 18px 0;border-top:1px solid var(--line);position:relative}
+  .filing .block:first-of-type{border-top:none}
+  .filing .block::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;background:transparent;border-radius:3px;transition:background .14s}
+  .filing .block:hover{background:var(--surface-2)}
+  .filing .block.sel{background:var(--accent-soft)}
+  .filing .block.sel::before{background:var(--accent)}
+  .filing .block-head{border-bottom:none;padding:16px 0 2px;background:transparent}
+  .filing .block-head .bt{font-size:15.5px;font-family:var(--serif);font-weight:700}
+  .filing .block-head .ty{opacity:0;transition:opacity .14s}
+  .filing .block:hover .block-head .ty,.filing .block.sel .block-head .ty{opacity:1}
+  .filing .block-body{padding:6px 0 14px}
+  .filing .block-foot{display:none;border-top:1px dashed var(--line);background:transparent;padding:9px 0 15px}
+  .filing .block:hover .block-foot,.filing .block.sel .block-foot{display:flex}
+  .filing .upd,.filing .conflict-banner{border-radius:10px;margin:2px 0 14px;border:1px solid}
+  .filing .upd{border-color:rgba(0,0,0,.18)}
+  .filing .conflict-banner{border-color:#F3DEE1}
+
+  /* workboard depth */
+  .wb-sub{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-2);padding:14px 16px 8px}
+  .wb-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 16px;border-top:1px solid var(--line);background:var(--surface)}
+  .chip-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:2px 16px 12px}
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .metric{background:#fff;padding:12px 15px;display:flex;flex-direction:column;gap:3px}
+  .metric .k{font-size:10.5px;color:var(--muted);font-weight:600}
+  .metric .v{font-size:17px;font-weight:700;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+  .metric .d{font-size:10.5px;color:var(--muted)}
+  .metric .d.up{color:var(--green)} .metric .d.down{color:var(--ink-2)}
+  .tbl tr.rej td{opacity:.55}
+  .tbl tr.rej .b{text-decoration:line-through}
+  .wb-blocks{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+  .wb-blocks-h{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .wb-block{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+  .wb-block:last-child{border-bottom:none}
+  .wb-block:hover{background:var(--surface)}
+  .wb-block .nm{flex:1;font-size:12.5px;font-weight:600}
+
+  /* source drawer: trust + links */
+  .dr-trust{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:16px}
+  .dr-links{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .dr-links .h{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:10px}
+  .dr-link{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+  .dr-link:last-of-type{border-bottom:none}
+  .dr-link:hover .nm{color:var(--accent)}
+  .dr-link .nm{font-size:12px;font-weight:600}
+
+  /* export shipping room */
+  .ship-card{display:flex;flex-direction:column;overflow:hidden}
+  .ship-card.ok{border-color:rgba(5,93,86,.3)}
+  .ship-card.no{border-color:rgba(0,0,0,.18)}
+  .ship-h{display:flex;align-items:center;gap:12px;padding:16px 18px 12px}
+  .ship-h .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none}
+  .ship-card.ok .ship-h .ic{background:var(--green-soft);color:var(--green)}
+  .ship-card.no .ship-h .ic{background:var(--amber-soft);color:var(--amber)}
+  .ship-h .t{font-size:14px;font-weight:700;letter-spacing:-.1px}
+  .ship-b{padding:0 18px 18px}
+  .blk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+  .blk-row:last-of-type{border-bottom:none}
+  .exp-toggle{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:20px;padding:5px 11px 5px 7px}
+  .exp-toggle .sw{width:26px;height:15px;border-radius:20px;background:var(--line-2);position:relative;transition:background .14s}
+  .exp-toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#fff;transition:transform .14s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .exp-toggle.on{color:var(--accent-deep);border-color:rgba(0,0,0,.18);background:var(--accent-soft)}
+  .exp-toggle.on .sw{background:var(--accent)}
+  .exp-toggle.on .sw::after{transform:translateX(11px)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;height:44px;z-index:99999;background:#FFFFFF;border-bottom:1px solid #E1DFDB;display:flex;align-items:center;justify-content:center;font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow-x:auto;white-space:nowrap;box-shadow:0 1px 2px rgba(44,44,43,.04);"><div onclick="location.href='S45 Market Creation OS Fi.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;">1</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Market Creation</span></div><span style="width:28px;height:1px;background:#055D56;flex-shrink:0;"></span><div onclick="location.href='DD Workspace Journey.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;">2</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Due Diligence</span></div><span style="width:28px;height:1px;background:#055D56;flex-shrink:0;"></span><div onclick="location.href='S45 DRHP Workspace F.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;box-shadow:0 0 0 3px rgba(5,93,86,.18);">3</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">DRHP</span></div><span style="width:28px;height:1px;background:#E1DFDB;flex-shrink:0;"></span><div onclick="location.href='S45 Capital OS Final.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#FFFFFF;color:#91918E;border:1px solid #E1DFDB;">4</span><span style="font-size:12.5px;white-space:nowrap;font-weight:400;color:#91918E;">Distribution</span></div></div>
+<style>body{margin-top:44px !important;height:calc(100% - 44px) !important;}</style>
+
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">S45</div>
+      <div class="col">
+        <div class="bt">DRHP Workspace</div>
+        <div class="bs">Issuance OS</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <div class="avatar">AM</div>
+      <div class="col">
+        <div class="nm">Ananya Mehta</div>
+        <div class="rl">Lead Banker · S45 Capital</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar" id="topbar"></div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- DRAWER -->
+<div class="scrim" id="scrim" onclick="closeOverlays()"></div>
+<aside class="drawer" id="drawer"></aside>
+
+<!-- MODAL -->
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<!-- TOASTS -->
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+/* ============================================================
+   ICONS
+============================================================ */
+const I = {
+  home:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg>',
+  command:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.6v3.2M12 17.2v3.2M3.6 12h3.2M17.2 12h3.2"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/></svg>',
+  doc:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 2.5h8l4 4V21a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 21z"/><path d="M14 2.5V6.5h4"/><path d="M9 12h6M9 15.5h6M9 8.5h2"/></svg>',
+  vault:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8V6.5M12 17.5v-2.3M15.2 12h2.3M6.5 12h2.3"/></svg>',
+  queue:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M18 9.5l2 2 3-3.5"/></svg>',
+  export:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v11"/><path d="m8 7 4-4 4 4"/><path d="M4 14v5.5a.5.5 0 0 0 .5.5h15a.5.5 0 0 0 .5-.5V14"/></svg>',
+  memory:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a6 6 0 0 0-6 6c0 2 1 3 1 5v3.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V14c0-2 1-3 1-5a6 6 0 0 0-6-6Z"/><path d="M9.5 21h5"/></svg>',
+  search:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.5-3.5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m5 12.5 4.5 4.5L19 7"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.5 22 20H2z"/><path d="M12 10v4.5M12 17.2v.3"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
+  x:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  chevR:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m9 6 6 6-6 6"/></svg>',
+  ext:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6M20 4l-9 9M18 13v6.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5H11"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 14-5.3L20 8M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-14 5.3L4 16M4 20v-4h4"/></svg>',
+  compare:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M7 7l-4 4 4 4M17 7l4 4-4 4"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+};
+
+/* ============================================================
+   DATA MODEL
+============================================================ */
+const project = {
+  company:"Fusion Klassroom Edutech Limited",
+  short:"Klassroom",
+  jurisdiction:"India", route:"SME IPO", exchange:"BSE SME",
+  version:"DRHP v0.7", lead:"S45 Capital Advisors",
+  filing:"Target filing — 14 Aug 2026",
+};
+
+const people = {
+  AM:{n:"Ananya Mehta", r:"Lead Banker", c:"#044842"},
+  RV:{n:"Rohan Verma", r:"Legal Counsel", c:"#5b46b8"},
+  SK:{n:"Sneha Kulkarni", r:"Company Secretary", c:"#91918E"},
+  DP:{n:"Devang Patel", r:"Auditor (BSR & Co)", c:"#055D56"},
+  PN:{n:"Pratik Nair", r:"Partner Reviewer", c:"#91918E"},
+  AI:{n:"Extraction Engine", r:"AI Operations", c:"#727b84"},
+};
+function av(id){const p=people[id];return `<span class="av" style="background:${p.c}">${id}</span>`}
+
+/* Full DRHP section architecture */
+const SECTIONS = [
+  ["cover","Cover Page & Offer Summary","Front Matter","draft","Banker",62,1,"AI-drafted, awaiting offer size [●]"],
+  ["defs","Definitions & Abbreviations","Front Matter","draftready","Legal",88,0,"Auto-built from document glossary"],
+  ["conv","Certain Conventions","Front Matter","approved","Banker",100,0,"Standard conventions confirmed"],
+  ["fwd","Forward-Looking Statements","Front Matter","approved","Legal",100,0,"Standard SEBI language locked"],
+  ["sumoff","Summary of Offer Document","Summary","processing",41,0,"Pending — depends on 6 sections"],
+  ["risk","Risk Factors","Summary","bankerreview","Banker",74,3,"24 risks accepted, 3 conflicts open"],
+  ["theoffer","The Offer","Summary","draft","Banker",55,1,"Offer size & price band [●]"],
+  ["sumfin","Summary Financial Information","Summary","auditreview","Auditor",80,1,"Restated tables linked, 1 update"],
+  ["geninfo","General Information","Offer Info","draftready","Banker",92,0,"BRLM, registrar, bankers confirmed"],
+  ["capital","Capital Structure","Offer Info","bankerreview","Banker",78,2,"19 events reconciled, lock-in pending"],
+  ["objects","Objects of the Offer","Offer Info","auditreview","Banker",66,2,"Use of proceeds; quotations pending"],
+  ["basis","Basis for Offer Price","Offer Info","empty",0,0,"Awaiting price band & peer set"],
+  ["tax","Statement of Tax Benefits","Offer Info","draftready","Auditor",90,0,"Tax counsel certificate received"],
+  ["industry","Industry Overview","Business","draft","Banker",48,0,"Third-party report extraction"],
+  ["business","Our Business","Business","bankerreview","Banker",70,1,"32 claims, 4 unsupported"],
+  ["regs","Key Regulations & Policies","Business","draftready","Legal",85,0,"Edtech & data regulations mapped"],
+  ["history","History & Corporate Matters","Business","draft","CS",52,1,"MoA/AoA history; 1 stale doc"],
+  ["mgmt","Our Management","Business","csreview","CS",83,1,"Board, KMP, committees built"],
+  ["promoters","Promoters & Promoter Group","Business","draft","CS",58,1,"Promoter group confirmation pending"],
+  ["group","Group Companies","Business","empty",0,0,"Awaiting group company filings"],
+  ["dividend","Dividend Policy","Business","approved","Banker",100,0,"No dividend declared — confirmed"],
+  ["restated","Restated Financial Information","Financials","auditreview","Auditor",86,1,"FY24–FY26 restated, audited"],
+  ["caps","Capitalization Statement","Financials","draftready","Auditor",88,0,"Pre/post issue [●] pending"],
+  ["debt","Financial Indebtedness","Financials","draft","Auditor",60,1,"Sanction letters; 1 unsigned"],
+  ["mda","Management Discussion & Analysis","Financials","draft","Banker",44,0,"Narrative from restated financials"],
+  ["litigation","Outstanding Litigation & Material Developments","Legal Matters","bankerreview","Legal",72,2,"5 matters; 1 contradiction"],
+  ["approvals","Government & Other Approvals","Legal Matters","legalreview","Legal",68,2,"22 approvals; 2 expiring"],
+  ["statutory","Other Regulatory & Statutory Disclosures","Legal Matters","draft","Legal",50,0,"SEBI eligibility & undertakings"],
+  ["terms","Terms of the Offer","Offer Procedure","draftready","Banker",90,0,"Standard terms; size [●]"],
+  ["structure","Offer Structure","Offer Procedure","draft","Banker",55,0,"Allocation & reservation [●]"],
+  ["procedure","Offer Procedure","Offer Procedure","draftready","Banker",94,0,"ASBA/UPI standard procedure"],
+  ["foreign","Restriction on Foreign Ownership","Offer Procedure","approved","Legal",100,0,"FEMA position confirmed"],
+  ["aoa","Description of Equity Shares & AoA","Offer Procedure","draft","Legal",46,0,"AoA rights extraction"],
+  ["material","Material Contracts & Documents for Inspection","Closing","draft","CS",40,0,"Document register being built"],
+  ["declaration","Declaration","Closing","empty",0,0,"Signed at final lock"],
+];
+
+const STATUS = {
+  empty:{l:"Empty",c:"grey"}, processing:{l:"Processing",c:"violet"}, draft:{l:"Draft ready",c:"blue"},
+  draftready:{l:"Draft ready",c:"blue"}, bankerreview:{l:"Needs banker review",c:"amber"},
+  legalreview:{l:"Needs legal review",c:"amber"}, csreview:{l:"Needs CS review",c:"amber"},
+  auditreview:{l:"Needs auditor review",c:"amber"}, approved:{l:"Section approved",c:"green"},
+  filingready:{l:"Filing ready",c:"teal"},
+};
+function secObj(id){const s=SECTIONS.find(x=>x[0]===id);if(!s)return null;return {id:s[0],name:s[1],group:s[2],status:s[3],owner:s[5]||s[4],readiness:s[5]!==undefined&&typeof s[5]==='number'?s[5]:s[4],blockers:s[6],note:s[7]};}
+// normalize: SECTIONS rows have differing shapes; rebuild clean
+const SEC = SECTIONS.map(r=>({
+  id:r[0],name:r[1],group:r[2],status:r[3],
+  owner: typeof r[4]==='string'?r[4]:'—',
+  readiness: typeof r[5]==='number'?r[5]:(typeof r[4]==='number'?r[4]:0),
+  blockers: r[6]||0,
+  note: r[7]||r[6]||'',
+}));
+// fix rows where status is 'processing' had number at idx4
+SEC.forEach((s,i)=>{const r=SECTIONS[i];
+  if(typeof r[4]==='number'){s.owner='Pending';s.readiness=r[4];s.blockers=r[5];s.note=r[6];}
+});
+function getSec(id){return SEC.find(s=>s.id===id)}
+
+/* Required reviewers per section (authority model) */
+const REVIEWERS = {
+  capital:["Banker","CS","Auditor"], approvals:["Legal","Banker"], litigation:["Legal","Banker"],
+  risk:["Banker","Legal"], mgmt:["CS","Banker"], restated:["Auditor","Banker"], sumfin:["Auditor","Banker"],
+  objects:["Banker","Auditor"], business:["Banker","Legal"], promoters:["CS","Banker"], debt:["Auditor","Banker"],
+};
+const ROLE_PERSON={Banker:"AM",Legal:"RV",CS:"SK",Auditor:"DP",Partner:"PN"};
+
+/* DISCLOSURE BLOCKS — keyed by section */
+const BLOCKS = {
+  capital:[
+    {id:"cap-1",title:"Share Capital History of the Company",type:"Mixed text & table block",status:"verified",conf:"high",owner:"AM",upd:null,
+      content:`<p>Set forth below is the history of the equity share capital of our Company. The authorised share capital of our Company was <span class="ev-mark" data-ev="moa">₹1,00,000 divided into 10,000 Equity Shares of ₹10 each</span> at incorporation on <span class="ev-mark" data-ev="incorp">11 March 2016</span>, and has since been increased to <span class="ev-mark" data-ev="egm">₹15,00,00,000 divided into 1,50,00,000 Equity Shares of ₹10 each</span> pursuant to resolutions of our shareholders.</p>`,
+      sources:["moa","egm","incorp"], verified:true,
+      table:{cols:["Date of allotment","No. of shares","Face value (₹)","Issue price (₹)","Nature","Cumulative"],
+        rows:[["11-03-2016","10,000","10","10","Subscription to MoA","10,000",["incorp"]],
+              ["22-09-2017","2,40,000","10","10","Rights issue (1:24)","2,50,000",["pas4"]],
+              ["14-06-2019","7,50,000","10","—","Bonus issue (3:1)","10,00,000",["bonus"]],
+              ["30-11-2021","12,00,000","10","85","Private placement","22,00,000",["ppa"]],
+              ["18-07-2024","8,00,000","10","—","Bonus issue (4:11)","30,00,000",["bonus2"]]],
+        locked:[5]},
+    },
+    {id:"cap-2",title:"Shareholding Pattern of the Company",type:"Table block",status:"updateavail",conf:"high",owner:"AM",
+      upd:{field:"Promoter holding",was:"71.4%",now:"68.9%",reason:"Reflects 18-Jul-2024 bonus to non-promoters",src:"bonus2"},
+      content:null, sources:["benpos","bonus2"], verified:false,
+      table:{cols:["Category","No. of shares","% holding (pre-issue)"],
+        rows:[["Promoters","20,67,000","68.9%",[]],["Promoter Group","3,90,000","13.0%",[]],
+              ["Public — bodies corporate","3,60,000","12.0%",[]],["Public — individuals","1,83,000","6.1%",[]]],
+        total:["Total","30,00,000","100.0%"], locked:[]},
+    },
+    {id:"cap-3",title:"Details of Promoters' Contribution and Lock-in",type:"Narrative block",status:"conflict",conf:"med",owner:"AM",
+      upd:null,
+      content:`<p>Pursuant to Regulation 238 of the SEBI ICDR Regulations, an aggregate of <span class="ev-mark" data-ev="lockin">20% of the post-Offer Equity Share capital</span> held by our Promoters shall be locked in for a period of three years. The minimum Promoters' contribution shall comprise <span class="ph" title="Pending final post-issue capital">[●]</span> Equity Shares.</p><p>The Equity Shares forming part of the minimum Promoters' contribution are not subject to any pledge.</p>`,
+      sources:["benpos","pledge"], verified:false,
+      conflict:{a:{src:"BenPos Statement (NSDL) — 31 Mar 2026",val:"No pledge on promoter shares"},
+                b:{src:"Loan Sanction Letter (HDFC) — 09 Feb 2026",val:"2,00,000 promoter shares pledged"},
+                impacted:["Promoters' contribution lock-in","Financial Indebtedness — security"],
+                rec:"Adopt BenPos statement as source of truth; confirm pledge release with lender."},
+    },
+  ],
+  approvals:[
+    {id:"ap-1",title:"Material Approvals — Business Operations",type:"Table block",status:"needsreview",conf:"high",owner:"RV",
+      upd:null, content:null, sources:["gst","udyam","trademark"], verified:false,
+      tracker:true,
+      rows:[
+        ["GST Registration (Maharashtra)","27AAFCF1234K1Z9","Goods & Services Tax Dept.","Valid","—","Material","gst","ok"],
+        ["Udyam Registration","UDYAM-MH-18-0044921","Ministry of MSME","Valid","—","Material","udyam","ok"],
+        ["Shops & Establishment","KOR/II/0099821","Municipal Corp. (Pune)","Valid","31-12-2026","Material","shops","ok"],
+        ["Trademark — 'Klassroom' (Cl. 41)","4498217","Registrar of Trademarks","Registered","09-08-2031","Material","trademark","ok"],
+        ["ISO 27001:2022","IND/27001/22/8841","BSI Assurance","Valid","14-05-2026","Material","iso","expiring"],
+        ["CBSE Affiliation Tie-up MoU","—","Central Board of Sec. Edu.","Under renewal","31-03-2026","Material","mou","expiring"],
+      ],
+    },
+    {id:"ap-2",title:"Approvals Applied For / Pending",type:"Narrative block",status:"updateavail",conf:"med",owner:"RV",
+      upd:{field:"Pending approval count",was:"2 pending",now:"1 pending",reason:"FSSAI not applicable — flagged by legal",src:"legalnote"},
+      content:`<p>Except as disclosed, our Company has obtained all material approvals required to undertake its current business. The following approval is currently pending: renewal of the <span class="ev-mark" data-ev="iso">ISO 27001:2022 certification</span>, application for which was filed on 02 April 2026 and is in process.</p>`,
+      sources:["iso","legalnote"], verified:false,
+    },
+  ],
+  litigation:[
+    {id:"lit-1",title:"Litigation Involving the Company",type:"Table block",status:"conflict",conf:"med",owner:"RV",
+      upd:null, content:null, sources:["gstdemand","civilsuit"], verified:false, tracker:"case",
+      rows:[
+        ["GST Dept. v. Fusion Klassroom","Appellate Authority, Pune","Tax","₹42.80 L","Pending","Material","gstdemand"],
+        ["M/s Brightpath Media v. Company","City Civil Court, Bengaluru","Civil — contractual","₹18.50 L","Pending","Material","civilsuit"],
+        ["Company v. Former Vendor (recovery)","City Civil Court, Pune","Civil — recovery","₹7.20 L","Pending","Non-material","—"],
+      ],
+      conflict:{a:{src:"GST Demand Order — DRC-07 (12 Jan 2026)",val:"Amount involved: ₹42.80 lakh"},
+                b:{src:"Management Litigation Certificate (05 Mar 2026)",val:"Amount involved: ₹38.10 lakh"},
+                impacted:["Litigation table — amount","Contingent liabilities note"],
+                rec:"Adopt DRC-07 order value (₹42.80 L) as the demand; management figure excludes interest."},
+    },
+    {id:"lit-2",title:"Litigation Involving Directors & Promoters",type:"Narrative block",status:"verified",conf:"high",owner:"RV",verified:true,
+      content:`<p>Save as disclosed, there are <b>no outstanding litigation, actions, suits or proceedings</b> involving our Directors or Promoters that have been determined to be material in accordance with the Materiality Policy adopted by our Board on <span class="ev-mark" data-ev="matpol">28 February 2026</span>.</p>`,
+      sources:["matpol","directorcert"],
+    },
+  ],
+  risk:[
+    {id:"rk-1",title:"Customer & Revenue Concentration",type:"Risk factor block",status:"verified",conf:"high",owner:"AM",verified:true,
+      content:`<p><b>Our revenue is significantly dependent on a limited number of institutional and government customers, and the loss of any one of them could adversely affect our business.</b></p><p>For Fiscal 2026, our <span class="ev-mark" data-ev="conc">top five customers contributed 61.4% of revenue from operations</span>, of which our largest customer, a state education department, contributed 23.8%. The arrangements with such customers are typically renewable and do not guarantee minimum volumes.</p>`,
+      sources:["conc","mgmtcert"], severity:"High", affects:["Our Business","MD&A"],
+    },
+    {id:"rk-2",title:"Government Partnership Execution Risk",type:"Risk factor block",status:"needsreview",conf:"med",owner:"AM",
+      content:`<p><b>A significant portion of our growth depends on contracts with government and quasi-government bodies, which are subject to procurement processes, budgetary allocations and execution risk.</b></p><p>Delays in government budgetary release, changes in education policy, or cancellation of tenders could materially affect our order book and collections, which as of 31 March 2026 included <span class="ev-mark" data-ev="orderbook">₹14.2 crore of government-linked receivables</span>.</p>`,
+      sources:["orderbook","mou"], severity:"High", affects:["Our Business","Objects of the Offer","MD&A"],
+    },
+    {id:"rk-3",title:"Negative Cash Flows from Operations",type:"Risk factor block",status:"updateavail",conf:"high",owner:"AM",
+      upd:{field:"FY26 operating cash flow",was:"₹(2.1) crore",now:"₹(1.4) crore",reason:"Restated audited figure replaces provisional",src:"restatedcf"},
+      content:`<p><b>We have experienced negative cash flows from operating activities in the past and may continue to do so.</b></p><p>Our Company reported negative cash flow from operations of <span class="ev-mark" data-ev="restatedcf">₹(1.4) crore in Fiscal 2026</span> and ₹(2.8) crore in Fiscal 2025, primarily on account of working-capital build-up in government receivables.</p>`,
+      sources:["restatedcf"], severity:"Medium", affects:["MD&A","Restated Financials"],
+    },
+  ],
+  mgmt:[
+    {id:"mg-1",title:"Board of Directors",type:"Table block",status:"needsreview",conf:"high",owner:"SK",sources:["din","boardres"],tracker:"people",
+      rows:[
+        ["Rajesh Iyer","00482217","Chairman & Managing Director","Executive","Not Independent","ok"],
+        ["Meera Rajesh Iyer","00482290","Whole-time Director","Executive","Not Independent","ok"],
+        ["Vikram Salunkhe","01129944","Non-Executive Director","Non-Executive","Not Independent","ok"],
+        ["Dr. Lata Bhardwaj","07781120","Independent Director","Non-Executive","Independent","ok"],
+        ["Suresh Menon","02244871","Independent Director","Non-Executive","Independent","pending"],
+      ],
+    },
+    {id:"mg-2",title:"Key Managerial Personnel & Committees",type:"Mixed text & table block",status:"verified",conf:"high",owner:"SK",verified:true,
+      content:`<p>Our Company is in compliance with the corporate governance requirements applicable to the Offer. Our Board has constituted an <span class="ev-mark" data-ev="boardres">Audit Committee, a Nomination and Remuneration Committee and a Stakeholders' Relationship Committee</span>, each chaired by an Independent Director.</p>`,
+      sources:["boardres","kmpcert"],
+      table:{cols:["Name","Designation","Date of appointment"],
+        rows:[["Rajesh Iyer","Chairman & Managing Director","11-03-2016",["din"]],
+              ["Anand Kulkarni","Chief Financial Officer","01-04-2023",["kmpcert"]],
+              ["Sneha Kulkarni","Company Secretary & Compliance Officer","12-06-2024",["kmpcert"]]], locked:[]},
+    },
+  ],
+  restated:[
+    {id:"fin-1",title:"Restated Statement of Profit and Loss",type:"Excel-like computed table block",status:"updateavail",conf:"high",owner:"DP",
+      upd:{field:"FY26 Revenue from operations",was:"₹47.20 cr",now:"₹48.06 cr",reason:"Auditor restatement — revenue cut-off adjustment",src:"auditcert"},
+      content:null, sources:["auditcert","restatedpl"], verified:false,
+      xl:{cols:["₹ in crore","FY 2026","FY 2025","FY 2024"],
+        rows:[
+          {label:"Revenue from operations",v:["48.06","39.41","28.77"],locked:true},
+          {label:"Other income",v:["1.12","0.84","0.55"],locked:true},
+          {label:"Total income",v:["49.18","40.25","29.32"],computed:true},
+          {label:"Cost of services",v:["21.40","18.02","13.55"],locked:true},
+          {label:"Employee benefits expense",v:["12.88","10.91","8.40"],locked:true},
+          {label:"Other expenses",v:["8.94","7.66","5.71"],locked:true},
+          {label:"EBITDA",v:["5.96","3.66","1.66"],computed:true},
+          {label:"Restated profit before tax",v:["4.21","2.30","0.74"],computed:true},
+          {label:"Restated profit after tax",v:["3.12","1.69","0.52"],computed:true,total:true},
+        ]},
+    },
+    {id:"fin-2",title:"Capitalisation Statement",type:"Excel-like computed table block",status:"needsreview",conf:"high",owner:"DP",sources:["restatedbs"],verified:false,
+      xl:{cols:["₹ in crore","Pre-Offer (31 Mar 2026)","As adjusted for Offer"],
+        rows:[
+          {label:"Borrowings — current",v:["3.40","[●]"],locked:true},
+          {label:"Borrowings — non-current",v:["5.10","[●]"],locked:true},
+          {label:"Total equity",v:["18.62","[●]"],locked:true},
+          {label:"Total debt / equity (x)",v:["0.46","[●]"],computed:true,total:true},
+        ]},
+    },
+  ],
+  objects:[
+    {id:"ob-1",title:"Use of Net Proceeds",type:"Excel-like computed table block",status:"needsreview",conf:"med",owner:"AM",sources:["uop","quote1"],verified:false,
+      xl:{cols:["Particulars (₹ in crore)","Amount","% of Net Proceeds"],
+        rows:[
+          {label:"Investment in technology platform & product",v:["8.50","34.0%"]},
+          {label:"Sales, marketing & brand building",v:["6.20","24.8%"]},
+          {label:"Funding working-capital requirements",v:["5.40","21.6%"]},
+          {label:"General corporate purposes",v:["[●]","[●]"]},
+          {label:"Net Proceeds",v:["25.00","100.0%"],computed:true,total:true},
+        ]},
+    },
+    {id:"ob-2",title:"Deployment Schedule of Net Proceeds",type:"Table block",status:"needsreview",conf:"med",owner:"AM",sources:["uop","quote1"],
+      table:{cols:["Particulars","FY2027","FY2028","Total"],
+        rows:[["Technology platform & product","5.00","3.50","8.50",["quote1"]],
+              ["Sales & marketing","3.80","2.40","6.20",[]],
+              ["Working capital","3.40","2.00","5.40",[]]], locked:[]},
+    },
+    {id:"ob-3",title:"Means of Finance & Funding Gap",type:"Narrative block",status:"updateavail",conf:"med",owner:"AM",
+      upd:{field:"Quotation coverage",was:"60% of capex backed by quotations",now:"82% of capex backed by quotations",reason:"2 new vendor quotations uploaded",src:"quote1"},
+      content:`<p>Our fund requirements and deployment are based on internal management estimates and have not been appraised by any bank or financial institution. As of the date of this Draft Red Herring Prospectus, <span class="ev-mark" data-ev="quote1">82% of the proposed technology capex is supported by vendor quotations</span> valid for periods ranging up to 90 days. We confirm there is no funding gap in respect of the Objects.</p>`,
+      sources:["quote1","uop"],
+    },
+  ],
+  business:[
+    {id:"bz-1",title:"Overview of Our Business",type:"Narrative block",status:"needsreview",conf:"high",owner:"AM",
+      content:`<p>We are a technology-led education company providing <span class="ev-mark" data-ev="mgmtnote">digital learning infrastructure, content and assessment solutions</span> to schools, state education departments and coaching institutions across India. As of 31 March 2026, our solutions were deployed across <span class="ev-mark" data-ev="ops">2,140 schools in 11 states</span>, serving approximately 9.4 lakh students.</p><p class="hl-soft" style="padding:8px 10px;border-left:3px solid var(--amber)"><b style="color:var(--amber)">Unsupported claim flagged:</b> "India's largest regional-language edtech platform" — no third-party source on file. Banker to substantiate or remove.</p>`,
+      sources:["mgmtnote","ops"], severity:null, affects:[],
+    },
+    {id:"bz-2",title:"Our Strengths",type:"Narrative block",status:"verified",conf:"high",owner:"AM",verified:true,
+      content:`<p>We believe the following are our principal competitive strengths: (i) deep relationships with state government education bodies; (ii) a vernacular-first content library spanning <span class="ev-mark" data-ev="ops">8 regional languages</span>; (iii) an asset-light, recurring-revenue delivery model; and (iv) a scalable proprietary assessment engine.</p>`,
+      sources:["ops","mgmtnote"],
+    },
+  ],
+};
+
+/* DOCUMENTS for source room + drawer evidence detail */
+const DOCS = {
+  moa:{name:"Memorandum & Articles of Association.pdf",type:"pdf",group:"Constitutional",page:4,processed:true,objs:18,used:9,
+    extract:{ "Authorised capital (incorp.)":"₹1,00,000","Shares":"10,000 of ₹10","Date":"11 Mar 2016"},
+    snippet:`The Authorised Share Capital of the Company is <span class="hl">₹1,00,000 (Rupees One Lakh) divided into 10,000 Equity Shares of ₹10 each</span>.`,flags:[]},
+  incorp:{name:"Certificate of Incorporation.pdf",type:"pdf",group:"Constitutional",page:1,processed:true,objs:5,used:6,
+    extract:{"CIN":"U80904MH2016PLC...","Date of incorporation":"11 March 2016","RoC":"Mumbai"},
+    snippet:`This is to certify that <span class="hl">FUSION KLASSROOM EDUTECH PRIVATE LIMITED is incorporated this Eleventh day of March Two Thousand Sixteen</span>.`,flags:[]},
+  pas4:{name:"PAS-4 Offer Letter — Rights 2017.pdf",type:"pdf",group:"Capital",page:9,processed:true,objs:11,used:4,
+    extract:{"Allotment":"2,40,000 shares","Ratio":"1:24","Date":"22 Sep 2017","Price":"₹10"},
+    snippet:`...the Board allotted <span class="hl">2,40,000 Equity Shares of ₹10 each at par on a rights basis in the ratio of 1:24</span> on 22 September 2017.`,flags:[]},
+  egm:{name:"EGM Resolution — Capital Increase.pdf",type:"pdf",group:"Secretarial",page:2,processed:true,objs:6,used:3,
+    extract:{"Authorised capital":"₹15,00,00,000","Shares":"1,50,00,000 of ₹10"},
+    snippet:`RESOLVED THAT the authorised share capital be increased to <span class="hl">₹15,00,00,000 divided into 1,50,00,000 Equity Shares of ₹10 each</span>.`,flags:[]},
+  bonus2:{name:"Board Resolution — Bonus 2024.pdf",type:"pdf",group:"Secretarial",page:3,processed:true,objs:7,used:5,
+    extract:{"Bonus ratio":"4:11","Shares":"8,00,000","Date":"18 Jul 2024"},
+    snippet:`RESOLVED to capitalise reserves and allot <span class="hl">8,00,000 bonus Equity Shares in the ratio of 4:11</span> to the eligible shareholders.`,flags:["Affects promoter %"]},
+  benpos:{name:"BenPos Statement — NSDL.pdf",type:"pdf",group:"Capital",page:1,processed:true,objs:24,used:8,
+    extract:{"As on":"31 Mar 2026","Total shares":"30,00,000","Promoter holding":"68.9%"},
+    snippet:`Beneficiary Position as on 31-03-2026. Promoter holding: <span class="hl">20,67,000 shares (68.9%)</span>. No pledge marked against promoter ISIN balances.`,flags:[]},
+  pledge:{name:"Loan Sanction Letter — HDFC.pdf",type:"pdf",group:"Financial",page:6,processed:true,objs:9,used:2,
+    extract:{"Facility":"₹6.0 cr term loan","Security":"2,00,000 promoter shares pledged"},
+    snippet:`Security: exclusive charge and <span class="hl">pledge over 2,00,000 Equity Shares held by the Promoter</span>, to be created within 30 days of disbursement.`,flags:["Conflicts with BenPos"]},
+  gstdemand:{name:"GST Demand Order DRC-07.pdf",type:"pdf",group:"Litigation",page:3,processed:true,objs:8,used:3,
+    extract:{"Amount":"₹42.80 lakh","Authority":"GST Dept.","Date":"12 Jan 2026"},
+    snippet:`Total amount payable including interest and penalty: <span class="hl">₹42,80,140</span>. The taxpayer is directed to pay within thirty days.`,flags:["Conflicts with mgmt cert"]},
+  conc:{name:"Customer Concentration Schedule.xlsx",type:"xls",group:"Financial",page:1,processed:true,objs:14,used:4,
+    extract:{"Top 5 customers":"61.4% of revenue","Largest":"23.8%","Period":"FY2026"},
+    snippet:`Top five customers as % of revenue from operations (FY2026): <span class="hl">61.4%</span>. Largest single customer (State Education Dept.): 23.8%.`,flags:[]},
+  restatedcf:{name:"Restated Cash Flow Statement.xlsx",type:"xls",group:"Financial",page:1,processed:true,objs:22,used:5,
+    extract:{"CFO FY26":"₹(1.40) cr","CFO FY25":"₹(2.80) cr"},
+    snippet:`Net cash generated from / (used in) operating activities — Fiscal 2026: <span class="hl">₹(1.40) crore</span> (restated).`,flags:["Restated — supersedes provisional"]},
+  auditcert:{name:"Auditor Restated Financials Certificate.pdf",type:"pdf",group:"Audited",page:2,processed:true,objs:31,used:11,
+    extract:{"Revenue FY26":"₹48.06 cr","PAT FY26":"₹3.12 cr","Firm":"BSR & Co"},
+    snippet:`We have examined the Restated Financial Information... Revenue from operations for Fiscal 2026 is <span class="hl">₹48.06 crore</span>.`,flags:["Audited — locked values"]},
+  uop:{name:"Use of Proceeds Working.xlsx",type:"xls",group:"Offer",page:1,processed:true,objs:12,used:6,
+    extract:{"Net proceeds":"₹25.00 cr","GCP":"[●]","Capex":"₹8.50 cr"},
+    snippet:`Proposed deployment of Net Proceeds — Technology platform & product: <span class="hl">₹8.50 crore</span>; Sales & marketing: ₹6.20 crore.`,flags:["GCP capped at 25%"]},
+  quote1:{name:"Vendor Quotations — Tech Capex.pdf",type:"pdf",group:"Offer",page:5,processed:true,objs:7,used:3,
+    extract:{"Coverage":"82% of capex","Validity":"90 days"},
+    snippet:`Quotation for cloud & platform infrastructure valid for ninety (90) days. Aggregate quoted value covers <span class="hl">82% of proposed technology capex</span>.`,flags:[]},
+  din:{name:"Director DIN & DIR-12 Filings.pdf",type:"pdf",group:"Secretarial",page:7,processed:true,objs:16,used:5,
+    extract:{"Directors":"5","Independent":"2"},
+    snippet:`Mr. Rajesh Iyer (DIN <span class="hl">00482217</span>) — Chairman & Managing Director, appointed 11 March 2016.`,flags:[]},
+  iso:{name:"ISO 27001 Certificate.pdf",type:"pdf",group:"Approvals",page:1,processed:true,objs:4,used:2,
+    extract:{"Standard":"ISO 27001:2022","Valid till":"14 May 2026"},
+    snippet:`Certificate of Registration — Information Security Management. Valid until <span class="hl">14 May 2026</span>.`,flags:["Expiring in 51 days"]},
+  trademark:{name:"Trademark Registration — Klassroom.pdf",type:"pdf",group:"Approvals",page:1,processed:true,objs:3,used:1,
+    extract:{"Mark":"Klassroom","Class":"41","No.":"4498217"},
+    snippet:`The trade mark <span class="hl">'KLASSROOM' under Class 41 (No. 4498217)</span> is registered and valid until 09 August 2031.`,flags:[]},
+  orderbook:{name:"Order Book & Receivables.xlsx",type:"xls",group:"Financial",page:1,processed:true,objs:9,used:2,
+    extract:{"Govt receivables":"₹14.2 cr","Total order book":"₹38.6 cr"},
+    snippet:`Government-linked receivables outstanding as on 31 March 2026: <span class="hl">₹14.20 crore</span>.`,flags:[]},
+  ops:{name:"Operations & Deployment MIS.xlsx",type:"xls",group:"Business",page:1,processed:true,objs:19,used:7,
+    extract:{"Schools":"2,140","States":"11","Students":"9.4 lakh","Languages":"8"},
+    snippet:`Active deployments as on 31 March 2026: <span class="hl">2,140 schools across 11 states</span>, ~9.4 lakh students, 8 regional languages.`,flags:[]},
+  mgmtnote:{name:"Management Business Note.docx",type:"doc",group:"Management Inputs",page:2,processed:true,objs:11,used:8,
+    extract:{"Segments":"Content, Assessment, Platform"},
+    snippet:`The Company provides <span class="hl">digital learning infrastructure, content and assessment solutions</span> to schools and education departments.`,flags:["Unverified marketing claim present"]},
+  civilsuit:{name:"Civil Suit — Brightpath Media.pdf",type:"pdf",group:"Litigation",page:2,processed:true,objs:6,used:2,
+    extract:{"Forum":"City Civil Court, Bengaluru","Amount":"₹18.50 lakh"},
+    snippet:`Suit for recovery of <span class="hl">₹18,50,000</span> towards alleged unpaid content licensing dues.`,flags:[]},
+  matpol:{name:"Materiality Policy — Board Approved.pdf",type:"pdf",group:"Secretarial",page:1,processed:true,objs:5,used:4,
+    extract:{"Approved":"28 Feb 2026","Threshold":"₹10 lakh / 1% of turnover"},
+    snippet:`The Board adopted the Materiality Policy for litigation disclosure on <span class="hl">28 February 2026</span>.`,flags:[]},
+};
+/* fallbacks for evidence ids referenced but not richly defined */
+const DOC_FALLBACK = {bonus:"bonus2",ppa:"egm",lockin:"benpos",legalnote:"matpol",mou:"iso",shops:"trademark",udyam:"trademark",
+  gst:"gstdemand",mgmtcert:"conc",directorcert:"matpol",boardres:"din",kmpcert:"din",restatedpl:"auditcert",restatedbs:"auditcert",
+  bonus2:"bonus2",quote1:"quote1",gstdemand:"gstdemand"};
+function resolveDoc(id){return DOCS[id]||DOCS[DOC_FALLBACK[id]]||DOCS.moa}
+
+/* REVIEW QUEUE */
+const QUEUE = [
+  {sec:"capital",block:"Promoters' Contribution & Lock-in",kind:"Conflict",role:"Banker",pri:"high",age:"2h",who:"AM"},
+  {sec:"litigation",block:"Litigation Involving the Company",kind:"Conflict",role:"Legal",pri:"high",age:"4h",who:"RV"},
+  {sec:"restated",block:"Restated Statement of P&L",kind:"Update available",role:"Auditor",pri:"med",age:"6h",who:"DP"},
+  {sec:"risk",block:"Negative Cash Flows",kind:"Update available",role:"Banker",pri:"med",age:"6h",who:"AM"},
+  {sec:"approvals",block:"Material Approvals — Operations",kind:"Block approval",role:"Legal",pri:"med",age:"1d",who:"RV"},
+  {sec:"mgmt",block:"Board of Directors",kind:"Missing input",role:"CS",pri:"low",age:"1d",who:"SK"},
+  {sec:"objects",block:"Use of Net Proceeds",kind:"Block approval",role:"Banker",pri:"med",age:"1d",who:"AM"},
+  {sec:"capital",block:"Capital Structure",kind:"Section approval",role:"CS",pri:"high",age:"3h",who:"SK"},
+  {sec:"business",block:"Overview of Our Business",kind:"Unsupported claim",role:"Banker",pri:"med",age:"5h",who:"AM"},
+  {sec:"sumfin",block:"Summary Financial Information",kind:"Update available",role:"Auditor",pri:"low",age:"2d",who:"DP"},
+];
+
+/* AUDIT TRAIL seed */
+let AUDIT = [
+  {t:"09:42",d:"23 Jun 2026",who:"AI",type:"Extraction",txt:"Reconciled 19 capital events from 6 secretarial documents",mem:true,memtxt:"Learned RoC date format dd-mm-yyyy for allotment tables"},
+  {t:"09:55",d:"23 Jun 2026",who:"AM",type:"Verification",txt:"Verified Share Capital History block against MoA & PAS-4"},
+  {t:"10:12",d:"23 Jun 2026",who:"DP",type:"Source of truth",txt:"Selected Auditor Certificate over provisional cash flow for FY26 CFO",mem:true,memtxt:"Prefer audited restated values over management provisional"},
+  {t:"10:30",d:"23 Jun 2026",who:"RV",type:"Comment",txt:"Flagged FSSAI as not applicable on Approvals tracker",mem:true,memtxt:"FSSAI not relevant to edtech SaaS issuers"},
+  {t:"11:05",d:"23 Jun 2026",who:"AM",type:"Rejection",txt:"Rejected AI-suggested risk 'Forex exposure' — Company has no forex revenue",mem:true,memtxt:"Suppress forex risk where 100% domestic revenue"},
+];
+
+/* ============================================================
+   APP STATE
+============================================================ */
+const state = {screen:"command", section:"capital", block:null, mode:"workboard", draft:"clean", insp:"evidence", inspOpen:true, filter:"all"};
+
+/* ============================================================
+   RENDER: SIDEBAR + TOPBAR
+============================================================ */
+function pendingBlockers(){return SEC.reduce((a,s)=>a+s.blockers,0)}
+function readiness(){const a=SEC.reduce((x,s)=>x+s.readiness,0);return Math.round(a/SEC.length)}
+function countStatus(fn){return SEC.filter(fn).length}
+
+const NAVI = [
+  ["home","Project Home",I.home],
+  ["command","Filing Command",I.command],
+  ["workspace","Live DRHP",I.doc],
+  ["sources","Source Room",I.vault],
+  ["queue","Review Queue",I.queue],
+  ["export","Export Center",I.export],
+  ["memory","Memory",I.memory],
+];
+function renderNav(){
+  const qn = QUEUE.length, bl = pendingBlockers();
+  document.getElementById('nav').innerHTML =
+    `<div class="nav-label">Klassroom DRHP</div>` +
+    NAVI.map(([id,label,ic])=>{
+      let badge='';
+      if(id==='queue') badge=`<span class="badge amber">${qn}</span>`;
+      if(id==='workspace') badge=`<span class="badge red">${bl}</span>`;
+      return `<div class="nav-item ${state.screen===id?'active':''}" onclick="go('${id}')">${ic}<span>${label}</span>${badge}</div>`;
+    }).join('');
+}
+
+function renderTopbar(){
+  const tb=document.getElementById('topbar');
+  const r=readiness(), bl=pendingBlockers();
+  const titles={home:"Project Home",command:"Filing Command",workspace:"Live DRHP Assembly",sources:"Source Room",queue:"Review Queue",export:"Export Center",memory:"Memory & Audit Trail"};
+  tb.innerHTML=`
+    <div class="tb-co">
+      <div class="nm">${project.company}<span class="pill teal">${project.version}</span></div>
+      <div class="meta"><span class="tag">${titles[state.screen]||''}</span><span>·</span><span class="tag">${project.jurisdiction}</span><span class="tag">${project.route}</span><span class="tag">${project.exchange}</span></div>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-stat"><div class="v">${r}%</div><div class="l">Readiness</div></div>
+    <div class="tb-stat"><div class="v ${bl?'red':'green'}">${bl}</div><div class="l">Blockers</div></div>
+    <div class="tb-stat"><div class="v green">${countStatus(s=>s.status==='approved')}</div><div class="l">Approved</div></div>
+    <button class="btn primary" onclick="openExport()">${I.export}Export</button>`;
+}
+
+/* ============================================================
+   ROUTER
+============================================================ */
+function go(screen){ state.screen=screen; render(); document.getElementById('content').scrollTop=0; }
+function render(){
+  renderNav(); renderTopbar();
+  const c=document.getElementById('content');
+  if(state.screen==='workspace'){ c.style.padding='0'; c.innerHTML=renderAssembly(); afterAssembly(); }
+  else { c.style.padding='0'; c.innerHTML=({home:renderHome,command:renderCommand,sources:renderSources,queue:renderQueue,export:renderExportCenter,memory:renderMemory}[state.screen])(); }
+}
+
+/* ============================================================
+   SCREEN: PROJECT HOME
+============================================================ */
+function renderHome(){
+  const r=readiness();
+  return `<div class="pad">
+    <div class="page-h"><div><h1>Project Home</h1><p>Active issuances assembling inside the S45 DRHP Workspace.</p></div>
+      <button class="btn primary" onclick="go('workspace')">${I.doc}Open Klassroom DRHP</button></div>
+
+    <div class="grid stat-grid" style="margin-bottom:18px">
+      <div class="card stat"><div class="top"><span class="lab">DRHP Readiness</span><span class="dot teal"></span></div><div class="num">${r}%</div><div class="pbar"><i style="width:${r}%"></i></div></div>
+      <div class="card stat"><div class="top"><span class="lab">Sections Filing-ready</span><span class="dot green"></span></div><div class="num">${countStatus(s=>s.status==='approved')}<span class="muted" style="font-size:15px">/${SEC.length}</span></div><div class="sub">${countStatus(s=>['bankerreview','legalreview','csreview','auditreview'].includes(s.status))} awaiting review</div></div>
+      <div class="card stat"><div class="top"><span class="lab">Open Blockers</span><span class="dot red"></span></div><div class="num" style="color:var(--red)">${pendingBlockers()}</div><div class="sub">Across ${countStatus(s=>s.blockers>0)} sections</div></div>
+      <div class="card stat"><div class="top"><span class="lab">Next Milestone</span><span class="dot amber"></span></div><div class="num" style="font-size:19px">Aug 14</div><div class="sub">Target SEBI / BSE SME filing</div></div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1.6fr 1fr">
+      <div class="card">
+        <div class="row" style="padding:14px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">Active IPO Projects</div></div>
+        <table class="tbl">
+          <thead><tr><th>Project</th><th>Route</th><th>Readiness</th><th>Blockers</th><th>Last activity</th><th>Next action</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="go('workspace')">
+              <td><div class="b">Klassroom DRHP</div><div class="muted tiny">Fusion Klassroom Edutech Ltd</div></td>
+              <td><span class="pill teal">SME · BSE</span></td>
+              <td style="width:130px"><div class="row gap8"><div class="pbar" style="flex:1"><i style="width:${r}%"></i></div><span class="b tiny">${r}%</span></div></td>
+              <td><span class="pill red">${pendingBlockers()} open</span></td>
+              <td class="muted tiny">2 min ago · ${av('AM')} Banker</td>
+              <td><span class="link">Resolve 2 conflicts ${I.chevR}</span></td>
+            </tr>
+            <tr class="clickable" style="opacity:.62">
+              <td><div class="b">Aurial Mainboard IPO</div><div class="muted tiny">Aurial Industries Ltd</div></td>
+              <td><span class="pill grey">Mainboard · NSE</span></td>
+              <td style="width:130px"><div class="row gap8"><div class="pbar amber" style="flex:1"><i style="width:34%"></i></div><span class="b tiny">34%</span></div></td>
+              <td><span class="pill amber">8 open</span></td>
+              <td class="muted tiny">Yesterday · ${av('PN')} Partner</td>
+              <td><span class="muted tiny">Source ingestion</span></td>
+            </tr>
+            <tr class="clickable" style="opacity:.62">
+              <td><div class="b">Vantage S-1 (US)</div><div class="muted tiny">Vantage Bio Inc.</div></td>
+              <td><span class="pill grey">S-1 · NASDAQ</span></td>
+              <td style="width:130px"><div class="row gap8"><div class="pbar red" style="flex:1"><i style="width:12%"></i></div><span class="b tiny">12%</span></div></td>
+              <td><span class="pill grey">Scoping</span></td>
+              <td class="muted tiny">3 days ago</td>
+              <td><span class="muted tiny">Jurisdiction setup</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="row" style="padding:14px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">Needs your judgment</div><span class="right pill amber">${QUEUE.filter(q=>q.who==='AM').length} for you</span></div>
+        <div style="padding:6px 18px 14px">
+          ${QUEUE.filter(q=>q.who==='AM').slice(0,4).map(q=>`
+            <div class="row gap10" style="padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer" onclick="openSection('${q.sec}')">
+              <span class="dot ${q.pri==='high'?'red':q.pri==='med'?'amber':'grey'}"></span>
+              <div class="col" style="flex:1"><div class="b tiny" style="font-size:12px">${q.block}</div><div class="muted tiny">${getSec(q.sec).name}</div></div>
+              <span class="pill ${q.kind==='Conflict'?'red':'blue'}">${q.kind}</span>
+            </div>`).join('')}
+          <button class="btn ghost sm" style="margin-top:8px;width:100%;justify-content:center" onclick="go('queue')">View full review queue ${I.chevR}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SCREEN: FILING COMMAND  (the brain)
+============================================================ */
+function criticalSteps(){
+  const steps=[];
+  for(const k in BLOCKS) BLOCKS[k].forEach(b=>{
+    if(b.status==='conflict'&&b.conflict){
+      steps.push({sev:'blocker',tag:'Conflict',
+        title:'Resolve contradiction in '+getSec(k).name,
+        why:b.conflict.a.src.split('—')[0].trim()+' and '+b.conflict.b.src.split('—')[0].trim()+' disagree. '+b.conflict.rec,
+        unlocks:'unlocks '+getSec(k).name+' section approval',
+        btn:`<button class="btn primary" onclick="openConflict('${k}','${b.id}')">${I.alert} Resolve conflict</button>`});
+    }
+  });
+  for(const k in BLOCKS) BLOCKS[k].forEach(b=>{
+    if(b.status==='updateavail'&&b.upd&&['restated','objects'].includes(k)){
+      steps.push({sev:'update',tag:'Update',
+        title:'Accept '+b.upd.field.toLowerCase()+' update — '+getSec(k).name,
+        why:b.upd.reason+'. Value moves '+b.upd.was+' → '+b.upd.now+'.',
+        unlocks:'moves '+getSec(k).name+(k==='restated'?' and Summary Financial Information':'')+' to '+(k==='restated'?'auditor-ready':'banker-ready'),
+        btn:`<div class="row gap8"><button class="btn" onclick="compareUpdate('${b.id}')">${I.compare} Compare</button><button class="btn blue" onclick="acceptUpdate('${k}','${b.id}')">${I.check} Accept update</button></div>`});
+    }
+  });
+  const ap=getSec('approvals');
+  if(ap && ap.status==='legalreview' && ap.blockers>0){
+    steps.push({sev:'approval',tag:'Approval',
+      title:'Request legal sign-off on Government & Other Approvals',
+      why:'22 approvals tracked; 2 are expiring and need a renewal-disclosure confirmation from legal counsel before the section can be approved.',
+      unlocks:'removes 2 legal blockers and enables review-draft export',
+      btn:`<button class="btn primary" onclick="requestApproval('approvals','Legal')">Request legal approval</button>`});
+  }
+  return steps;
+}
+function requestApproval(secId,role){
+  toast('Review requested',`${role} review requested on ${getSec(secId).name}`);
+  audit('AM','Verification',`Requested ${role} review on ${getSec(secId).name}`);
+  openSection(secId);
+}
+function renderCommand(){
+  const steps=criticalSteps();
+  const gates=steps.length;
+  const r=readiness(), bl=pendingBlockers();
+  const headline = gates>0
+    ? `${project.short} DRHP is <em>${gates} decision${gates>1?'s':''}</em> away from a clean review draft.`
+    : `${project.short} DRHP is <em>ready</em> to export a clean review draft.`;
+  const byRole={}; QUEUE.forEach(q=>{(byRole[q.role]=byRole[q.role]||[]).push(q)});
+  const roleOrder=Object.keys(byRole).sort((a,b)=>byRole[b].length-byRole[a].length);
+  const maxRole=roleOrder[0];
+  const changes=[]; for(const k in BLOCKS) BLOCKS[k].forEach(b=>{ if(b.upd) changes.push({sec:k,b}); });
+  const ready=SEC.filter(s=>s.status==='approved'||(s.blockers===0&&s.readiness>=85));
+  const stuck=SEC.filter(s=>s.blockers>0||s.status==='empty').sort((a,b)=>b.blockers-a.blockers);
+  return `<div class="cmd">
+    <div class="cmd-hero">
+      <div style="flex:1;min-width:0">
+        <div class="eyebrow">${I.command.replace('class="ic"','width="14" height="14"')} Filing Command · ${project.version}</div>
+        <h1>${headline}</h1>
+        <p>${gates>0
+          ? `Work the critical path below to clear every gating exception. Review drafts can be exported at any time — the clean filing copy unlocks only at zero blockers and full reviewer sign-off.`
+          : `All gating exceptions are cleared. ${bl} non-gating blocker${bl===1?'':'s'} remain before final lock and the filing copy.`}</p>
+      </div>
+      <div class="cmd-ring">
+        <div style="width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--accent) ${r*3.6}deg,var(--surface-3) 0deg);display:flex;align-items:center;justify-content:center">
+          <div style="width:74px;height:74px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><span class="pct">${r}%</span></div>
+        </div><span class="cap">Readiness</span>
+      </div>
+      <div class="cmd-hero-stats">
+        <div class="chs"><span class="v" style="color:${bl?'var(--red)':'var(--green)'}">${bl}</span><span class="l">Open blockers</span></div>
+        <div class="chs"><span class="v">${countStatus(s=>s.status==='approved')}<span style="color:var(--muted);font-size:13px;font-weight:600">/${SEC.length}</span></span><span class="l">Sections approved</span></div>
+        <div class="chs"><span class="v">14 Aug</span><span class="l">Target SEBI / BSE filing</span></div>
+      </div>
+    </div>
+
+    <div class="cmd-grid">
+      <div>
+        <div class="cmd-card">
+          <div class="hd"><div class="t">Critical path to review draft</div><div class="s" style="margin-left:auto">${gates} action${gates===1?'':'s'} · ordered by impact</div></div>
+          ${gates>0 ? steps.map((s,i)=>`<div class="step ${s.sev}">
+            <div class="idx">${i+1}</div>
+            <div class="body">
+              <div class="ti">${s.title}<span class="pill ${s.sev==='blocker'?'red':s.sev==='update'?'blue':'amber'}">${s.tag}</span></div>
+              <div class="why">${s.why}</div>
+              <div class="unlock">${I.bolt} Impact — ${s.unlocks}</div>
+              <div class="act">${s.btn}</div>
+            </div></div>`).join('')
+          : `<div class="step"><div class="idx" style="background:var(--green-soft);color:var(--green)">${I.check}</div><div class="body"><div class="ti">Critical path clear</div><div class="why">No gating conflicts or blocking updates remain. You can export a clean review draft now.</div><div class="act"><button class="btn green" onclick="openExport()">${I.export} Export review draft</button></div></div></div>`}
+        </div>
+
+        <div class="cmd-card">
+          <div class="hd"><div class="t">Section readiness</div><div class="s" style="margin-left:auto">${ready.length} ready · ${stuck.length} need work</div></div>
+          <div class="sct-cols">
+            <div class="sct-col"><div class="h"><span class="dot green"></span>Ready / on track</div>
+              ${ready.slice(0,8).map(s=>`<div class="sct-chip" onclick="openSection('${s.id}')"><span class="dot ${s.status==='approved'?'green':'blue'}"></span><span class="snm">${s.name}</span><span class="pill ${s.status==='approved'?'green':'blue'}">${s.status==='approved'?'Approved':s.readiness+'%'}</span></div>`).join('')}
+            </div>
+            <div class="sct-col"><div class="h"><span class="dot red"></span>Needs work</div>
+              ${stuck.slice(0,8).map(s=>`<div class="sct-chip" onclick="openSection('${s.id}')"><span class="dot ${s.blockers>0?'red':'grey'}"></span><span class="snm">${s.name}</span>${s.blockers>0?`<span class="pill red">${s.blockers} blocker${s.blockers>1?'s':''}</span>`:`<span class="pill grey">Empty</span>`}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cmd-card">
+          <div class="hd"><div class="t">Reviewer bottlenecks</div></div>
+          <div style="padding:4px 18px 14px">
+            ${roleOrder.map(rl=>{const id=ROLE_PERSON[rl]||'AI';const items=byRole[rl];return `<div class="bottleneck">${av(id)}<div class="col"><span class="nm">${people[id].n}</span><span class="rl">${rl} review${rl===maxRole?' · primary bottleneck':''}</span></div><span class="cnt" style="color:${rl===maxRole?'var(--red)':'var(--ink-2)'}">${items.length} pending</span></div>`}).join('')}
+            <button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:10px" onclick="go('queue')">Open review queue ${I.chevR}</button>
+          </div>
+        </div>
+
+        <div class="cmd-card">
+          <div class="hd"><div class="t">Changes since DRHP v0.6</div></div>
+          <div style="padding:4px 18px 14px">
+            ${changes.map(c=>`<div class="change-row"><span class="dot ${c.b.status==='updateavail'?'blue':'green'}"></span><div class="tx"><b>${getSec(c.sec).name}</b> — ${c.b.upd.field}: ${c.b.upd.was} → <b>${c.b.upd.now}</b>. <span class="link tiny" onclick="openSection('${c.sec}')">review</span></div></div>`).join('')}
+            <div class="change-row"><span class="dot violet"></span><div class="tx"><b>${AUDIT.filter(a=>a.mem).length} memory rules</b> created from this session's decisions. <span class="link tiny" onclick="go('memory')">view</span></div></div>
+          </div>
+        </div>
+
+        <div class="cmd-card">
+          <div class="hd"><div class="t">Export readiness</div></div>
+          <div class="export-ready">
+            <div class="er-row"><div class="eic ok">${I.check}</div><div class="info"><div class="t">Review draft</div><div class="s">Available now · Word &amp; PDF, with comments</div></div><button class="btn sm primary" onclick="openExport()">Export</button></div>
+            <div class="er-row"><div class="eic ${bl?'no':'ok'}">${bl?I.lock:I.check}</div><div class="info"><div class="t">Final filing copy</div><div class="s">${bl?`Blocked — ${bl} blocker${bl>1?'s':''} across ${countStatus(s=>s.blockers>0)} sections`:'Unlocked — ready for final lock'}</div></div><button class="btn sm ${bl?'':'green'}" onclick="${bl?`go('export')`:`openExport()`}">${bl?'Why?':'Lock'}</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SCREEN: ASSEMBLY (DRHP Workspace)
+============================================================ */
+const GROUP_ORDER=["Front Matter","Summary","Offer Info","Business","Financials","Legal Matters","Offer Procedure","Closing"];
+
+function renderAssembly(){
+  const sec=getSec(state.section);
+  return `<div class="assembly ${state.inspOpen?'':'collapsed'}">
+    ${renderNavPane()}
+    <div class="doc-pane" id="docPane">${renderDocCanvas(sec)}</div>
+    ${state.inspOpen?renderInspector(sec):`<div class="insp-rail" onclick="setInspOpen(true)" title="Open inspector"><span>${I.chevR}</span><span class="lbl">Evidence · Review · Issues · Versions</span></div>`}
+  </div>`;
+}
+
+function renderNavPane(){
+  const groups={};
+  SEC.forEach(s=>{(groups[s.group]=groups[s.group]||[]).push(s)});
+  const r=readiness();
+  let html=`<div class="nav-pane"><div class="np-head">
+    <div class="row gap8"><div class="sec-title">DRHP Sections</div><span class="right pill teal">${r}% ready</span></div>
+    <div class="np-search">${I.search}<input placeholder="Search sections…" oninput="filterNav(this.value)"></div>
+    <div class="legend">
+      <span class="li"><span class="dot green"></span>Approved</span>
+      <span class="li"><span class="dot amber"></span>In review</span>
+      <span class="li"><span class="dot red"></span>Blocker</span>
+      <span class="li"><span class="dot grey"></span>Empty</span>
+    </div>
+  </div><div class="np-list" id="npList">`;
+  GROUP_ORDER.forEach(g=>{
+    if(!groups[g])return;
+    html+=`<div class="np-group">${g}</div>`;
+    groups[g].forEach(s=>{
+      const st=STATUS[s.status];
+      const dotc = s.status==='approved'?'green' : s.blockers>0?'red' : s.status==='empty'?'grey' : ['bankerreview','legalreview','csreview','auditreview'].includes(s.status)?'amber':'blue';
+      html+=`<div class="np-item ${state.section===s.id?'active':''}" data-name="${s.name.toLowerCase()}" onclick="openSection('${s.id}')">
+        <span class="dot ${dotc}"></span>
+        <span class="nt">${s.name}</span>
+        ${s.blockers>0?`<span class="bk">${s.blockers}</span>`:`<span class="rp">${s.readiness}%</span>`}
+      </div>`;
+    });
+  });
+  return html+`</div></div>`;
+}
+function filterNav(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#npList .np-item').forEach(el=>{
+    el.style.display = el.dataset.name.includes(q)?'':'none';
+  });
+}
+
+/* ----- Document canvas ----- */
+function renderDocCanvas(sec){
+  let html=`<div class="doc-wrap">${renderSecHeader(sec)}`;
+  html+=renderNBA(sec);
+  html+=renderModeSwitch(sec);
+  html+=(state.mode==='workboard')?renderWorkboard(sec):renderDraft(sec);
+  return html+`</div>`;
+}
+
+/* ----- Next best action strip ----- */
+function nextBestAction(sec){
+  const blocks=BLOCKS[sec.id]||[];
+  if(!blocks.length){
+    if(sec.status==='empty') return {label:'Generate '+sec.name+' draft',why:'Required inputs are partially present. Generate the first disclosure blocks for review.',cta:`<button class="btn primary sm" onclick="generateSection('${sec.id}')">${I.bolt} Generate section draft</button>`,unlocks:'first draft blocks'};
+    return {label:'Upload source documents',why:'This section needs its source documents before extraction can begin.',cta:`<button class="btn sm" onclick="go('sources')">Open Source Room</button>`,unlocks:'extraction'};
+  }
+  const conflict=blocks.find(b=>b.status==='conflict');
+  if(conflict) return {label:'Resolve contradiction in '+conflict.title,why:conflict.conflict.rec,cta:`<button class="btn primary sm" onclick="openConflict('${sec.id}','${conflict.id}')">${I.alert} Resolve conflict</button>`,unlocks:sec.name+' section approval'};
+  const upd=blocks.find(b=>b.status==='updateavail');
+  if(upd) return {label:'Accept '+upd.upd.field+' update',why:upd.upd.reason+' ('+upd.upd.was+' → '+upd.upd.now+').',cta:`<div class="row gap8"><button class="btn sm" onclick="compareUpdate('${upd.id}')">Compare</button><button class="btn blue sm" onclick="acceptUpdate('${sec.id}','${upd.id}')">${I.check} Accept</button></div>`,unlocks:sec.name+' progress'};
+  const needs=blocks.find(b=>['needsreview','draftgen','sourcelinked'].includes(b.status));
+  if(needs) return {label:'Review & approve '+needs.title,why:'Draft is source-linked and awaiting human review.',cta:`<button class="btn green sm" onclick="selectBlock('${needs.id}')">Open & review</button>`,unlocks:'block approval'};
+  if(sec.status!=='approved') return {label:'Approve '+sec.name,why:'All blocks reviewed. Required reviewers can now approve the section.',cta:`<button class="btn green sm" onclick="approveSection('${sec.id}')">${I.check} Approve section</button>`,unlocks:'filing-ready section'};
+  return {label:sec.name+' is filing ready',why:'No action required — section approved by all required reviewers.',cta:'',unlocks:''};
+}
+function renderNBA(sec){
+  const n=nextBestAction(sec);
+  return `<div class="nba"><span class="ic">${I.bolt}</span><div class="col"><div class="lb">Next best action — ${sec.name}</div><div class="tt">${n.label}</div><div class="wy">${n.why}${n.unlocks?` · <b style="color:var(--accent-deep)">Unlocks ${n.unlocks}</b>`:''}</div></div>${n.cta||`<span class="pill green">${I.check} Filing ready</span>`}</div>`;
+}
+function renderModeSwitch(sec){
+  const nb=(BLOCKS[sec.id]||[]).length;
+  return `<div class="mode-switch">
+    <button class="mode ${state.mode==='workboard'?'on':''}" onclick="setMode('workboard')">Workboard<span class="sub">section-native work</span></button>
+    <button class="mode ${state.mode==='draft'?'on':''}" onclick="setMode('draft')">DRHP Draft<span class="sub">${nb?nb+' disclosure block'+(nb>1?'s':''):'no blocks yet'}</span></button>
+  </div>`;
+}
+
+/* ----- WORKBOARD MODE ----- */
+const AISTATUS={
+  capital:{done:["Reconciled 19 share-capital events from 6 secretarial documents","Built the authorised-capital change history end to end","Extracted the shareholding pattern from the NSDL BenPos"],remaining:["Resolve the promoter-pledge contradiction (BenPos vs lender)","Confirm post-issue minimum promoters' contribution [●]"],objs:[["Capital events",19,"ok"],["Allotments",5,"ok"],["Shareholders",4,"ok"],["Pledge records",2,"conflict"]]},
+  approvals:{done:["Classified 22 approvals across 6 issuing authorities","Extracted registration numbers, validity and expiry","Flagged 2 approvals expiring within 60 days"],remaining:["Legal sign-off on the renewal-disclosure wording","Confirm FSSAI non-applicability for an edtech issuer"],objs:[["Approvals",22,"ok"],["Material",14,"ok"],["Expiring",2,"warn"],["Authorities",6,"ok"]]},
+  litigation:{done:["Extracted 5 matters from orders, suits and certificates","Computed aggregate exposure of ₹68.50 lakh","Confirmed nil material litigation for directors & promoters"],remaining:["Resolve the GST demand-amount contradiction","Confirm whether the demand is under appeal (materiality)"],objs:[["Cases",5,"ok"],["Material",2,"ok"],["Contradictions",1,"conflict"]]},
+  risk:{done:["Suggested 32 risk triggers from financials & filings","Accepted 24 and merged 2 duplicate triggers","Mapped each risk to its source basis and affected sections"],remaining:["Substantiate or drop 2 triggers under review","Legal review of risk-factor language"],objs:[["Triggers",32,"ok"],["Accepted",24,"ok"],["Rejected",6,"ok"],["Under review",2,"warn"]]},
+  mgmt:{done:["Built board, KMP and committee tables from DIR-12 filings","Mapped independence status and appointment history","Extracted DINs and designations"],remaining:["CS confirmation on 1 independent director","Banker sign-off on governance narrative"],objs:[["Directors",5,"ok"],["KMP",3,"ok"],["Committees",3,"ok"],["Pending",1,"warn"]]},
+  restated:{done:["Linked restated FY24–FY26 from the auditor certificate","Locked all audited values to the certified figures","Computed EBITDA, PAT and key ratios"],remaining:["Accept the FY26 revenue restatement update","Auditor sign-off on the restated information"],objs:[["Statements",3,"ok"],["Locked cells",42,"ok"],["Computed",9,"ok"],["Updates",1,"warn"]]},
+  objects:{done:["Structured the use-of-proceeds line items","Built the FY27–FY28 deployment schedule","Mapped 82% of tech capex to vendor quotations"],remaining:["Confirm the GCP cap and acquisition placeholder [●]","Banker + certificate-reviewer sign-off"],objs:[["Line items",4,"ok"],["Quotations",82,"ok"],["Placeholders",3,"warn"]]},
+  business:{done:["Extracted 32 business claims from MIS & management note","Linked 28 claims to a verifiable source","Flagged 4 unsupported marketing claims"],remaining:["Substantiate or remove the “India's largest” claim","Banker / legal review of the business narrative"],objs:[["Claims",32,"ok"],["Source-backed",28,"ok"],["Unsupported",4,"warn"]]},
+};
+function renderAIStatus(sec){
+  const a=AISTATUS[sec.id]; if(!a) return '';
+  return `<div class="ai-panel">
+    <div class="ai-col done"><div class="h"><span class="dot green"></span>AI has completed</div><ul>${a.done.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="ai-col todo"><div class="h"><span class="dot amber"></span>Awaiting your judgment</div><ul>${a.remaining.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="ai-objs"><span class="lb">Extracted objects</span>${a.objs.map(o=>`<span class="obj-chip ${o[2]}"><span class="n">${o[1]}</span> ${o[0]}</span>`).join('')}</div>
+  </div>`;
+}
+function renderGenericWorkboard(sec){
+  const found={basis:["Peer comparison set partially built","Audited EPS / RoNW available from financials"],group:["3 group companies identified from MCA master data"],declaration:["18 of 35 sections drafted and progressing"]}[sec.id]||["Document classification in progress","Candidate facts extracted from ingested sources"];
+  const missing={basis:["Final price band","Auditor-certified KPIs","Peer P/E justification"],group:["Group company financials","Related-party confirmations"],declaration:["All sections locked","Signed declaration by directors"]}[sec.id]||["Required source documents","Management inputs"];
+  return `<div class="ai-panel">
+    <div class="ai-col done"><div class="h"><span class="dot green"></span>AI has found</div><ul>${found.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="ai-col todo"><div class="h"><span class="dot amber"></span>Still required</div><ul>${missing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="ai-objs"><span class="lb">Status</span><span class="obj-chip warn"><span class="n">${sec.readiness}%</span> ready</span><span class="muted tiny">Structured shell — switch to DRHP Draft to see generated blocks, or upload sources to begin extraction.</span></div>
+  </div>`;
+}
+function renderWorkboard(sec){
+  let html=renderAIStatus(sec);
+  const native={capital:renderCapitalNative,approvals:renderApprovalsNative,litigation:renderLitigationNative,risk:renderRiskNative,mgmt:renderMgmtNative,restated:renderFinNative,objects:renderObjectsNative,business:renderBusinessNative}[sec.id];
+  html+= native?native():renderGenericWorkboard(sec);
+  const blocks=BLOCKS[sec.id]||[];
+  if(blocks.length){
+    html+=`<div class="wb-blocks"><div class="wb-blocks-h"><span class="sec-title">${I.bolt} Generated disclosure blocks (${blocks.length})</span><button class="btn sm primary" onclick="setMode('draft')">Open DRHP Draft ${I.chevR}</button></div>${blocks.map(b=>{const st=BLOCK_STATUS[b.status]||{};return `<div class="wb-block" onclick="selectBlock('${b.id}')"><span class="dot ${st.c||'grey'}"></span><span class="nm">${b.title}</span><span class="muted tiny">${b.type}</span><span class="pill ${st.c||'grey'}">${st.l||b.status}</span></div>`}).join('')}</div>`;
+  }
+  return html;
+}
+
+/* ----- DRHP DRAFT MODE ----- */
+function renderDraft(sec){
+  const blocks=BLOCKS[sec.id];
+  const idx=SEC.findIndex(s=>s.id===sec.id)+1;
+  let html=`<div class="draft-bar"><div class="seg"><button class="seg-b ${state.draft==='clean'?'on':''}" onclick="setDraft('clean')">Clean draft</button><button class="seg-b ${state.draft==='review'?'on':''}" onclick="setDraft('review')">Review draft</button></div><span class="right muted tiny">${blocks?`${blocks.length} disclosure block${blocks.length>1?'s':''} embedded`:'No blocks generated yet'}${state.draft==='review'?' · comments & citations shown':''}</span></div>`;
+  html+=`<div class="filing ${state.draft==='review'?'review':''}"><div class="filing-h"><div class="kicker">DRHP ${project.version} · Section ${idx}</div><h1>${sec.name}</h1><div class="filing-sub">${project.company} · ${project.route} · ${project.exchange}</div></div>`;
+  if(blocks) blocks.forEach(b=>html+=renderBlock(b,sec));
+  else html+=`<div style="padding:8px 0">${renderEmptyShell(sec)}</div>`;
+  html+=`<div class="filing-foot">— Assembled from ${blocks?blocks.length:0} disclosure block${blocks&&blocks.length!==1?'s':''}. [●] denotes values pending final determination. —</div></div>`;
+  return html;
+}
+
+function renderSecHeader(sec){
+  const st=STATUS[sec.status];
+  const reqRev=REVIEWERS[sec.id]||[sec.owner].filter(Boolean);
+  return `<div class="sec-header">
+    <div class="row1">
+      <h2><span class="dot ${sec.blockers>0?'red':sec.status==='approved'?'green':'amber'}" style="width:11px;height:11px"></span>${sec.name}</h2>
+      <div class="row gap8">
+        <span class="pill ${st.c}">${st.l}</span>
+        ${sec.blockers>0?`<span class="pill red">${I.alert} ${sec.blockers} blocker${sec.blockers>1?'s':''}</span>`:''}
+      </div>
+    </div>
+    <div class="sec-meta">
+      <div class="m"><span class="k">Readiness</span><div class="row gap8" style="margin-top:3px"><div class="pbar" style="width:90px"><i style="width:${sec.readiness}%"></i></div><span class="b tiny">${sec.readiness}%</span></div></div>
+      <div class="m"><span class="k">Owner</span><span class="v">${peopleByRole(sec.owner)}</span></div>
+      <div class="m"><span class="k">Required reviewers</span>
+        <div class="reviewers" style="margin-top:3px">${reqRev.map(rl=>{const done=approvedRole(sec.id,rl);return `<span class="rv-chip ${done?'ok':'wait'}">${av(ROLE_PERSON[rl]||'AI')}${rl}${done?' '+I.check:''}</span>`}).join('')}</div>
+      </div>
+      <div class="m" style="margin-left:auto;align-items:flex-end">
+        <span class="k">Section actions</span>
+        <div class="row gap8" style="margin-top:3px">
+          <button class="btn sm" onclick="approveSection('${sec.id}')">${I.check} Approve section</button>
+          <button class="btn sm primary" onclick="publishSection('${sec.id}')">Publish to DRHP</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function peopleByRole(role){const id=ROLE_PERSON[role]; return id?`${av(id)} ${people[id].n} <span class="muted">· ${role}</span>`:role}
+const SECTION_APPROVALS={}; // sec -> set of roles approved
+function approvedRole(secId,role){return SECTION_APPROVALS[secId] && SECTION_APPROVALS[secId].has(role)}
+
+function renderEmptyShell(sec){
+  const found = {basis:["Peer comparison set partially built","Audited EPS / RoNW available"],group:["3 group companies identified from MCA"],declaration:["Awaiting all sections to lock"]}[sec.id]||["Document classification in progress"];
+  const missing = {basis:["Final price band","Auditor-certified KPIs","Peer P/E justification"],group:["Group company financials","Related-party confirmations"],declaration:["Signed declaration by directors"]}[sec.id]||["Required source documents","Management inputs"];
+  const next = {basis:"Generate Basis-for-Price working once band is set",group:"Ingest group company filings",declaration:"Auto-compiled at final lock"}[sec.id]||"Upload source documents to begin extraction";
+  return `<div class="empty-shell">
+    <span class="pill grey" style="margin-bottom:10px">${I.clock} Section not started</span>
+    <div class="ttl">${sec.name}</div>
+    <div class="muted" style="max-width:480px;margin:0 auto">This section exists in the DRHP as a structured shell. It will fill with reviewable disclosure blocks once its required inputs are present.</div>
+    <div class="req-grid">
+      <div class="req-box"><div class="h">Required inputs</div><ul>${missing.map(m=>`<li><span class="dot grey"></span>${m}</li>`).join('')}</ul></div>
+      <div class="req-box"><div class="h">Already found</div><ul>${found.map(m=>`<li><span class="dot green"></span>${m}</li>`).join('')}</ul></div>
+    </div>
+    <div class="row gap10" style="justify-content:center">
+      <button class="btn" onclick="toast('Source Room','Opening uploads filtered to this section')">Upload documents</button>
+      <button class="btn primary" onclick="generateSection('${sec.id}')">${I.bolt} ${next.length>34?'Generate section draft':next}</button>
+    </div>
+  </div>`;
+}
+
+/* ----- Block renderer ----- */
+const BLOCK_STATUS={
+  draftgen:{l:"Draft generated",c:"blue"}, needsreview:{l:"Source-linked",c:"blue"},
+  sourcelinked:{l:"Source-linked",c:"blue"}, verified:{l:"Human reviewed",c:"green"}, conflict:{l:"Conflict detected",c:"red"},
+  updateavail:{l:"Update available",c:"amber"}, approved:{l:"Block approved",c:"green"}, locked:{l:"Locked",c:"grey"},
+};
+function renderBlock(b,sec){
+  const st=BLOCK_STATUS[b.status]||BLOCK_STATUS.needsreview;
+  let inner='';
+  if(b.content) inner+=`<div class="narr" contenteditable="${state.draft==='clean'&&b.status!=='locked'}" oninput="markEdited('${b.id}')">${b.content}</div>`;
+  if(b.table) inner+=renderHtmlTable(b.table);
+  if(b.tracker) inner+=renderTrackerInBlock(b);
+  if(b.xl) inner+=renderXL(b.xl,b.id);
+
+  let banner='';
+  if(b.status==='conflict'&&b.conflict){
+    banner=`<div class="conflict-banner"><span class="ic">${I.alert}</span>
+      <div class="txt"><b>Contradiction detected.</b> ${b.conflict.a.src.split('—')[0]}vs ${b.conflict.b.src.split('—')[0]}.<br>
+      Impacted: ${b.conflict.impacted.join(' · ')}</div>
+      <button class="btn sm danger" onclick="event.stopPropagation();openConflict('${sec.id}','${b.id}')">Resolve conflict</button></div>`;
+  } else if(b.status==='updateavail'&&b.upd){
+    banner=`<div class="upd"><span style="color:var(--blue)">${I.refresh}</span>
+      <div class="txt"><b>Update available.</b> ${b.upd.field}: ${b.upd.was} → <b>${b.upd.now}</b>. ${b.upd.reason}.</div>
+      <button class="btn sm" onclick="event.stopPropagation();compareUpdate('${b.id}')">${I.compare} Compare</button>
+      <button class="btn sm danger" onclick="event.stopPropagation();rejectUpdate('${sec.id}','${b.id}')">Reject</button>
+      <button class="btn sm blue" onclick="event.stopPropagation();acceptUpdate('${sec.id}','${b.id}')">${I.check} Accept</button></div>`;
+  }
+
+  const confL={high:"High",med:"Medium",low:"Low"}[b.conf]||"—";
+  return `<div class="block ${state.block===b.id?'sel':''}" id="blk-${b.id}" onclick="selectBlock('${b.id}')">
+    <div class="block-head">
+      <span class="bt">${b.title}</span>
+      <span class="sp"></span>
+      <span class="ty">${b.type}</span>
+      <span class="pill ${st.c}">${st.l}</span>
+    </div>
+    <div class="block-body">${inner}</div>
+    ${banner}
+    <div class="block-foot">
+      <span class="conf ${b.conf}">Confidence <span class="bars"><i></i><i></i><i></i></span> ${confL}</span>
+      <span class="muted tiny">· Owner ${av(b.owner)} ${people[b.owner].n.split(' ')[0]}</span>
+      <span class="sp" style="flex:1"></span>
+      <button class="btn sm ghost" onclick="event.stopPropagation();regenBlock('${b.id}')">${I.refresh} Regenerate</button>
+      ${b.status==='approved'||b.status==='locked'
+        ? `<button class="btn sm" onclick="event.stopPropagation();lockBlock('${sec.id}','${b.id}')">${I.lock} ${b.status==='locked'?'Locked':'Lock'}</button>`
+        : `<button class="btn sm green" onclick="event.stopPropagation();approveBlock('${sec.id}','${b.id}')">${I.check} Approve block</button>`}
+    </div>
+  </div>`;
+}
+
+function renderHtmlTable(t){
+  let h=`<table class="xl" style="margin-top:4px"><thead><tr>${t.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  t.rows.forEach((r,ri)=>{
+    const locked=(t.locked||[]).includes(ri+1);
+    h+=`<tr>`;
+    r.forEach((cell,ci)=>{
+      if(ci===r.length-1 && Array.isArray(cell)) return; // skip evidence array col
+      const isEvCol = ci===r.length-2 && Array.isArray(r[r.length-1]);
+      const evs = Array.isArray(r[r.length-1])?r[r.length-1]:[];
+      h+=`<td class="${locked?'locked':''}"><div class="cell" contenteditable="${!locked&&state.draft==='clean'}">${cell}${ci===0&&evs.length?` <span class="ev-mark" data-ev="${evs[0]}" onclick="event.stopPropagation();openDrawer('${evs[0]}')" style="font-size:10px">src</span>`:''}</div></td>`;
+    });
+    h+=`</tr>`;
+  });
+  if(t.total){ h+=`<tr class="total">${t.total.map(c=>`<td><div class="cell">${c}</div></td>`).join('')}</tr>`; }
+  h+=`</tbody></table>`;
+  return h;
+}
+function renderXL(x,bid){
+  let h=`<table class="xl"><thead><tr>${x.cols.map((c,i)=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  x.rows.forEach(r=>{
+    h+=`<tr class="${r.total?'total':''}">`;
+    h+=`<td class="${r.locked?'locked':''}" style="text-align:left"><div class="cell">${r.label}${r.locked?` <span class="lockic" style="color:var(--teal);vertical-align:-1px">${I.lock}</span>`:''}${r.computed?` <span class="muted tiny">ƒ</span>`:''}</div></td>`;
+    r.v.forEach(val=>{
+      const editable = !r.locked && !r.computed && state.draft==='clean';
+      h+=`<td class="${r.locked?'locked':''}"><div class="cell" contenteditable="${editable}" oninput="overrideWarn('${bid}',this)">${val}</div></td>`;
+    });
+    h+=`</tr>`;
+  });
+  h+=`</tbody></table><div class="xl-foot">${I.lock} Locked cells are audited values from BSR & Co certificate. <span class="muted">ƒ = computed</span> · Manual override creates an audit-tracked exception.</div>`;
+  return h;
+}
+
+/* ----- NATIVE BODIES ----- */
+function nativeWrap(title,icon,body,action){
+  return `<div class="native"><div class="native-head"><div class="ti">${icon||I.bolt}${title}</div><div class="sp"></div>${action||''}</div><div class="native-body">${body}</div></div>`;
+}
+function renderCapitalNative(){
+  const events=[
+    ["11 Mar 2016","Incorporation — subscription to MoA","10,000 sh","incorp"],
+    ["22 Sep 2017","Rights issue (1:24) @ ₹10","2,40,000 sh","pas4"],
+    ["14 Jun 2019","Bonus issue (3:1)","7,50,000 sh","bonus"],
+    ["12 Mar 2021","Authorised capital increase to ₹15 cr","—","egm"],
+    ["30 Nov 2021","Private placement @ ₹85","12,00,000 sh","ppa"],
+    ["18 Jul 2024","Bonus issue (4:11)","8,00,000 sh","bonus2"],
+  ];
+  const body=`<div class="timeline">${events.map(e=>`
+    <div class="tl-item"><div class="tl-row">
+      <span class="tl-date">${e[0]}</span>
+      <span class="tl-title">${e[1]}</span>
+      <span class="tl-amt">${e[2]}</span>
+      <span class="ev-mark" data-ev="${e[3]}" onclick="openDrawer('${e[3]}')" style="font-size:10px;margin-left:8px">evidence ${I.ext}</span>
+    </div></div>`).join('')}</div>
+    <div class="row gap14 wrap" style="padding:12px 18px;border-top:1px solid var(--line);background:var(--surface)">
+      <div class="kv" style="border:none;padding:0;min-width:130px"><span class="k">Authorised</span><span class="v">₹15.00 cr</span></div>
+      <div class="kv" style="border:none;padding:0;min-width:130px"><span class="k">Paid-up</span><span class="v">₹3.00 cr</span></div>
+      <div class="kv" style="border:none;padding:0;min-width:140px"><span class="k">Promoter holding</span><span class="v">68.9%</span></div>
+      <div class="kv" style="border:none;padding:0;min-width:140px"><span class="k">Selling shareholders</span><span class="v">2 (OFS portion)</span></div>
+    </div>`;
+  return nativeWrap("Share Capital Timeline — 19 events reconciled","",body,
+    `<span class="pill green">19 / 19 reconciled</span><button class="btn sm primary" onclick="toast('Capital Structure','Regenerating disclosure blocks from events')">${I.bolt} Generate blocks</button>`);
+}
+function renderApprovalsNative(){
+  const b=BLOCKS.approvals[0];
+  const body=`<table class="tbl"><thead><tr><th>Approval</th><th>Authority</th><th>Reg. number</th><th>Validity</th><th>Materiality</th><th>Source</th></tr></thead><tbody>
+    ${b.rows.map(r=>`<tr class="clickable" onclick="${r[6]!=='—'?`openDrawer('${r[6]}')`:''}">
+      <td><div class="b">${r[0]}</div></td><td>${r[2]}</td><td class="mono">${r[1]}</td>
+      <td>${r[7]==='expiring'?`<span class="pill amber">${r[3]} · exp ${r[4]}</span>`:`<span class="pill green">${r[3]}</span>`}</td>
+      <td><span class="pill ${r[5]==='Material'?'teal':'grey'}">${r[5]}</span></td>
+      <td>${r[6]!=='—'?`<span class="link tiny">view ${I.ext}</span>`:'<span class="muted tiny">—</span>'}</td></tr>`).join('')}
+  </tbody></table>`;
+  return nativeWrap("Approval Tracker — 22 approvals · 2 expiring","",body,
+    `<span class="pill amber">2 expiring</span><button class="btn sm primary" onclick="toast('Approvals','Generating Government & Other Approvals table')">${I.bolt} Generate DRHP table</button>`);
+}
+function renderLitigationNative(){
+  const b=BLOCKS.litigation[0];
+  const body=`<table class="tbl"><thead><tr><th>Party / Matter</th><th>Forum</th><th>Nature</th><th>Amount</th><th>Status</th><th>Materiality</th></tr></thead><tbody>
+    ${b.rows.map(r=>`<tr class="clickable" onclick="${r[6]!=='—'?`openDrawer('${r[6]}')`:''}">
+      <td><div class="b">${r[0]}</div></td><td>${r[1]}</td><td>${r[2]}</td>
+      <td class="b">${r[3]}</td><td><span class="pill amber">${r[4]}</span></td>
+      <td><span class="pill ${r[5]==='Material'?'red':'grey'}">${r[5]}</span></td></tr>`).join('')}
+  </tbody></table>
+  <div class="row gap8" style="padding:10px 16px;border-top:1px solid var(--line);background:var(--surface)">
+    <span class="pill red">${I.alert} 1 contradiction on GST amount</span>
+    <span class="muted tiny">Directors & Promoters: <b style="color:var(--green)">Nil material litigation</b></span></div>`;
+  return nativeWrap("Case Tracker — 5 matters · ₹68.50 L aggregate","",body,
+    `<button class="btn sm primary" onclick="toast('Litigation','Generating litigation disclosure table')">${I.bolt} Generate DRHP table</button>`);
+}
+function renderRiskNative(){
+  const risks=[
+    ["Customer & revenue concentration","Accepted","High","Material","conc","Our Business, MD&A"],
+    ["Government partnership execution","Accepted","High","Material","mou","Our Business, Objects, MD&A"],
+    ["Negative operating cash flows","Accepted","Medium","Material","restatedcf","MD&A, Restated Financials"],
+    ["Related party transactions","Accepted","Medium","Material","auditcert","Restated Financials"],
+    ["Data security & privacy","Accepted","Medium","Material","iso","Our Business"],
+    ["Dependence on key management","Accepted","Medium","Non-material","din","Our Management"],
+    ["AI/ML execution risk","Under review","Medium","—","mgmtnote","Our Business"],
+    ["GST filing delays","Under review","Low","—","gstdemand","Litigation"],
+    ["Forex exposure","Rejected","—","—","—","—"],
+    ["Seasonality of academic calendar","Rejected","—","—","—","—"],
+  ];
+  const sev=s=>s==='High'?'red':s==='Medium'?'amber':'grey';
+  const body=`<table class="tbl"><thead><tr><th>Risk trigger</th><th>Status</th><th>Severity</th><th>Materiality</th><th>Affected sections</th><th>Source</th></tr></thead><tbody>
+   ${risks.map(r=>`<tr class="${r[1]==='Rejected'?'rej':''}"><td><div class="b">${r[0]}</div></td><td><span class="pill ${r[1]==='Accepted'?'green':r[1]==='Rejected'?'grey':'amber'}">${r[1]}</span></td><td>${r[2]!=='—'?`<span class="pill ${sev(r[2])}">${r[2]}</span>`:'<span class="muted tiny">—</span>'}</td><td class="muted tiny">${r[3]}</td><td class="muted tiny">${r[5]}</td><td>${r[4]!=='—'?`<span class="ev-mark" data-ev="${r[4]}">view ${I.ext}</span>`:'<span class="muted tiny">—</span>'}</td></tr>`).join('')}
+  </tbody></table>
+  <div class="wb-foot"><span class="pill green">24 accepted</span><span class="pill amber">2 under review</span><span class="pill grey">6 rejected</span><span class="pill blue">2 merged</span><span class="right muted tiny">Rejected triggers preserved in Memory with banker rationale</span></div>`;
+  return nativeWrap("Risk Engine — 32 AI-suggested triggers","",body,
+    `<button class="btn sm" onclick="toast('Risk Factors','Merging duplicate risk triggers')">Merge duplicates</button><button class="btn sm primary" onclick="toast('Risk Factors','Publishing 24 accepted risks to DRHP')">${I.bolt} Publish selected</button>`);
+}
+function renderMgmtNative(){
+  const b=BLOCKS.mgmt[0];
+  const body=`<div class="wb-sub">Board of Directors</div>
+  <table class="tbl"><thead><tr><th>Name</th><th>DIN</th><th>Designation</th><th>Independence</th><th>Confirmation</th></tr></thead><tbody>
+    ${b.rows.map(r=>`<tr><td><div class="b">${r[0]} <span class="ev-mark" data-ev="din" style="font-size:10px">DIR-12</span></div></td><td class="mono">${r[1]}</td><td>${r[2]}</td><td><span class="pill ${r[4]==='Independent'?'teal':'grey'}">${r[4]}</span></td><td>${r[5]==='ok'?`<span class="pill green">${I.check} Confirmed</span>`:`<span class="pill amber">Pending CS</span>`}</td></tr>`).join('')}
+  </tbody></table>
+  <div class="wb-sub">Key Managerial Personnel</div>
+  <table class="tbl"><thead><tr><th>Name</th><th>Designation</th><th>Appointed</th><th>Source</th></tr></thead><tbody>
+    <tr><td class="b">Rajesh Iyer</td><td>Chairman & Managing Director</td><td>11-03-2016</td><td><span class="ev-mark" data-ev="din">view ${I.ext}</span></td></tr>
+    <tr><td class="b">Anand Kulkarni</td><td>Chief Financial Officer</td><td>01-04-2023</td><td><span class="ev-mark" data-ev="kmpcert">view ${I.ext}</span></td></tr>
+    <tr><td class="b">Sneha Kulkarni</td><td>Company Secretary & Compliance Officer</td><td>12-06-2024</td><td><span class="ev-mark" data-ev="kmpcert">view ${I.ext}</span></td></tr>
+  </tbody></table>
+  <div class="wb-sub">Board Committees</div>
+  <div class="chip-row"><span class="pill teal">Audit Committee</span><span class="pill teal">Nomination & Remuneration</span><span class="pill teal">Stakeholders' Relationship</span><span class="muted tiny">each chaired by an Independent Director</span></div>
+  <div class="wb-foot"><span class="pill amber">1 independence confirmation pending</span><span class="muted tiny">CS checklist 7 / 8 complete</span><span class="right muted tiny">Requires CS + Banker approval</span></div>`;
+  return nativeWrap("Governance Workbench — Board, KMP & Committees","",body,
+    `<button class="btn sm primary" onclick="toast('Management','Generating management disclosure blocks')">${I.bolt} Generate blocks</button>`);
+}
+function renderFinNative(){
+  const xl=BLOCKS.restated[0].xl;
+  const body=`<div class="wb-sub">Restated Statement of Profit & Loss <span class="pill green" style="margin-left:6px">${I.lock} Audited · locked</span></div>${renderXL(xl,'fin-1')}
+  <div class="wb-sub">Key ratios & computed metrics</div>
+  <div class="metric-grid">
+    <div class="metric"><span class="k">EBITDA margin FY26</span><span class="v">12.1%</span><span class="d up">+2.0 pp YoY</span></div>
+    <div class="metric"><span class="k">PAT margin FY26</span><span class="v">6.3%</span><span class="d up">+2.1 pp YoY</span></div>
+    <div class="metric"><span class="k">RoNW FY26</span><span class="v">16.8%</span><span class="d up">+5.7 pp YoY</span></div>
+    <div class="metric"><span class="k">Debt / equity</span><span class="v">0.46x</span><span class="d down">−0.08x YoY</span></div>
+    <div class="metric"><span class="k">Net worth</span><span class="v">₹18.62 cr</span><span class="d">31 Mar 2026</span></div>
+    <div class="metric"><span class="k">Auditor</span><span class="v">BSR & Co</span><span class="d">FY24–FY26</span></div>
+  </div>
+  <div class="wb-foot"><span class="pill amber">${I.refresh} 1 audited update pending acceptance</span><span class="ev-mark" data-ev="auditcert">Auditor certificate ${I.ext}</span><span class="right muted tiny">Locked cells trace to certificate · manual override flags an exception</span></div>`;
+  return nativeWrap("Financials — audited tables & computed metrics","",body,
+    `<span class="pill green">${I.lock} Audited values locked</span><button class="btn sm primary" onclick="toast('Financials','Publishing financial disclosure blocks')">${I.bolt} Publish blocks</button>`);
+}
+function renderObjectsNative(){
+  const uop=BLOCKS.objects[0].xl;
+  const body=`<div class="wb-sub">Use of Net Proceeds</div>${renderXL(uop,'ob-1')}
+  <div class="wb-sub">Year-wise deployment schedule</div>
+  <table class="xl"><thead><tr><th>Particulars (₹ cr)</th><th>FY2027</th><th>FY2028</th><th>Total</th></tr></thead><tbody>
+    <tr><td style="text-align:left"><div class="cell">Technology platform & product <span class="ev-mark" data-ev="quote1" style="font-size:10px">quote</span></div></td><td><div class="cell">5.00</div></td><td><div class="cell">3.50</div></td><td><div class="cell">8.50</div></td></tr>
+    <tr><td style="text-align:left"><div class="cell">Sales & marketing</div></td><td><div class="cell">3.80</div></td><td><div class="cell">2.40</div></td><td><div class="cell">6.20</div></td></tr>
+    <tr><td style="text-align:left"><div class="cell">Working capital</div></td><td><div class="cell">3.40</div></td><td><div class="cell">2.00</div></td><td><div class="cell">5.40</div></td></tr>
+  </tbody></table>
+  <div class="metric-grid">
+    <div class="metric"><span class="k">Net proceeds</span><span class="v">₹25.00 cr</span><span class="d">estimated</span></div>
+    <div class="metric"><span class="k">Quotation coverage</span><span class="v">82%</span><span class="d up">+22 pp</span></div>
+    <div class="metric"><span class="k">Funding gap</span><span class="v" style="color:var(--green)">None</span><span class="d">self-confirmed</span></div>
+    <div class="metric"><span class="k">GCP cap</span><span class="v">25%</span><span class="d">[●] pending</span></div>
+  </div>
+  <div class="wb-foot"><span class="pill amber">Acquisition object: placeholder [●]</span><span class="ev-mark" data-ev="uop">UoP working ${I.ext}</span><span class="right muted tiny">Requires Banker + certificate-reviewer approval</span></div>`;
+  return nativeWrap("Use-of-Proceeds Machine","",body,
+    `<button class="btn sm primary" onclick="toast('Objects','Publishing use-of-proceeds blocks')">${I.bolt} Publish blocks</button>`);
+}
+function renderBusinessNative(){
+  const claims=[
+    ["Deployed across 2,140 schools in 11 states","Source-backed","ops"],
+    ["~9.4 lakh students served (FY26)","Source-backed","ops"],
+    ["Vernacular content across 8 regional languages","Source-backed","ops"],
+    ["Top-5 customers = 61.4% of FY26 revenue","Source-backed","conc"],
+    ["Asset-light, recurring-revenue delivery model","Source-backed","mgmtnote"],
+    ["“India's largest regional-language edtech platform”","Unsupported","—"],
+    ["“Fastest-growing platform in the segment”","Unsupported","—"],
+  ];
+  const body=`<table class="tbl"><thead><tr><th>Business claim</th><th>Status</th><th>Source</th></tr></thead><tbody>
+   ${claims.map(c=>`<tr class="${c[1]==='Unsupported'?'rej':''}"><td><div class="b">${c[0]}</div></td><td><span class="pill ${c[1]==='Source-backed'?'green':'red'}">${c[1]}</span></td><td>${c[2]!=='—'?`<span class="ev-mark" data-ev="${c[2]}">view ${I.ext}</span>`:'<span class="muted tiny">no source on file</span>'}</td></tr>`).join('')}
+  </tbody></table>
+  <div class="wb-foot"><span class="pill green">28 source-backed</span><span class="pill red">4 unsupported — blocked from clean draft</span><span class="right muted tiny">Unsupported claims must be substantiated or removed before filing</span></div>`;
+  return nativeWrap("Business Claims Ledger — 32 claims","",body,
+    `<button class="btn sm primary" onclick="toast('Our Business','Generating source-backed narrative')">${I.bolt} Generate narrative</button>`);
+}
+function renderTrackerInBlock(b){return '';}
+
+/* ----- INSPECTOR (right panel) ----- */
+function findBlock(id){for(const k in BLOCKS){const f=BLOCKS[k].find(b=>b.id===id);if(f)return f;}return null}
+function renderInspector(sec){
+  const b=state.block?findBlock(state.block):null;
+  const tabs=[["evidence","Evidence"],["review","Review"],["issues","Issues"],["versions","Versions"]];
+  const scope=b?b.title:sec.name;
+  const sub=b?`${b.type} · ${(BLOCK_STATUS[b.status]||{}).l||b.status}`:'Section overview';
+  let body;
+  if(state.insp==='evidence') body=inspEvidence(sec,b);
+  else if(state.insp==='review') body=inspReview(sec,b);
+  else if(state.insp==='issues') body=inspIssues(sec,b);
+  else body=inspVersions(sec,b);
+  return `<div class="insp">
+    <div class="insp-head"><div style="flex:1;min-width:0"><div class="b" style="font-size:13px">${scope}</div><div class="muted tiny">${sub}</div></div><button class="xbtn" onclick="setInspOpen(false)" title="Collapse inspector">${I.chevR}</button></div>
+    <div class="insp-tabs">${tabs.map(([t,l])=>`<div class="insp-tab ${state.insp===t?'active':''}" onclick="setInsp('${t}')">${l}${t==='issues'?issueBadge(sec,b):''}</div>`).join('')}</div>
+    <div class="insp-body">${body}</div>
+    <div class="insp-actions">${inspActions(sec,b)}</div>
+  </div>`;
+}
+function emptyInsp(msg){return `<div class="insp-sec"><div class="muted tiny">${msg}</div></div>`}
+function inspEvidence(sec,b){
+  const srcIds = b?(b.sources||[]):[...new Set((BLOCKS[sec.id]||[]).flatMap(x=>x.sources||[]))];
+  let h='';
+  if(b){
+    h+=`<div class="insp-sec"><div class="lab">${I.bolt} Confidence & status</div>
+      <div class="kv"><span class="k">Block status</span><span class="v"><span class="pill ${(BLOCK_STATUS[b.status]||{}).c||'amber'}">${(BLOCK_STATUS[b.status]||{}).l||b.status}</span></span></div>
+      <div class="kv"><span class="k">Confidence</span><span class="v">${{high:'High',med:'Medium',low:'Low'}[b.conf]||'—'}</span></div>
+      <div class="kv"><span class="k">Owner</span><span class="v">${people[b.owner].n}</span></div>
+      ${b.severity?`<div class="kv"><span class="k">Severity</span><span class="v"><span class="pill ${b.severity==='High'?'red':'amber'}">${b.severity}</span></span></div>`:''}
+      ${b.affects&&b.affects.length?`<div class="kv"><span class="k">Affects</span><span class="v" style="font-size:11px">${b.affects.join(', ')}</span></div>`:''}
+    </div>`;
+  }
+  if(!srcIds.length) return h+emptyInsp('No source documents linked yet.');
+  h+=`<div class="insp-sec"><div class="lab">${I.vault.replace('class="ic"','width="13" height="13"')} Source documents (${srcIds.length})</div>`;
+  srcIds.forEach(id=>{const d=resolveDoc(id);const q=srcMeta(d.name);const flag=(d.flags||[])[0];
+    h+=`<div class="ev-card" onclick="openDrawer('${id}')">
+      <div class="fic ${d.type}"><div class="ext">${d.type.toUpperCase()}</div></div>
+      <div class="info"><div class="nm">${d.name}</div>
+        <div class="dt"><span class="clock">${I.clock} p.${d.page}</span><span class="pill ${q.q}" style="padding:1px 6px">${q.quality}</span>${flag?`<span class="pill red" style="padding:1px 6px">${flag}</span>`:''}</div></div>
+      <span style="color:var(--muted)">${I.chevR}</span></div>`});
+  h+=`</div>`;
+  if(b){const d0=resolveDoc(srcIds[0]); if(d0){h+=`<div class="insp-sec"><div class="lab">Linked extracted facts</div>`+Object.entries(d0.extract).slice(0,3).map(([k,v])=>`<div class="kv"><span class="k">${k}</span><span class="v mono" style="font-size:11px">${v}</span></div>`).join('')+`</div>`;}}
+  return h;
+}
+function inspReview(sec,b){
+  const req=REVIEWERS[sec.id]||[sec.owner].filter(Boolean);
+  let h=`<div class="insp-sec"><div class="lab">${I.check} Approval checklist</div>`;
+  req.forEach(rl=>{const done=approvedRole(sec.id,rl)||(b&&(b.status==='approved'||b.status==='locked')&&rl===inferRole(b.owner));h+=`<div class="check-row ${done?'done':''}"><span class="cb">${done?I.check:''}</span><span class="nm">${rl} review</span><span class="who">${(people[ROLE_PERSON[rl]]||{n:rl}).n.split(' ')[0]}</span></div>`});
+  h+=`</div>`;
+  h+=`<div class="insp-sec"><div class="lab">Required reviewers</div><div class="reviewers" style="flex-wrap:wrap">${req.map(rl=>`<span class="rv-chip ${approvedRole(sec.id,rl)?'ok':'wait'}">${av(ROLE_PERSON[rl]||'AI')}${rl}${approvedRole(sec.id,rl)?' '+I.check:''}</span>`).join('')}</div></div>`;
+  if(b){
+    h+=`<div class="insp-sec"><div class="lab">Block comments</div>`+seedComments(b).map(c=>`<div class="comment"><div class="top">${av(c.who)}<span class="nm">${people[c.who].n}</span><span class="tm">${c.t}</span></div><div class="bd">${c.txt}</div></div>`).join('')+`<div class="row gap8" style="margin-top:10px"><div class="np-search" style="flex:1"><input placeholder="Comment at block level…" id="cmtInput"></div><button class="btn sm primary" onclick="addComment('${b.id}')">Post</button></div></div>`;
+  }
+  const hist=AUDIT.filter(a=>a.type==='Verification').slice(0,4);
+  h+=`<div class="insp-sec"><div class="lab">Approval history</div>`+(hist.length?hist.map(a=>`<div class="appr-row">${av(a.who)}<div class="col" style="flex:1"><div class="b tiny" style="font-size:11.5px">${a.txt}</div><div class="muted tiny">${a.t} · ${a.d}</div></div></div>`).join(''):'<div class="muted tiny">No approvals recorded yet.</div>')+`</div>`;
+  return h;
+}
+function collectIssues(sec,b){
+  const blocks=b?[b]:(BLOCKS[sec.id]||[]);
+  const out=[];
+  blocks.forEach(x=>{
+    if(x.status==='conflict'&&x.conflict) out.push({sev:'blocker',title:'Contradiction — '+x.title,detail:x.conflict.a.src.split('—')[0].trim()+' vs '+x.conflict.b.src.split('—')[0].trim(),cta:`<button class="btn sm danger" style="margin-top:7px" onclick="openConflict('${sec.id}','${x.id}')">Resolve</button>`});
+    if(x.status==='updateavail'&&x.upd) out.push({sev:'warn',title:'Update available — '+x.title,detail:x.upd.field+': '+x.upd.was+' → '+x.upd.now});
+    if(x.conf==='low') out.push({sev:'warn',title:'Low confidence — '+x.title,detail:'Recommend human verification of extracted values.'});
+    else if(b&&x.conf==='med') out.push({sev:'info',title:'Medium confidence — '+x.title,detail:'Two or more sources support this; spot-check before approval.'});
+    if((x.content||'').includes('●')||(x.xl&&JSON.stringify(x.xl).includes('●'))||(x.table&&JSON.stringify(x.table).includes('●'))) out.push({sev:'info',title:'Placeholder [●] — '+x.title,detail:'Awaiting a final value before the clean filing copy.'});
+  });
+  const srcIds=[...new Set(blocks.flatMap(x=>x.sources||[]))];
+  srcIds.forEach(id=>{const d=resolveDoc(id);(d.flags||[]).forEach(f=>{if(/conflict|stale|unsigned|expir|supersede/i.test(f)) out.push({sev:'warn',title:f,detail:d.name});});});
+  return out;
+}
+function issueBadge(sec,b){const n=collectIssues(sec,b).length;return n?`<span class="tb-badge">${n}</span>`:''}
+function inspIssues(sec,b){
+  const issues=collectIssues(sec,b);
+  let h='';
+  if(!issues.length) h=`<div class="insp-sec"><div class="row gap8" style="color:var(--green)"><span>${I.check}</span><span class="b tiny" style="font-size:12px">No open issues in scope.</span></div></div>`;
+  else h=`<div class="insp-sec"><div class="lab">${I.alert} Open issues (${issues.length})</div>`+issues.map(is=>`<div class="issue-row"><span class="dot ${is.sev==='blocker'?'red':is.sev==='warn'?'amber':'grey'}"></span><div class="col" style="flex:1"><div class="b tiny" style="font-size:11.5px">${is.title}</div><div class="muted tiny">${is.detail}</div>${is.cta||''}</div></div>`).join('')+`</div>`;
+  const nba=nextBestAction(sec);
+  h+=`<div class="insp-sec"><div class="lab">${I.bolt} Next best action</div><div class="b tiny" style="font-size:12px">${nba.label}</div><div class="muted tiny" style="margin:4px 0 9px">${nba.why}</div>${nba.cta}</div>`;
+  return h;
+}
+function inspVersions(sec,b){
+  const vers=b?seedVersions(b):[{v:'v0.7',who:'AM',t:'today 09:55',txt:'Working draft of '+sec.name},{v:'v0.6',who:'AI',t:'21 Jun',txt:'Section regenerated from updated sources'},{v:'v0.5',who:'AI',t:'14 Jun',txt:'Initial draft generated'}];
+  let h=`<div class="insp-sec"><div class="lab">${I.clock} Version history</div>`+vers.map(v=>`<div class="ver-row"><span class="vtag">${v.v}</span><div class="col" style="flex:1"><div class="b tiny" style="font-size:11.5px">${v.txt}</div><div class="muted tiny">${av(v.who)} ${people[v.who].n.split(' ')[0]} · ${v.t}</div></div></div>`).join('')+`</div>`;
+  const changes=(b?[b]:(BLOCKS[sec.id]||[])).filter(x=>x.upd);
+  h+=`<div class="insp-sec"><div class="lab">${I.compare} Changes since v0.6</div>`+(changes.length?changes.map(x=>`<div class="kv"><span class="k">${x.upd.field}</span><span class="v tiny" style="font-size:11px">${x.upd.was} → ${x.upd.now}</span></div>`).join(''):'<div class="muted tiny">No changes since the last version.</div>')+`</div>`;
+  if(b) h+=`<div class="insp-sec"><div class="lab">Export state</div><div class="kv"><span class="k">In clean draft</span><span class="v">${['verified','approved','locked'].includes(b.status)?'<span class="pill green">Included</span>':'<span class="pill amber">Held for review</span>'}</span></div><div class="kv"><span class="k">In review draft</span><span class="v"><span class="pill blue">With comments</span></span></div></div>`;
+  return h;
+}
+function inspActions(sec,b){
+  if(!b) return `<button class="btn green" onclick="approveSection('${sec.id}')">${I.check} Approve section</button><button class="btn ghost sm" onclick="publishSection('${sec.id}')">Publish to DRHP</button>`;
+  let a='';
+  if(b.status==='conflict') a=`<button class="btn danger" onclick="openConflict('${sec.id}','${b.id}')">${I.alert} Resolve conflict</button>`;
+  else if(b.status==='updateavail') a=`<div class="row gap8"><button class="btn danger" style="flex:1" onclick="rejectUpdate('${sec.id}','${b.id}')">Reject</button><button class="btn blue" style="flex:1" onclick="acceptUpdate('${sec.id}','${b.id}')">${I.check} Accept update</button></div>`;
+  else if(b.status==='approved'||b.status==='locked') a=`<button class="btn" onclick="lockBlock('${sec.id}','${b.id}')">${I.lock} ${b.status==='locked'?'Block locked':'Lock block'}</button>`;
+  else a=`<button class="btn green" onclick="approveBlock('${sec.id}','${b.id}')">${I.check} Approve block</button>`;
+  return a+`<button class="btn ghost sm" onclick="regenBlock('${b.id}')">${I.refresh} Regenerate from sources</button>`;
+}
+function inferRole(id){return {AM:'Banker',RV:'Legal',SK:'CS',DP:'Auditor',PN:'Partner'}[id]||'Banker'}
+function seedComments(b){
+  const base={
+    "cap-3":[{who:'RV',t:'1h',txt:'Pledge position needs lender confirmation before we can finalise the lock-in disclosure.'},{who:'AI',t:'2h',txt:'Low confidence: two sources disagree on promoter pledge status.'}],
+    "lit-1":[{who:'RV',t:'30m',txt:'Use the DRC-07 order value. Management certificate excludes interest component.'},{who:'AM',t:'3h',txt:'Confirm if amount is being contested in appeal — affects materiality language.'}],
+    "fin-1":[{who:'DP',t:'45m',txt:'Revenue cut-off adjustment applied per restated certificate. Numbers are now locked.'}],
+    "bz-1":[{who:'AM',t:'5h',txt:"\"India's largest\" claim must be removed or backed by a third-party report."}],
+  };
+  return base[b.id]||[{who:'AI',t:'2h',txt:'Draft generated from '+(b.sources||[]).length+' source documents. Awaiting human verification.'}];
+}
+function seedVersions(b){
+  return [
+    {v:'v0.7',who:b.owner,t:'today 09:55',txt:b.status==='verified'?'Block human-verified':'Current working draft'},
+    {v:'v0.6',who:'AI',t:'today 09:42',txt:'Regenerated from updated sources'},
+    {v:'v0.5',who:'AI',t:'21 Jun',txt:'Initial draft generated'},
+  ];
+}
+
+function afterAssembly(){
+  // restore selection highlight handled by render
+}
+
+/* ============================================================
+   SCREEN: SOURCE ROOM
+============================================================ */
+function renderSources(){
+  const groups={};
+  Object.entries(DOCS).forEach(([id,d])=>{(groups[d.group]=groups[d.group]||[]).push([id,d])});
+  const total=Object.keys(DOCS).length;
+  const flagged=Object.values(DOCS).filter(d=>(d.flags||[]).length).length;
+  return `<div class="pad">
+    <div class="page-h"><div><h1>Source Room</h1><p>Structured transaction evidence environment — every document classified, processed and traced to disclosure.</p></div>
+      <div class="row gap8"><button class="btn">${I.search}Search evidence</button><button class="btn primary">${I.plus}Upload documents</button></div></div>
+
+    <div class="grid stat-grid" style="margin-bottom:18px">
+      <div class="card stat"><span class="lab">Documents ingested</span><div class="num">${total}</div><div class="sub">${Object.keys(groups).length} document groups</div></div>
+      <div class="card stat"><span class="lab">Extracted objects</span><div class="num">${Object.values(DOCS).reduce((a,d)=>a+d.objs,0)}</div><div class="sub">facts · tables · entities · events</div></div>
+      <div class="card stat"><span class="lab">Evidence links in DRHP</span><div class="num">${Object.values(DOCS).reduce((a,d)=>a+d.used,0)}</div><div class="sub">claims traced to source</div></div>
+      <div class="card stat"><span class="lab">Flagged documents</span><div class="num" style="color:var(--amber)">${flagged}</div><div class="sub">stale · conflicting · unsigned</div></div>
+    </div>
+
+    ${GROUP_KEYS(groups).map(g=>`
+      <div class="card" style="margin-bottom:16px">
+        <div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">${g}</div><span class="right muted tiny">${groups[g].length} documents</span></div>
+        <table class="tbl"><thead><tr><th>Document</th><th>Type</th><th>Status</th><th>Objects</th><th>Used in DRHP</th><th>Flags</th></tr></thead><tbody>
+          ${groups[g].map(([id,d])=>`<tr class="clickable" onclick="openDrawer('${id}')">
+            <td><div class="row gap10"><div class="fic ${d.type}" style="width:26px;height:32px;flex:none;border-radius:4px;background:#fff;border:1px solid var(--line-2);display:flex;align-items:flex-end;justify-content:center;overflow:hidden"><div class="ext" style="font-size:6.5px;font-weight:800;color:#fff;width:100%;text-align:center;background:${d.type==='xls'?'#055D56':d.type==='doc'?'#91918E':'#E56458'}">${d.type.toUpperCase()}</div></div><div class="b">${d.name}</div></div></td>
+            <td class="muted">${d.type.toUpperCase()}</td>
+            <td><span class="pill green">${I.check} Processed</span></td>
+            <td class="mono">${d.objs}</td>
+            <td>${d.used?`<span class="pill teal">${d.used} links</span>`:'<span class="muted tiny">—</span>'}</td>
+            <td>${(d.flags||[]).length?`<span class="pill amber">${d.flags[0]}</span>`:'<span class="muted tiny">clean</span>'}</td></tr>`).join('')}
+        </tbody></table>
+      </div>`).join('')}
+  </div>`;
+}
+function GROUP_KEYS(g){return Object.keys(g)}
+
+/* ============================================================
+   SCREEN: REVIEW QUEUE
+============================================================ */
+function renderQueue(){
+  const filters=[["all","All work"],["mine","Assigned to me"],["Banker","Banker"],["Legal","Legal"],["CS","CS"],["Auditor","Auditor"],["Conflict","Conflicts"]];
+  let items=QUEUE.slice();
+  if(state.filter==='mine') items=items.filter(q=>q.who==='AM');
+  else if(['Banker','Legal','CS','Auditor'].includes(state.filter)) items=items.filter(q=>q.role===state.filter);
+  else if(state.filter==='Conflict') items=items.filter(q=>q.kind==='Conflict');
+  return `<div class="pad">
+    <div class="page-h"><div><h1>Review Queue</h1><p>Human judgment, not everything. Exceptions, conflicts, updates and approvals routed to the right reviewer.</p></div></div>
+    <div class="row gap6 wrap" style="margin-bottom:16px">
+      ${filters.map(([k,l])=>`<button class="btn sm ${state.filter===k?'primary':''}" onclick="setFilter('${k}')">${l}${k==='Conflict'?` <span class="pill red" style="padding:0 5px">${QUEUE.filter(q=>q.kind==='Conflict').length}</span>`:''}</button>`).join('')}
+    </div>
+    <div class="card">
+      <table class="tbl"><thead><tr><th>Priority</th><th>Item</th><th>Section</th><th>Type</th><th>Reviewer</th><th>Age</th><th></th></tr></thead><tbody>
+        ${items.map(q=>`<tr class="clickable" onclick="openSection('${q.sec}')">
+          <td><span class="dot ${q.pri==='high'?'red':q.pri==='med'?'amber':'grey'}"></span> <span class="tiny b">${q.pri==='high'?'High':q.pri==='med'?'Medium':'Low'}</span></td>
+          <td class="b">${q.block}</td>
+          <td class="muted">${getSec(q.sec).name}</td>
+          <td><span class="pill ${q.kind==='Conflict'?'red':q.kind.includes('approval')?'green':q.kind.includes('Update')?'blue':'amber'}">${q.kind}</span></td>
+          <td><div class="row gap6">${av(q.who)}<span class="tiny">${q.role}</span></div></td>
+          <td class="muted tiny">${q.age} ago</td>
+          <td><span class="link tiny">Open ${I.chevR}</span></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SCREEN: EXPORT CENTER
+============================================================ */
+const EXPORTS=[
+  ["Word — Clean Draft","Final narrative & tables, no annotations","DOC","#91918E"],
+  ["Word — Review Draft (with comments)","Includes reviewer comments & evidence notes","DOC","#91918E"],
+  ["PDF — Clean Draft","Print-ready clean DRHP","PDF","#E56458"],
+  ["PDF — Annotated Review Draft","Comments, source citations & change notes","PDF","#E56458"],
+  ["Evidence Pack","Every claim mapped to source document & page","ZIP","#044842"],
+  ["Unresolved Blockers Report","All open conflicts, low-confidence & missing inputs","PDF","#E56458"],
+  ["Version Comparison","Redline between DRHP v0.6 and v0.7","DOC","#5b46b8"],
+];
+let EXP={comments:true,evidence:true,proof:false};
+function toggleExp(k){EXP[k]=!EXP[k];render();}
+function renderExportCenter(){
+  const bl=pendingBlockers();
+  const approved=SEC.filter(s=>s.status==='approved');
+  const drafted=SEC.filter(s=>s.status!=='empty'&&s.status!=='approved');
+  const unresolved=SEC.filter(s=>s.blockers>0).sort((a,b)=>b.blockers-a.blockers);
+  const empty=SEC.filter(s=>s.status==='empty');
+  const blockerItems=[];
+  for(const k in BLOCKS) BLOCKS[k].forEach(b=>{ if(b.status==='conflict') blockerItems.push({sec:k,t:'Contradiction — '+b.title,role:(REVIEWERS[k]||['Banker'])[0]}); });
+  unresolved.forEach(s=>{ if(!blockerItems.some(x=>x.sec===s.id)) blockerItems.push({sec:s.id,t:s.note||(s.blockers+' open item'),role:(REVIEWERS[s.id]||[s.owner])[0]||'Banker'}); });
+  const tog=(k,l)=>`<button class="exp-toggle ${EXP[k]?'on':''}" onclick="toggleExp('${k}')"><span class="sw"></span>${l}</button>`;
+  return `<div class="pad">
+    <div class="page-h"><div><h1>Export Center</h1><p>The shipping room. Generate Word, PDF, evidence and version artifacts entirely inside the workspace — no round-trips to Word, Excel or a PDF reviewer.</p></div></div>
+
+    <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+      <div class="card ship-card ok">
+        <div class="ship-h"><span class="ic">${I.check}</span><div><div class="t">Review draft — available now</div><div class="muted tiny">Word &amp; PDF, with reviewer comments and source citations</div></div></div>
+        <div class="ship-b">
+          <div class="muted tiny" style="margin-bottom:10px">Includes ${approved.length+drafted.length} drafted sections · ${readiness()}% overall readiness. Open issues travel as in-line review comments.</div>
+          <div class="row gap8 wrap" style="margin-bottom:12px">${tog('comments','Reviewer comments')}${tog('evidence','Evidence citations')}${tog('proof','Source-proof footnotes')}</div>
+          <div class="row gap8"><button class="btn primary" onclick="toast('Export started','DRHP ${project.version} review draft — Word with comments')">${I.export} Word review draft</button><button class="btn" onclick="toast('Export started','DRHP ${project.version} review draft — annotated PDF')">${I.export} Annotated PDF</button></div>
+        </div>
+      </div>
+      <div class="card ship-card ${bl?'no':'ok'}">
+        <div class="ship-h"><span class="ic">${bl?I.lock:I.check}</span><div><div class="t">Final filing copy — ${bl?'blocked':'ready to lock'}</div><div class="muted tiny">${bl?`${bl} blocker${bl>1?'s':''} across ${unresolved.length} section${unresolved.length>1?'s':''} · ${approved.length}/${SEC.length} sections approved`:`All blockers cleared · ${approved.length}/${SEC.length} sections approved`}</div></div></div>
+        <div class="ship-b">
+          ${bl?`<div class="muted tiny" style="margin-bottom:9px">Final lock requires zero blockers and all required reviewer approvals. Resolve the following:</div>
+          ${blockerItems.slice(0,4).map(x=>`<div class="blk-row" onclick="openSection('${x.sec}')"><span class="dot red"></span><div class="col" style="flex:1"><div class="tiny b" style="font-size:11.5px">${x.t}</div><div class="muted tiny">${getSec(x.sec).name}</div></div><span class="rv-chip wait">${av(ROLE_PERSON[x.role]||'AM')}${x.role}</span></div>`).join('')}`
+          :`<div class="row gap8" style="margin-bottom:10px"><span class="pill green">${I.check} No blockers</span><span class="pill green">All approvals in</span></div>`}
+          <button class="btn ${bl?'':'green'}" ${bl?'disabled':''} style="margin-top:12px;width:100%;justify-content:center" onclick="${bl?'':`toast('Final lock','Generating signed filing copy — DRHP ${project.version}','lock')`}">${I.lock} ${bl?'Final lock blocked':'Final lock & generate filing copy'}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1.4fr 1fr">
+      <div class="card"><div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">Export artifacts</div><span class="right muted tiny">${EXP.comments?'comments on':'comments off'} · ${EXP.evidence?'evidence on':'evidence off'}</span></div>
+        <div style="padding:14px 16px">
+          ${EXPORTS.map(e=>`<div class="export-row"><div class="eic" style="background:${e[3]}">${e[2]}</div><div class="info"><div class="nm">${e[0]}</div><div class="ds">${e[1]}</div></div><button class="btn sm" onclick="toast('Export started','${e[0]} is being generated')">${I.export} Generate</button></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px"><div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">What's included</div></div>
+          <div style="padding:12px 18px">
+            <div class="kv"><span class="k">Sections approved</span><span class="v"><span class="pill green">${approved.length}</span></span></div>
+            <div class="kv"><span class="k">Drafted, in review</span><span class="v"><span class="pill blue">${drafted.length}</span></span></div>
+            <div class="kv"><span class="k">Unresolved (blockers)</span><span class="v"><span class="pill ${unresolved.length?'red':'green'}">${unresolved.length}</span></span></div>
+            <div class="kv"><span class="k">Empty shells (excluded from clean)</span><span class="v"><span class="pill grey">${empty.length}</span></span></div>
+          </div>
+        </div>
+        <div class="card"><div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">Export history</div></div>
+          <table class="tbl"><tbody>
+            <tr><td><div class="b tiny" style="font-size:12px">DRHP v0.6 — Review Draft</div><div class="muted tiny">Word · with comments</div></td><td class="muted tiny nowrap">21 Jun · ${av('AM')}</td></tr>
+            <tr><td><div class="b tiny" style="font-size:12px">Evidence Pack v0.6</div><div class="muted tiny">142 source citations</div></td><td class="muted tiny nowrap">21 Jun · ${av('PN')}</td></tr>
+            <tr><td><div class="b tiny" style="font-size:12px">DRHP v0.5 — Clean Draft</div><div class="muted tiny">PDF</div></td><td class="muted tiny nowrap">14 Jun · ${av('AM')}</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SCREEN: MEMORY & AUDIT
+============================================================ */
+function renderMemory(){
+  return `<div class="pad">
+    <div class="page-h"><div><h1>Memory & Audit Trail</h1><p>Every human edit, accepted update, source-of-truth decision and rejection — captured, and turned into memory for future extraction.</p></div></div>
+    <div class="grid" style="grid-template-columns:1.5fr 1fr">
+      <div class="card"><div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">Activity & decisions</div><span class="right muted tiny">${AUDIT.length} entries today</span></div>
+        <div style="padding:6px 18px 16px" id="auditList">
+          ${AUDIT.map(a=>`<div class="row gap10" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">
+            <div style="flex:none;margin-top:1px">${av(a.who)}</div>
+            <div class="col" style="flex:1">
+              <div class="row gap8"><span class="b tiny" style="font-size:12px">${people[a.who].n}</span><span class="pill ${a.type==='Source of truth'?'teal':a.type==='Rejection'?'red':a.type==='Verification'?'green':'grey'}">${a.type}</span><span class="right stamp">${a.t} · ${a.d}</span></div>
+              <div class="tiny" style="margin-top:4px;color:var(--ink-2)">${a.txt}</div>
+              ${a.mem?`<div class="row gap6" style="margin-top:7px;background:var(--violet-soft);border-radius:7px;padding:7px 10px"><span style="color:var(--violet)">${I.memory.replace('class="ic"','width="13" height="13"')}</span><span class="tiny" style="color:var(--violet)"><b>Memory created:</b> ${a.memtxt}</span></div>`:''}
+            </div></div>`).join('')}
+        </div>
+      </div>
+      <div class="card" style="align-self:start"><div class="row" style="padding:13px 18px;border-bottom:1px solid var(--line)"><div class="sec-title">${I.memory.replace('class="ic"','width="15" height="15"')} Training memory</div></div>
+        <div style="padding:14px 18px">
+          <div class="muted tiny" style="margin-bottom:12px">Corrections recorded here are applied to future extractions across this and other issuances.</div>
+          ${AUDIT.filter(a=>a.mem).map(a=>`<div class="row gap8" style="padding:10px 0;border-bottom:1px dashed var(--line)"><span class="dot violet" style="margin-top:5px"></span><div class="col"><div class="tiny b" style="font-size:11.5px">${a.memtxt}</div><div class="muted tiny">from ${a.type.toLowerCase()} · ${av(a.who)} ${people[a.who].n.split(' ')[0]}</div></div></div>`).join('')}
+          <div class="row gap8" style="margin-top:14px"><span class="pill violet">${AUDIT.filter(a=>a.mem).length} memory rules active</span></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   INTERACTIONS
+============================================================ */
+function openSection(id){ state.section=id; state.block=null; state.mode='workboard'; go('workspace'); }
+function selectBlock(id){ state.block=id; state.mode='draft'; render();
+  setTimeout(()=>{const el=document.getElementById('blk-'+id); if(el) el.scrollIntoView===undefined?0:0;},0);
+}
+function setInsp(t){ state.insp=t; render(); }
+function setMode(m){ state.mode=m; render(); }
+function setInspOpen(v){ state.inspOpen=v; render(); }
+function resolveQueue(secId,kinds){ for(let i=QUEUE.length-1;i>=0;i--){ if(QUEUE[i].sec===secId && kinds.includes(QUEUE[i].kind)) QUEUE.splice(i,1); } }
+function setDraft(m){ state.draft=m; render(); toast('View switched', m==='clean'?'Showing clean draft (editable)':'Showing review draft with comments & citations'); }
+function setFilter(f){ state.filter=f; render(); }
+
+/* drawer */
+function blocksUsingSource(evId){const out=[];for(const k in BLOCKS)BLOCKS[k].forEach(b=>{if((b.sources||[]).includes(evId))out.push({sec:k,b});});return out;}
+function trustLine(q){return {'Audited / certified':'examined and certified by the statutory auditor (BSR & Co).','Statutory order':'an order issued directly by the competent authority.','Depository record':'a system-generated statement from the depository (NSDL).','Lender document':'a counterparty-signed sanction document.','Management certificate':'a management self-certification — corroborate with primary evidence.','Management input':'an internal management input — corroborate before relying for disclosure.'}[q.quality]||'verified during ingestion.'}
+function openDrawer(evId){
+  const d=resolveDoc(evId);
+  const q=srcMeta(d.name);
+  const used=blocksUsingSource(evId);
+  const secs=[...new Set(used.map(u=>getSec(u.sec).name))];
+  const dr=document.getElementById('drawer');
+  dr.innerHTML=`
+    <div class="dr-head">
+      <div class="fic ${d.type}" style="width:30px;height:38px;flex:none;border-radius:4px;background:#fff;border:1px solid var(--line-2);display:flex;align-items:flex-end;justify-content:center;overflow:hidden"><div class="ext" style="font-size:7px;font-weight:800;color:#fff;width:100%;text-align:center;background:${d.type==='xls'?'#055D56':d.type==='doc'?'#91918E':'#E56458'}">${d.type.toUpperCase()}</div></div>
+      <div class="ti">${d.name}<div class="sub">${d.group} · Page ${d.page} · ${d.objs} extracted objects</div></div>
+      <button class="btn sm" onclick="closeOverlays();go('sources')">${I.ext} Source Room</button>
+      <button class="xbtn" onclick="closeOverlays()">${I.x}</button>
+    </div>
+    <div class="dr-body">
+      <div class="dr-trust">
+        <div class="row gap8 wrap"><span class="pill ${q.q}">${q.quality}</span><span class="pill grey">${q.signed}</span><span class="pill grey">Dated ${q.date}</span>${(d.flags||[]).length?`<span class="pill amber">${I.alert} ${d.flags[0]}</span>`:`<span class="pill green">${I.check} No flags</span>`}</div>
+        <div class="muted tiny" style="margin-top:9px"><b style="color:var(--ink-2)">Why you can trust this source:</b> it is ${trustLine(q)}</div>
+      </div>
+      <div class="pdf-page"><span class="pg-no">Page ${d.page}</span>
+        <h4>${d.name.replace(/\.[a-z]+$/,'')}</h4>
+        <p style="color:var(--muted-2)">${'\u2014 '.repeat(3)}</p>
+        <p>${d.snippet}</p>
+        <p style="color:var(--muted-2)">${'\u2014 '.repeat(8)}</p>
+        <p style="color:var(--muted-2)">${'\u2014 '.repeat(6)}</p>
+      </div>
+      <div class="extracted">
+        <div class="h">Extracted values from this page</div>
+        ${Object.entries(d.extract).map(([k,v])=>`<div class="kv"><span class="k">${k}</span><span class="v mono" style="font-size:11.5px">${v}</span></div>`).join('')}
+        <div class="row gap8" style="margin-top:12px"><span class="pill green">${I.check} Processed by ${av('AI')} Extraction Engine</span><span class="muted tiny right">Used in ${d.used} DRHP claims</span></div>
+      </div>
+      <div class="dr-links">
+        <div class="h">Linked disclosure blocks (${used.length})</div>
+        ${used.length?used.map(u=>{const st=BLOCK_STATUS[u.b.status]||{};return `<div class="dr-link" onclick="closeOverlays();openSection('${u.sec}');selectBlock('${u.b.id}')"><span class="dot ${st.c||'grey'}"></span><div class="col" style="flex:1"><div class="nm">${u.b.title}</div><div class="muted tiny">${getSec(u.sec).name} · ${st.l||u.b.status}</div></div><span style="color:var(--muted)">${I.chevR}</span></div>`}).join(''):'<div class="muted tiny">Not yet linked to a disclosure block.</div>'}
+        <div class="muted tiny" style="margin-top:10px">Used across ${secs.length} section${secs.length!==1?'s':''}${secs.length?': '+secs.join(', '):''}.</div>
+      </div>
+    </div>`;
+  document.getElementById('scrim').classList.add('on');
+  dr.classList.add('on');
+}
+function closeOverlays(){
+  document.getElementById('scrim').classList.remove('on');
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('modal').classList.remove('on');
+}
+
+/* approvals & updates */
+function setBlockStatus(secId,bid,status){const b=findBlock(bid);if(b){b.status=status;}}
+function approveBlock(secId,bid){
+  setBlockStatus(secId,bid,'approved');
+  audit('AM','Verification',`Approved disclosure block "${findBlock(bid).title}" in ${getSec(secId).name}`);
+  toast('Block approved',`${findBlock(bid).title} — banker verified`,'check');
+  render();
+}
+function lockBlock(secId,bid){
+  setBlockStatus(secId,bid,'locked');
+  audit('AM','Verification',`Locked block "${findBlock(bid).title}"`);
+  toast('Block locked','No further edits without unlock','lock');
+  render();
+}
+function regenBlock(bid){
+  toast('Regenerating block','Re-reading source documents…');
+  setTimeout(()=>toast('Block regenerated','Draft refreshed from latest sources','check'),900);
+}
+function acceptUpdate(secId,bid){
+  const b=findBlock(bid);
+  if(b&&b.upd){ b.status='verified'; 
+    const sec=getSec(secId); sec.readiness=Math.min(100,sec.readiness+4);
+    resolveQueue(secId,['Update available']);
+    audit(inferReviewer(secId),'Accepted update',`Accepted update on "${b.title}": ${b.upd.field} → ${b.upd.now}`,true,`Trust ${b.upd.src==='auditcert'?'audited':'restated'} source for ${b.upd.field}`);
+    toast('Update accepted',`${b.upd.field} set to ${b.upd.now} · readiness updated`,'check');
+    b.upd=null;
+  }
+  render();
+}
+function rejectUpdate(secId,bid){
+  const b=findBlock(bid);
+  if(b&&b.upd){ audit(inferReviewer(secId),'Rejection',`Rejected update on "${b.title}" — kept ${b.upd.was}`,true,`Prefer prior value for ${b.upd.field} pending reviewer note`); b.status='needsreview'; b.upd=null; toast('Update rejected','Previous value retained'); }
+  render();
+}
+function compareUpdate(bid){
+  const b=findBlock(bid);
+  const material=/revenue|cash|amount|holding|pledge|coverage|profit/i.test(b.upd.field);
+  openModal(`<div class="mh"><div class="ti">${I.refresh} Compare update — decision<div class="sub">${b.title}</div></div><button class="xbtn" onclick="closeOverlays()">${I.x}</button></div>
+    <div class="mb">
+      <div class="row gap14" style="align-items:stretch">
+        <div class="cock-side"><div class="ch"><div class="src"><span class="dot grey"></span>Current value</div><div class="muted tiny" style="margin-top:5px">In DRHP ${project.version} clean draft</div></div><div class="val">${b.upd.was}</div></div>
+        <div style="align-self:center;color:var(--accent)">${I.chevR}</div>
+        <div class="cock-side pick"><div class="ch"><div class="src"><span class="dot blue"></span>Proposed value</div><div class="muted tiny" style="margin-top:5px">${resolveDoc(b.upd.src).name}</div></div><div class="val">${b.upd.now}</div></div>
+      </div>
+      <div class="cock-rec"><span style="color:var(--accent)">${I.bolt}</span><div class="tx"><b>Why it changed.</b> ${b.upd.reason}.</div></div>
+      <div class="row gap14 wrap" style="margin-top:15px">
+        <div class="kv" style="border:none;padding:0;min-width:140px"><span class="k">Field</span><span class="v" style="font-size:12px">${b.upd.field}</span></div>
+        <div class="kv" style="border:none;padding:0;min-width:130px"><span class="k">Risk level</span><span class="v"><span class="pill ${material?'amber':'grey'}">${material?'Material — affects numbers':'Low — wording only'}</span></span></div>
+        <div class="kv" style="border:none;padding:0;min-width:160px"><span class="k">Impacted</span><span class="v" style="font-size:11.5px">${b.title}${(b.affects||[]).length?', '+b.affects.join(', '):''}</span></div>
+      </div>
+      <div style="margin-top:15px"><div class="lab" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:8px">Reviewer note (optional)</div><input class="note-in" id="updNote" placeholder="Add a note for the audit trail…"></div>
+    </div>
+    <div class="mf"><button class="btn danger" onclick="rejectUpdate('${state.section}','${bid}');closeOverlays()">Reject</button><button class="btn blue" onclick="acceptUpdate('${state.section}','${bid}');closeOverlays()">${I.check} Accept update</button></div>`);
+}
+function inferReviewer(secId){const r=(REVIEWERS[secId]||['Banker'])[0];return ROLE_PERSON[r]||'AM'}
+
+/* conflict resolution */
+let conflictPick=null;
+function openConflict(secId,bid){
+  const b=findBlock(bid); const cf=b.conflict;
+  conflictPick=null;
+  const ma=srcMeta(cf.a.src), mb=srcMeta(cf.b.src);
+  const rank={'Audited / certified':5,'Statutory order':4,'Depository record':4,'Lender document':3,'Management certificate':2,'Management input':1};
+  const recSide=(rank[ma.quality]||0)>=(rank[mb.quality]||0)?'a':'b';
+  const sides=[['a',cf.a,ma],['b',cf.b,mb]];
+  openModal(`<div class="mh"><div class="ti">${I.alert} Resolve contradiction — decision cockpit<div class="sub">${b.title} · ${getSec(secId).name}</div></div><button class="xbtn" onclick="closeOverlays()">${I.x}</button></div>
+    <div class="mb">
+      <div class="muted tiny" style="margin-bottom:14px">Two sources disagree. Compare provenance, select the source of truth, and record the basis. The rejected source is preserved in the audit trail and a memory rule is created.</div>
+      <div class="row gap14" id="confSides" style="align-items:stretch">
+        ${sides.map(([side,c,mm])=>`
+        <div class="cock-side ${recSide===side?'rec':''}" data-side="${side}" onclick="pickConflict('${side}')">
+          <div class="ch"><div class="src"><span class="dot ${mm.q}"></span>Source ${side.toUpperCase()}</div><div class="muted tiny" style="margin-top:5px">${c.src}</div></div>
+          <div class="val">${c.val}</div>
+          <div class="meta">
+            <div class="mr"><span class="k">Quality</span><span class="v"><span class="pill ${mm.q}">${mm.quality}</span></span></div>
+            <div class="mr"><span class="k">Dated</span><span class="v">${mm.date}</span></div>
+            <div class="mr"><span class="k">Provenance</span><span class="v">${mm.signed}</span></div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="cock-rec"><span style="color:var(--accent)">${I.bolt}</span><div class="tx"><b>System recommendation.</b> ${cf.rec}</div></div>
+      <div class="row gap8 wrap" style="margin-top:14px"><span class="muted tiny">Impacted blocks &amp; sections:</span>${cf.impacted.map(x=>`<span class="pill grey">${x}</span>`).join('')}</div>
+      <div style="margin-top:16px"><div class="lab" style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:8px">Reviewer note (required)</div>
+        <input class="note-in" id="confNote" placeholder="Explain the basis for this source-of-truth decision…"></div>
+    </div>
+    <div class="mf"><span class="muted tiny right" id="confHint">Select a source of truth</span><button class="btn primary" id="confBtn" disabled onclick="resolveConflict('${secId}','${bid}')">${I.check} Resolve &amp; record</button></div>`);
+}
+function srcMeta(srcStr){
+  const s=srcStr.toLowerCase();
+  let quality='Management input',q='grey',signed='Self-certified';
+  if(s.includes('audit')||s.includes('certificate')&&!s.includes('management')){quality='Audited / certified';q='green';signed='Signed & certified';}
+  else if(s.includes('drc')||s.includes('order')){quality='Statutory order';q='teal';signed='Issued by authority';}
+  else if(s.includes('nsdl')||s.includes('benpos')||s.includes('depository')){quality='Depository record';q='teal';signed='System-generated';}
+  else if(s.includes('sanction')||s.includes('loan')||s.includes('hdfc')){quality='Lender document';q='blue';signed='Counterparty-signed';}
+  else if(s.includes('management')){quality='Management certificate';q='amber';signed='Self-certified';}
+  const m=srcStr.match(/(\d{1,2}\s+\w+\s+\d{4})/);
+  return {quality,q,signed,date:m?m[1]:'\u2014'};
+}
+function pickConflict(side){
+  conflictPick=side;
+  document.querySelectorAll('#confSides .cock-side').forEach(el=>el.classList.toggle('pick',el.dataset.side===side));
+  document.getElementById('confBtn').disabled=false;
+  document.getElementById('confHint').textContent='Source '+side.toUpperCase()+' selected as source of truth';
+}
+function resolveConflict(secId,bid){
+  const note=document.getElementById('confNote').value.trim();
+  if(!conflictPick){return}
+  if(!note){document.getElementById('confNote').focus();document.getElementById('confHint').textContent='Reviewer note is required';return}
+  const b=findBlock(bid); const chosen=conflictPick==='a'?b.conflict.a:b.conflict.b; const rej=conflictPick==='a'?b.conflict.b:b.conflict.a;
+  b.status='verified'; b.conflict=null;
+  const sec=getSec(secId); sec.blockers=Math.max(0,sec.blockers-1); sec.readiness=Math.min(100,sec.readiness+3);
+  resolveQueue(secId,['Conflict']);
+  audit(inferReviewer(secId),'Source of truth',`Resolved contradiction on "${b.title}" — adopted ${chosen.src.split('—')[0].trim()}. Rejected: ${rej.src.split('—')[0].trim()}. Note: ${note}`,true,`On conflict, prefer ${chosen.src.split('—')[0].trim()} for this disclosure type`);
+  closeOverlays();
+  toast('Conflict resolved',`Source of truth recorded · ${sec.name} blocker cleared · ${sec.blockers} left`,'check');
+  render();
+}
+
+/* section-level */
+function approveSection(secId){
+  const sec=getSec(secId);
+  if(sec.blockers>0){ toast('Cannot approve yet',`${sec.blockers} blocker${sec.blockers>1?'s':''} must be resolved first`,'alert'); return; }
+  const role=inferRole(inferReviewer(secId));
+  SECTION_APPROVALS[secId]=SECTION_APPROVALS[secId]||new Set();
+  SECTION_APPROVALS[secId].add(role);
+  const req=REVIEWERS[secId]||[role];
+  const allDone=req.every(r=>SECTION_APPROVALS[secId].has(r));
+  if(allDone){ sec.status='approved'; sec.readiness=100; toast('Section approved',`${sec.name} is filing-ready`,'check'); }
+  else { toast('Approval recorded',`${role} approved. Awaiting ${req.filter(r=>!SECTION_APPROVALS[secId].has(r)).join(', ')}`); }
+  audit(inferReviewer(secId),'Verification',`${role} approved section "${sec.name}"`);
+  render();
+}
+function publishSection(secId){
+  toast('Published to DRHP',`${getSec(secId).name} disclosure blocks are live in the assembly`,'check');
+  audit('AM','Verification',`Published ${getSec(secId).name} blocks to DRHP assembly`);
+}
+function generateSection(secId){
+  const sec=getSec(secId);
+  sec.status='processing'; sec.readiness=15;
+  toast('Generating section','Extraction engine is drafting disclosure blocks…');
+  render();
+  setTimeout(()=>{ sec.status='draft'; sec.readiness=45; toast('Draft generated',`${sec.name} now has draft blocks for review`,'check'); render(); },1100);
+}
+
+/* comments */
+function addComment(bid){
+  const inp=document.getElementById('cmtInput'); if(!inp||!inp.value.trim())return;
+  toast('Comment posted','Block-level comment added for reviewers');
+  audit('AM','Comment',`Commented on "${findBlock(bid).title}": ${inp.value.trim()}`);
+  inp.value='';
+}
+
+/* edits create memory */
+let editedBlocks=new Set();
+function markEdited(bid){
+  if(editedBlocks.has(bid))return;
+  editedBlocks.add(bid);
+  setTimeout(()=>{ if(editedBlocks.has(bid)){ audit('AM','Human edit',`Manually edited narrative in "${findBlock(bid).title}"`,true,'Preserve banker phrasing for this disclosure on regenerate'); editedBlocks.delete(bid); } },1500);
+}
+function overrideWarn(bid,cell){
+  if(cell.dataset.warned)return; cell.dataset.warned='1';
+  toast('Manual override','Editing an audited value creates a tracked exception','alert');
+  audit('AM','Human edit',`Manual override of audited value in "${findBlock(bid).title}"`,true,'Flag manual overrides of audited cells for auditor sign-off');
+}
+
+/* export modal */
+function openExport(){
+  openModal(`<div class="mh"><div class="ti">Export DRHP<div class="sub">${project.company} · ${project.version} · ${readiness()}% ready</div></div><button class="xbtn" onclick="closeOverlays()">${I.x}</button></div>
+    <div class="mb">
+      <div class="row gap14" style="padding:11px 14px;background:${pendingBlockers()?'var(--amber-soft)':'var(--green-soft)'};border-radius:9px;margin-bottom:14px">
+        <span style="color:${pendingBlockers()?'var(--amber)':'var(--green)'}">${pendingBlockers()?I.alert:I.check}</span>
+        <div class="tiny" style="flex:1"><b>${pendingBlockers()?pendingBlockers()+' unresolved blockers':'No blockers'}</b> · ${countStatus(s=>s.status==='approved')}/${SEC.length} sections approved. Review drafts can be exported anytime; final lock requires zero blockers.</div>
+      </div>
+      ${EXPORTS.map(e=>`<div class="export-row"><div class="eic" style="background:${e[3]}">${e[2]}</div><div class="info"><div class="nm">${e[0]}</div><div class="ds">${e[1]}</div></div><button class="btn sm primary" onclick="toast('Export started','${e[0]} is being generated')">${I.export}</button></div>`).join('')}
+    </div>
+    <div class="mf"><button class="btn" onclick="closeOverlays()">Close</button><button class="btn primary" onclick="toast('Generating bundle','Clean + review drafts and evidence pack');closeOverlays()">${I.export} Export full bundle</button></div>`);
+}
+
+function openModal(html){ document.getElementById('modalBox').innerHTML=html; document.getElementById('modal').classList.add('on'); document.getElementById('scrim').classList.add('on'); }
+
+/* audit + toast */
+function audit(who,type,txt,mem,memtxt){
+  const now=new Date();
+  AUDIT.unshift({t:`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,d:"23 Jun 2026",who,type,txt,mem:!!mem,memtxt});
+}
+function toast(title,sub,icon){
+  const w=document.getElementById('toasts');
+  const el=document.createElement('div'); el.className='toast';
+  const ic=icon==='check'?I.check:icon==='alert'?I.alert:icon==='lock'?I.lock:I.bolt;
+  el.innerHTML=`<span class="ic">${ic}</span><div class="col"><span>${title}</span>${sub?`<span class="sub">${sub}</span>`:''}</div>`;
+  w.appendChild(el);
+  setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),300)},2600);
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOverlays()});
+/* global delegated evidence-mark clicks — every .ev-mark[data-ev] opens the source drawer */
+document.addEventListener('click',e=>{const m=e.target.closest('.ev-mark[data-ev]');if(m){e.stopPropagation();e.preventDefault();openDrawer(m.getAttribute('data-ev'));}},true);
+
+/* boot */
+render();
+</script>
+</body>
+</html>

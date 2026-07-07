@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S45 — AI-Native Due Diligence Workspace</title>
+<style>
+:root{
+  --paper:#FFFFFF; --paper-2:#F9F8F7; --doc-paper:#FFFFFF;
+  --ink:#2C2C2B; --ink-2:#2C2C2B; --muted:#91918E; --muted-2:#91918E;
+  --line:#E1DFDB; --line-2:rgba(0,0,0,.0627);
+  --brown:#91918E; --primary:#055D56; --primary-hover:#044842; --amber:#91918E; --amber-bg:rgba(0,0,0,.0627);
+  --red:#E56458; --red-bg:rgba(229,100,88,.10); --green:#055D56; --green-bg:rgba(5,93,86,.10);
+  --blue:#91918E; --blue-bg:rgba(0,0,0,.0627);
+  --shadow:0 1px 2px rgba(44,44,43,.05),0 8px 24px rgba(44,44,43,.06);
+  --shadow-lg:0 4px 12px rgba(44,44,43,.08),0 24px 60px rgba(44,44,43,.14);
+  --sans:'Geist','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --serif:'Martina Plantijn','Charter','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --mono:'Geist Mono','SF Mono','JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+::selection{background:rgba(5,93,86,.18);}
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.0627);border-radius:6px;border:2px solid transparent;background-clip:content-box;}
+::-webkit-scrollbar-thumb:hover{background:#c3b89f;background-clip:content-box;}
+::-webkit-scrollbar-track{background:transparent;}
+
+.screen{display:none;height:100vh;overflow:hidden;}
+.screen.active{display:block;}
+.hidden{display:none!important;}
+
+/* ============================================================
+   ONBOARDING (screens 1-3)
+============================================================ */
+.onb{height:100vh;overflow-y:auto;background:
+  radial-gradient(1100px 520px at 50% -8%,#F9F8F7 0%,transparent 60%),
+  linear-gradient(180deg,#FFFFFF,#FFFFFF);
+  display:flex;flex-direction:column;}
+.onb-top{display:flex;align-items:center;gap:11px;padding:20px 34px;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo .mark{width:32px;height:32px;border-radius:8px;background:var(--primary);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;letter-spacing:-.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15);}
+.logo .wm{font-weight:700;font-size:15px;letter-spacing:.2px;}
+.logo .sub{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;border-left:1px solid var(--line-2);padding-left:11px;margin-left:3px;}
+
+/* stepper */
+.stepper{display:flex;align-items:center;gap:0;margin-left:auto;}
+.stp{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--muted-2);}
+.stp .sd{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-size:10px;background:var(--paper-2);transition:.2s;}
+.stp.active{color:var(--ink);}
+.stp.active .sd{border-color:var(--amber);background:var(--amber);color:#fff;}
+.stp.done .sd{border-color:var(--green);background:var(--green);color:#fff;}
+.stp.done{color:var(--ink-2);}
+.stp-line{width:34px;height:1.5px;background:var(--line-2);margin:0 11px;}
+
+.onb-wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:18px 24px 60px;}
+.onb-panel{width:100%;max-width:880px;}
+.onb-head{text-align:center;margin-bottom:26px;}
+.onb-head h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px;}
+.onb-head p{font-size:13.5px;color:var(--muted);line-height:1.55;max-width:600px;margin:0 auto;}
+
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:30px 34px;}
+
+/* form */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:17px 22px;}
+.fld{display:flex;flex-direction:column;gap:6px;}
+.fld.full{grid-column:1 / -1;}
+.fld label{font-size:11px;font-weight:650;color:var(--ink-2);letter-spacing:.02em;}
+.fld label .req{color:var(--amber);}
+.fld input,.fld textarea,.fld select{border:1px solid var(--line-2);background:var(--doc-paper);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--ink);transition:.12s;}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(168,116,26,.12);}
+.fld textarea{resize:vertical;min-height:58px;line-height:1.5;}
+.fld .hint{font-size:10.5px;color:var(--muted-2);}
+
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{font-size:12px;font-weight:550;border:1px solid var(--line-2);background:var(--doc-paper);color:var(--ink-2);padding:7px 12px;border-radius:7px;transition:.12s;}
+.seg button:hover{border-color:var(--brown);}
+.seg button.on{background:var(--ink);color:#f0e9da;border-color:var(--ink);}
+
+.fdiv{grid-column:1/-1;height:1px;background:var(--line);margin:3px 0;}
+
+.onb-foot{display:flex;align-items:center;gap:12px;margin-top:26px;}
+.onb-foot .ftext{font-size:11.5px;color:var(--muted);}
+.onb-foot .spacer{flex:1;}
+.btn{height:40px;padding:0 20px;border-radius:9px;font-size:13px;font-weight:650;border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);display:inline-flex;align-items:center;gap:8px;transition:.13s;}
+.btn:hover{border-color:var(--brown);background:#fff;}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+.btn.primary:hover{background:var(--primary-hover);}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted);}
+.btn.ghost:hover{color:var(--ink);background:var(--paper);}
+.btn.dark{background:var(--ink);color:#f0e9da;border-color:var(--ink);}
+.btn.dark:hover{background:#2c241a;}
+
+/* source rows */
+.src-list{display:flex;flex-direction:column;gap:9px;}
+.src-row{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--line);background:var(--doc-paper);border-radius:10px;padding:14px 16px;transition:.13s;cursor:pointer;}
+.src-row:hover{border-color:var(--line-2);box-shadow:var(--shadow);}
+.src-ic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#efe8da;color:var(--brown);}
+.src-ic svg{width:19px;height:19px;}
+.src-main{flex:1;min-width:0;}
+.src-name{font-size:13.5px;font-weight:650;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.src-role{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.src-feeds{font-size:11px;color:var(--ink-2);margin-top:6px;}
+.src-feeds b{color:var(--brown);font-weight:600;}
+.src-warn{font-size:11px;color:var(--red);margin-top:5px;display:flex;align-items:center;gap:5px;}
+.src-warn.note{color:var(--blue);}
+.sstate{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.03em;white-space:nowrap;flex-shrink:0;}
+.st-conn{background:var(--green-bg);color:var(--green);}
+.st-up{background:var(--blue-bg);color:var(--blue);}
+.st-miss{background:var(--red-bg);color:var(--red);}
+.st-none{background:#e9e3d6;color:var(--muted);}
+.src-toggle{font-size:11px;font-weight:600;color:var(--amber);background:none;border:none;padding:6px 0 0;}
+
+.hier{margin-top:20px;border:1px solid #e6d3a8;background:var(--amber-bg);border-radius:11px;padding:16px 18px;}
+.hier h4{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin:0 0 11px;display:flex;align-items:center;gap:7px;}
+.hier ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;}
+.hier li{font-size:11.5px;color:var(--brown);line-height:1.45;padding-left:16px;position:relative;}
+.hier li::before{content:'›';position:absolute;left:0;color:var(--amber);font-weight:700;}
+.hier li.crit{color:var(--red);font-weight:600;grid-column:1/-1;}
+.hier li.crit::before{color:var(--red);content:'⚠';}
+
+/* processing */
+.proc-wrap{max-width:760px;margin:0 auto;}
+.proc-head{text-align:center;margin-bottom:30px;}
+.proc-head .spin{width:44px;height:44px;border-radius:50%;border:3px solid var(--line-2);border-top-color:var(--amber);margin:0 auto 18px;animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.proc-head h1{font-family:var(--serif);font-size:26px;font-weight:600;margin:0 0 7px;}
+.proc-head p{font-size:13px;color:var(--muted);}
+.proc-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;}
+.proc-steps{display:flex;flex-direction:column;gap:2px;}
+.pstep{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;font-size:12.5px;color:var(--muted-2);transition:.3s;}
+.pstep .pi{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:.3s;}
+.pstep.run{color:var(--ink);background:var(--paper-2);}
+.pstep.run .pi{border-color:var(--amber);border-top-color:transparent;animation:spin .8s linear infinite;}
+.pstep.done{color:var(--ink-2);}
+.pstep.done .pi{border-color:var(--green);background:var(--green);color:#fff;animation:none;}
+.proc-side{border-left:1px solid var(--line);padding-left:18px;}
+.proc-side h4{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+.pres{display:flex;align-items:center;gap:8px;font-size:12px;padding:7px 0;border-bottom:1px solid var(--line);opacity:0;transform:translateX(8px);transition:.4s;}
+.pres.show{opacity:1;transform:none;}
+.pres .pd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.pres .pd.ok{background:var(--green);} .pres .pd.warn{background:var(--red);} .pres .pd.amber{background:var(--amber);} .pres .pd.lock{background:var(--muted-2);}
+.pres .pt{color:var(--ink-2);}
+
+/* ============================================================
+   COMMAND STRIP (screens 4-5)
+============================================================ */
+.cmd{height:54px;display:flex;align-items:center;gap:13px;padding:0 16px;background:var(--ink);color:#f3ede2;border-bottom:1px solid #000;position:relative;z-index:40;flex-shrink:0;}
+.cmd .mark{width:30px;height:30px;border-radius:7px;background:var(--primary);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;letter-spacing:-.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15);}
+.cmd .wm{font-weight:700;font-size:14px;}
+.cmd .crumb{font-size:11px;color:#9a9082;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;cursor:pointer;}
+.cmd .crumb:hover{color:#d9d0c1;}
+.cmd .crumb b{color:#e3dccf;font-weight:600;}
+.cmd .co{font-weight:600;font-size:13.5px;color:#fbf6ec;white-space:nowrap;}
+.cmd .pills{display:flex;align-items:center;gap:6px;overflow:hidden;}
+.cmd .spacer{flex:1;}
+.pill{display:inline-flex;align-items:center;gap:5px;height:23px;padding:0 9px;border-radius:5px;font-size:11px;font-weight:500;white-space:nowrap;background:rgba(255,255,255,.07);color:#d9d0c1;border:1px solid rgba(255,255,255,.09);}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.pill.amber{background:rgba(168,116,26,.16);color:#e8c074;border-color:rgba(168,116,26,.35);}
+.pill.blue{background:rgba(110,150,190,.16);color:#a8c4e0;border-color:rgba(110,150,190,.3);}
+.pill.warn{background:rgba(180,80,55,.18);color:#e8a48f;border-color:rgba(180,80,55,.4);}
+.pill.ok{background:rgba(90,150,110,.16);color:#9bd0ac;border-color:rgba(90,150,110,.32);}
+.cmd-btns{display:flex;gap:7px;align-items:center;}
+.cbtn{height:30px;padding:0 12px;border-radius:6px;font-size:12px;font-weight:550;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#ece4d6;display:inline-flex;align-items:center;gap:6px;transition:.13s;}
+.cbtn:hover{background:rgba(255,255,255,.12);}
+.cbtn.primary{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:650;}
+.cbtn.primary:hover{background:var(--primary-hover);}
+
+/* ============================================================
+   WORKSPACE GRID
+============================================================ */
+.shell{display:flex;height:calc(100vh - 54px);overflow:hidden;}
+.rail{width:300px;flex-shrink:0;background:var(--paper-2);border-right:1px solid var(--line);overflow-y:auto;}
+.inspector{width:360px;flex-shrink:0;background:var(--paper-2);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;}
+.center{flex:1;min-width:0;overflow-y:auto;background:var(--paper);}
+
+.rail-sec{border-bottom:1px solid var(--line);padding:15px 16px;}
+.rail-h{font-size:10.5px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;display:flex;align-items:center;gap:7px;}
+.rail-h .ix{width:15px;height:15px;border-radius:4px;background:var(--ink);color:var(--paper-2);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.rail-h .spacer{flex:1;}
+.rail-h .lnk{font-size:10px;font-weight:600;color:var(--amber);text-transform:none;letter-spacing:0;cursor:pointer;}
+
+.cmd-summary .co-name{font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.2;margin-bottom:5px;}
+.cmd-summary .co-desc{font-size:12px;color:var(--ink-2);line-height:1.45;margin-bottom:12px;}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:11.5px;}
+.kv .k{color:var(--muted);} .kv .v{color:var(--ink-2);font-weight:550;text-align:right;}
+.kv .v.export{color:var(--amber);}
+.kv .v.next{color:var(--green);}
+
+/* source register rows */
+.sreg{display:flex;flex-direction:column;gap:3px;}
+.sreg-row{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:.1s;}
+.sreg-row:hover{background:#efe9dd;}
+.sreg-row.active{background:#ece2cc;box-shadow:inset 2px 0 0 var(--amber);}
+.sreg-row .sn{font-size:12px;color:var(--ink-2);flex:1;font-weight:550;}
+.sreg-row .stag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+
+.aq{display:flex;flex-direction:column;gap:8px;}
+.aq-item{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:10px 11px;transition:.13s;}
+.aq-item:hover{border-color:var(--line-2);background:var(--doc-paper);}
+.aq-top{display:flex;align-items:flex-start;gap:8px;}
+.aq-n{width:18px;height:18px;border-radius:50%;flex-shrink:0;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.aq-n.high{background:var(--red);} .aq-n.med{background:var(--amber);}
+.aq-t{font-size:12px;font-weight:650;color:var(--ink);line-height:1.3;flex:1;}
+.aq-d{font-size:11px;color:var(--muted);line-height:1.4;margin:5px 0 0 26px;}
+.aq-mods{font-size:10px;color:var(--brown);margin:5px 0 0 26px;}
+.aq-mods b{font-weight:600;}
+.aq-btns{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 0 26px;}
+.aq-btn{font-size:10px;font-weight:600;color:var(--muted);background:#f0e9da;border:1px solid var(--line-2);border-radius:5px;padding:4px 8px;transition:.1s;}
+.aq-btn:hover{background:#e7dcc6;color:var(--ink-2);}
+.aq-btn.go:hover{background:var(--ink);color:#f0e9da;border-color:var(--ink);}
+
+/* center command page */
+.cp{max-width:1000px;margin:0 auto;padding:26px 38px 110px;}
+.cp-head h1{font-family:var(--serif);font-size:27px;font-weight:600;letter-spacing:-.01em;margin:0 0 7px;}
+.cp-head p{font-size:13.5px;color:var(--muted);line-height:1.55;max-width:680px;margin:0 0 22px;}
+
+/* transaction brief = memo */
+.brief{background:var(--doc-paper);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:26px 32px;margin-bottom:30px;position:relative;}
+.brief::before{content:'';position:absolute;left:0;top:18px;bottom:18px;width:3px;background:var(--amber);border-radius:0 2px 2px 0;}
+.brief h3{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:0 0 13px;}
+.brief .bl{font-family:var(--serif);font-size:15px;line-height:1.7;color:var(--ink-2);margin:0 0 9px;padding-left:20px;position:relative;}
+.brief .bl:last-child{margin-bottom:0;}
+.brief .bl::before{content:'';position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:50%;background:var(--brown);opacity:.5;}
+.brief .bl b{color:var(--ink);font-weight:600;}
+.brief .bl.warn::before{background:var(--red);opacity:1;} .brief .bl.warn b{color:var(--red);}
+.brief .bl.lock::before{background:var(--muted-2);opacity:1;}
+
+/* module ledger */
+.grp{margin-bottom:26px;}
+.grp-h{display:flex;align-items:center;gap:11px;margin-bottom:11px;}
+.grp-h .gt{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--brown);}
+.grp-h .gr{flex:1;height:1px;background:var(--line);}
+.grp-h .gc{font-size:10.5px;color:var(--muted-2);}
+
+.mled{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--doc-paper);box-shadow:var(--shadow);}
+.mrow{display:flex;align-items:flex-start;gap:15px;padding:14px 17px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s;position:relative;}
+.mrow:last-child{border-bottom:none;}
+.mrow:hover{background:#faf5ea;}
+.mrow.foundation:hover{background:#f6efe0;}
+.mnum{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--muted-2);width:24px;flex-shrink:0;padding-top:1px;}
+.mrow.hero .mnum{color:var(--amber);}
+.mbody{flex:1;min-width:0;}
+.mhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.mtitle{font-size:14.5px;font-weight:650;color:var(--ink);}
+.mrow.hero .mtitle{font-size:15.5px;}
+.mpurpose{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px;}
+.mmeta{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:10.5px;color:var(--muted-2);}
+.mmeta span b{color:var(--brown);font-weight:600;}
+.mright{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.mstate{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.02em;white-space:nowrap;}
+.ms-draft{background:var(--amber-bg);color:var(--amber);}
+.ms-none{background:#e9e3d6;color:var(--muted);}
+.ms-wait{background:#efe6d2;color:var(--brown);}
+.ms-block{background:var(--red-bg);color:var(--red);}
+.ms-pend{background:var(--blue-bg);color:var(--blue);}
+.ms-avail{background:var(--green-bg);color:var(--green);}
+.ms-lock{background:#e6e1d6;color:var(--muted);}
+.maction{font-size:11px;font-weight:650;color:var(--amber);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.mrow.hero .maction{background:var(--ink);color:#f0e9da;padding:7px 13px;border-radius:7px;}
+.mrow.hero .maction:hover{background:#2c241a;}
+
+/* context flow ledger */
+.cflow{border:1px solid var(--line);border-radius:10px;background:var(--doc-paper);box-shadow:var(--shadow);overflow:hidden;}
+.cflow-row{display:flex;align-items:center;gap:14px;padding:12px 17px;border-bottom:1px solid var(--line);font-size:12.5px;}
+.cflow-row:last-child{border-bottom:none;}
+.cflow-from{flex:0 0 auto;max-width:46%;color:var(--ink-2);font-weight:600;}
+.cflow-arrow{color:var(--amber);flex-shrink:0;display:flex;align-items:center;}
+.cflow-arrow svg{width:15px;height:15px;}
+.cflow-to{flex:1;color:var(--brown);font-weight:650;}
+.cflow-note{font-size:10.5px;color:var(--muted-2);font-weight:400;}
+
+/* ============================================================
+   RIGHT INSPECTOR
+============================================================ */
+.insp-tabs{display:flex;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0;overflow-x:auto;}
+.itab{flex:1;padding:11px 4px;font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:.12s;position:relative;}
+.itab:hover{color:var(--ink-2);}
+.itab.active{color:var(--ink);border-bottom-color:var(--amber);}
+.itab .ct{position:absolute;top:5px;right:6px;font-size:8px;font-weight:700;background:var(--red);color:#fff;border-radius:8px;padding:0 4px;min-width:13px;height:13px;line-height:13px;}
+.insp-body{flex:1;overflow-y:auto;padding:16px;}
+.insp-h{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+
+/* ask ai */
+.ai-prompts{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.ai-prompt{text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--ink-2);line-height:1.4;transition:.12s;display:flex;gap:8px;align-items:center;}
+.ai-prompt:hover{border-color:var(--amber);background:#fbf4e3;color:var(--ink);}
+.ai-prompt::before{content:'⌖';color:var(--amber);font-size:13px;}
+.ai-log{display:flex;flex-direction:column;gap:10px;}
+.ai-msg{font-size:12.5px;line-height:1.55;}
+.ai-msg.u{align-self:flex-end;background:var(--ink);color:#f0e9da;padding:8px 12px;border-radius:12px 12px 3px 12px;max-width:88%;}
+.ai-msg.a{background:#f4eee2;border:1px solid var(--line);padding:11px 13px;border-radius:12px 12px 12px 3px;color:var(--ink-2);}
+.ai-msg.a .ah{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.ai-msg.a ul{margin:6px 0 0;padding-left:18px;} .ai-msg.a li{margin-bottom:4px;}
+.ai-typing{display:inline-flex;gap:3px;}
+.ai-typing span{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:blink 1.2s infinite;}
+.ai-typing span:nth-child(2){animation-delay:.2s;} .ai-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,60%,100%{opacity:.25;}30%{opacity:1;}}
+.ai-ask{display:flex;gap:6px;margin-top:12px;}
+.ai-ask input{flex:1;border:1px solid var(--line-2);border-radius:7px;padding:8px 10px;font-size:12px;background:var(--paper);}
+.ai-ask input:focus{outline:none;border-color:var(--amber);}
+.ai-ask button{width:34px;border-radius:7px;background:var(--ink);color:#f0e9da;border:none;}
+
+/* issues */
+.iss{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;margin-bottom:9px;}
+.iss.sev-high{border-left:3px solid var(--red);} .iss.sev-med{border-left:3px solid var(--amber);} .iss.sev-lock{border-left:3px solid var(--muted-2);}
+.iss.resolved{opacity:.55;}
+.iss-hd{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;}
+.iss-t{font-size:12.5px;font-weight:650;flex:1;line-height:1.3;}
+.sev{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;}
+.sev.high{background:var(--red-bg);color:var(--red);} .sev.med{background:var(--amber-bg);color:var(--amber);} .sev.lock{background:#e6e1d6;color:var(--muted);}
+.iss-meta{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:8px;}
+.iss-meta b{color:var(--ink-2);font-weight:600;}
+.iss-btns{display:flex;flex-wrap:wrap;gap:5px;}
+.ibtn{font-size:10px;font-weight:600;color:var(--muted);background:#f0e9da;border:1px solid var(--line-2);border-radius:5px;padding:4px 8px;transition:.1s;}
+.ibtn:hover{background:#e7dcc6;color:var(--ink-2);}
+.ibtn.res:hover{background:var(--green-bg);color:var(--green);border-color:#bcd4c2;}
+
+/* evidence */
+.ev-block{margin-bottom:18px;}
+.ev-block h5{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brown);margin:0 0 8px;display:flex;align-items:center;gap:6px;}
+.ev-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);color:var(--ink-2);}
+.ev-item .ed{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ev-item .em{margin-left:auto;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.hier-mini{background:var(--amber-bg);border:1px solid #e6d3a8;border-radius:9px;padding:13px 15px;margin-top:6px;}
+.hier-mini h5{color:var(--amber);}
+.hier-mini ul{margin:0;padding:0 0 0 15px;}
+.hier-mini li{font-size:11px;color:var(--brown);line-height:1.5;margin-bottom:5px;}
+.hier-mini li.crit{color:var(--red);font-weight:600;list-style:none;margin-left:-15px;padding-left:15px;}
+
+/* artifacts */
+.art{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start;}
+.art-ic{width:34px;height:34px;border-radius:7px;background:repeating-linear-gradient(135deg,#efe8da,#efe8da 5px,#e9e1d0 5px,#e9e1d0 10px);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--brown);}
+.art-ic svg{width:16px;height:16px;}
+.art-b{flex:1;min-width:0;}
+.art-t{font-size:12.5px;font-weight:650;line-height:1.3;}
+.art-m{font-size:10.5px;color:var(--muted);margin-top:3px;}
+.art-m b{color:var(--ink-2);font-weight:600;}
+.art-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:6px;display:inline-block;}
+
+/* report builder */
+.rb-grp{margin-bottom:16px;}
+.rb-grp h5{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin:0 0 9px;display:flex;align-items:center;gap:6px;}
+.rb-grp.avail h5{color:var(--green);} .rb-grp.lock h5{color:var(--muted);}
+.rb-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);color:var(--ink-2);}
+.rb-item .ri{flex-shrink:0;}
+.rb-item.lk{color:var(--muted-2);}
+.exp-btns{display:flex;flex-direction:column;gap:7px;margin-top:18px;}
+.ebtn{height:34px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line-2);background:var(--paper);color:var(--ink-2);display:flex;align-items:center;gap:8px;padding:0 12px;transition:.12s;text-align:left;}
+.ebtn:hover{border-color:var(--brown);background:#fff;}
+.ebtn.primary{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:700;}
+.ebtn.primary:hover{background:var(--primary-hover);}
+.ebtn svg{width:14px;height:14px;flex-shrink:0;}
+
+/* activity */
+.act{position:relative;padding-left:20px;}
+.act::before{content:'';position:absolute;left:5px;top:4px;bottom:4px;width:1.5px;background:var(--line-2);}
+.act-item{position:relative;padding:0 0 15px;}
+.act-item::before{content:'';position:absolute;left:-18px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--paper-2);border:2px solid var(--muted-2);}
+.act-item.warn::before{border-color:var(--red);} .act-item.amber::before{border-color:var(--amber);} .act-item.ok::before{border-color:var(--green);}
+.act-t{font-size:12px;color:var(--ink-2);line-height:1.4;font-weight:550;}
+.act-time{font-size:10px;color:var(--muted-2);margin-top:2px;}
+
+/* ============================================================
+   MODULE WORKBENCH (screen 5)
+============================================================ */
+.wb-head{padding:18px 40px 0;max-width:900px;margin:0 auto;}
+.wb-crumb{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);font-weight:650;margin-bottom:6px;}
+.wb-title{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 5px;}
+.wb-sub{font-size:13px;color:var(--muted);max-width:640px;margin-bottom:13px;line-height:1.5;}
+.wb-actions{display:flex;flex-wrap:wrap;gap:7px;}
+.gbtn{height:29px;padding:0 12px;border-radius:6px;font-size:11.5px;font-weight:550;border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;transition:.12s;}
+.gbtn:hover{background:#fff;border-color:var(--brown);}
+.gbtn.amber{background:var(--ink);color:#f0e9da;border-color:var(--ink);}
+.gbtn.amber:hover{background:#2c241a;}
+.wb-body{max-width:900px;margin:18px auto 0;padding:0 40px 100px;}
+.paper{background:var(--doc-paper);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow);padding:50px 56px 56px;font-family:var(--serif);}
+.doc-title{font-size:28px;font-weight:600;text-align:center;margin:0 0 8px;}
+.doc-sub{text-align:center;font-family:var(--sans);font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:6px;}
+.wsec{padding-top:24px;}
+.wsec-hd{display:flex;align-items:baseline;gap:11px;margin-bottom:9px;flex-wrap:wrap;}
+.wsec-num{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--muted-2);}
+.wsec-title{font-size:17px;font-weight:650;}
+.badge{font-family:var(--sans);font-size:10px;font-weight:650;padding:2.5px 8px;border-radius:5px;}
+.bg-confirmed{background:var(--green-bg);color:var(--green);} .bg-proxy{background:var(--blue-bg);color:var(--blue);}
+.bg-review{background:var(--amber-bg);color:var(--amber);} .bg-contra{background:var(--red-bg);color:var(--red);}
+.bg-edited{background:#e8ddf0;color:#6a4a86;} .bg-approved{background:var(--green);color:#fff;} .bg-internal{background:#39312a;color:#e7c98f;}
+.wpara{font-size:15px;line-height:1.7;color:var(--ink-2);margin:0;padding:8px 12px;border-radius:5px;border:1px solid transparent;outline:none;transition:.12s;cursor:text;}
+.wpara:hover{background:#faf5ea;}
+.wpara:focus{background:#fff;border-color:var(--amber);box-shadow:0 0 0 2px rgba(168,116,26,.15);}
+.wpara.approved{border-left:3px solid var(--green);}
+.wfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;padding:0 12px;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;flex:1;}
+.chip{font-family:var(--sans);font-size:10px;font-weight:550;color:var(--brown);background:#f0e9da;border:1px solid var(--line-2);padding:2px 8px;border-radius:11px;}
+.chip.missing{color:var(--red);background:var(--red-bg);border-color:#e3c4ba;}
+.wpc{display:flex;gap:3px;font-family:var(--sans);}
+.pc{font-size:10.5px;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;padding:3px 8px;border-radius:5px;transition:.1s;}
+.pc:hover{background:#efe7d8;color:var(--ink-2);} .pc.appr:hover{color:var(--green);background:var(--green-bg);}
+
+/* toast + modal */
+.toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--ink);color:#f3ede2;font-size:12.5px;font-weight:550;padding:11px 18px;border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.28);display:flex;align-items:center;gap:9px;animation:tin .25s ease;}
+.toast .tk{width:7px;height:7px;border-radius:50%;background:var(--green);}
+@keyframes tin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+.overlay{position:fixed;inset:0;background:rgba(29,24,19,.5);backdrop-filter:blur(3px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.modal{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);width:460px;max-width:92vw;overflow:hidden;transform:scale(.96);transition:.2s;}
+.overlay.show .modal{transform:scale(1);}
+.modal-top{background:var(--ink);color:#f3ede2;padding:18px 22px;}
+.modal-top .mk{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#caa35a;font-weight:700;margin-bottom:5px;}
+.modal-top h3{font-family:var(--serif);font-size:20px;font-weight:600;margin:0;}
+.modal-body{padding:20px 22px;}
+.mrow2{display:flex;gap:11px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+.mrow2:last-of-type{border-bottom:none;}
+.mrow2 .mk2{color:var(--muted);font-weight:600;width:120px;flex-shrink:0;}
+.mrow2 .mv2{color:var(--ink-2);flex:1;}
+.modal-foot{display:flex;gap:9px;padding:16px 22px;border-top:1px solid var(--line);background:var(--paper);}
+.modal-foot .spacer{flex:1;}
+
+@media print{
+  body{overflow:visible;background:#fff;}
+  .cmd,.rail,.inspector,.wb-head,.no-print,.toast-wrap,.overlay{display:none!important;}
+  .shell{display:block;height:auto;} .center{overflow:visible;}
+  .wb-body,.cp{padding:0;max-width:100%;} .paper,.brief{box-shadow:none;border:none;}
+  .wfoot{display:none!important;}
+}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;height:44px;z-index:99999;background:#FFFFFF;border-bottom:1px solid #E1DFDB;display:flex;align-items:center;justify-content:center;font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow-x:auto;white-space:nowrap;box-shadow:0 1px 2px rgba(44,44,43,.04);"><div onclick="location.href='S45 Market Creation OS Fi.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;">1</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Market Creation</span></div><span style="width:28px;height:1px;background:#055D56;flex-shrink:0;"></span><div onclick="location.href='DD Workspace Journey.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;box-shadow:0 0 0 3px rgba(5,93,86,.18);">2</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Due Diligence</span></div><span style="width:28px;height:1px;background:#E1DFDB;flex-shrink:0;"></span><div onclick="location.href='S45 DRHP Workspace F.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#FFFFFF;color:#91918E;border:1px solid #E1DFDB;">3</span><span style="font-size:12.5px;white-space:nowrap;font-weight:400;color:#91918E;">DRHP</span></div><span style="width:28px;height:1px;background:#E1DFDB;flex-shrink:0;"></span><div onclick="location.href='S45 Capital OS Final.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#FFFFFF;color:#91918E;border:1px solid #E1DFDB;">4</span><span style="font-size:12.5px;white-space:nowrap;font-weight:400;color:#91918E;">Distribution</span></div></div>
+<style>body{margin-top:44px !important;height:calc(100% - 44px) !important;}</style>
+
+
+
+<!-- ============================================================
+     SCREEN 1 — NEW DD PROJECT
+============================================================ -->
+<section class="screen active" id="screen1">
+  <div class="onb">
+    <div class="onb-top">
+      <div class="logo"><div class="mark">S45</div><span class="wm">S45</span><span class="sub">AI-Native DD Workspace</span></div>
+      <div class="stepper" id="stepper1"></div>
+    </div>
+    <div class="onb-wrap">
+      <div class="onb-panel">
+        <div class="onb-head">
+          <h1>Create Due Diligence Workspace</h1>
+          <p>Start with company identity, mandate context, and available source documents. S45 will create a banker-controlled AI workspace with evidence-backed modules.</p>
+        </div>
+        <div class="card">
+          <div class="fgrid">
+            <div class="fld">
+              <label>Company legal name <span class="req">*</span></label>
+              <input id="f_name" value="MedAxis Systems Pvt. Ltd.">
+            </div>
+            <div class="fld">
+              <label>CIN <span class="req">*</span></label>
+              <input id="f_cin" value="U33110MH2014PTC249812">
+            </div>
+            <div class="fld full">
+              <label>Short company description</label>
+              <textarea id="f_desc">Manufactures diagnostic imaging accessories and hospital-grade patient monitoring systems for institutional buyers.</textarea>
+            </div>
+            <div class="fdiv"></div>
+            <div class="fld full">
+              <label>Mandate type</label>
+              <div class="seg" id="seg_mandate" data-val="IPO Advisory">
+                <button class="on">IPO Advisory</button><button>PE / VC Fundraise</button><button>M&amp;A</button><button>Credit / Debt</button><button>Secondary Sale</button><button>Open Offer</button>
+              </div>
+            </div>
+            <div class="fld full">
+              <label>Mandate stage</label>
+              <div class="seg" id="seg_stage" data-val="Pre-mandate">
+                <button class="on">Pre-mandate</button><button>Post-mandate</button><button>Drafting</button><button>Review</button><button>External diligence</button>
+              </div>
+            </div>
+            <div class="fld full">
+              <label>Target route (if IPO)</label>
+              <div class="seg" id="seg_route" data-val="BSE SME">
+                <button>Main Board</button><button class="on">BSE SME</button><button>NSE SME</button><button>Not sure yet</button>
+              </div>
+            </div>
+            <div class="fdiv"></div>
+            <div class="fld">
+              <label>Primary banker</label>
+              <input id="f_banker" value="R. Bhatia — Director, Investment Banking">
+            </div>
+            <div class="fld">
+              <label>Team members</label>
+              <input id="f_team" value="A. Sheth (Associate), N. Rao (Analyst)">
+            </div>
+            <div class="fld full">
+              <label>Expected output</label>
+              <div class="seg" id="seg_output" data-val="IPO readiness note">
+                <button>Internal DD memo</button><button>IC paper</button><button class="on">IPO readiness note</button><button>Fundraise memo</button><button>Credit note</button><button>Management action plan</button><button>Full DD report</button>
+              </div>
+            </div>
+          </div>
+          <div class="onb-foot">
+            <span class="ftext">Defaults loaded from sample mandate — edit any field.</span>
+            <div class="spacer"></div>
+            <button class="btn" onclick="goScreen(2)">Create from CIN / P42</button>
+            <button class="btn primary" onclick="goScreen(2)">Continue to Sources →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 2 — SOURCE SETUP
+============================================================ -->
+<section class="screen" id="screen2">
+  <div class="onb">
+    <div class="onb-top">
+      <div class="logo"><div class="mark">S45</div><span class="wm">S45</span><span class="sub">AI-Native DD Workspace</span></div>
+      <div class="stepper" id="stepper2"></div>
+    </div>
+    <div class="onb-wrap">
+      <div class="onb-panel">
+        <div class="onb-head">
+          <h1>Connect sources</h1>
+          <p>Every module runs only as far as the evidence allows. Missing, proxy-only, management-stated and contradictory data will remain visible — the system never silently fills gaps.</p>
+        </div>
+        <div class="card">
+          <div class="src-list" id="sourceList"></div>
+          <div class="hier">
+            <h4>⚖ Source hierarchy &amp; treatment rules</h4>
+            <ul>
+              <li>AOC-4 is authoritative for audited financials.</li>
+              <li>P42 is default pre-mandate source where AOC-4 is unavailable.</li>
+              <li>DRHP supersedes IM and pitch deck on overlapping disclosures.</li>
+              <li>IM is management-stated unless externally verified.</li>
+              <li>Website is company-stated public information.</li>
+              <li>GSTIN states are proxy-only for operational footprint.</li>
+              <li>Charge creation is proxy for sanctioned debt/security, not drawn debt.</li>
+              <li>Management model is management-stated unless reconciled to audited figures.</li>
+              <li class="crit">The system must never silently resolve contradictions — it surfaces them for banker treatment.</li>
+            </ul>
+          </div>
+          <div class="onb-foot">
+            <span class="ftext"><b style="color:var(--green)">2 connected/uploaded</b> · <b style="color:var(--red)">4 missing</b> · coverage gates several modules</span>
+            <div class="spacer"></div>
+            <button class="btn ghost" onclick="goScreen(1)">← Back</button>
+            <button class="btn primary" onclick="startProcessing()">Create Workspace →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 3 — PROCESSING
+============================================================ -->
+<section class="screen" id="screen3">
+  <div class="onb">
+    <div class="onb-top">
+      <div class="logo"><div class="mark">S45</div><span class="wm">S45</span><span class="sub">AI-Native DD Workspace</span></div>
+      <div class="stepper" id="stepper3"></div>
+    </div>
+    <div class="onb-wrap">
+      <div class="onb-panel proc-wrap">
+        <div class="proc-head">
+          <div class="spin"></div>
+          <h1>Building transaction workspace</h1>
+          <p>MedAxis Systems Pvt. Ltd. · SME IPO Advisory · creating company object, source register, context store and module graph.</p>
+        </div>
+        <div class="card">
+          <div class="proc-grid">
+            <div class="proc-steps" id="procSteps"></div>
+            <div class="proc-side">
+              <h4>Live findings</h4>
+              <div id="procResults"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 4 — DD WORKSPACE LANDING
+============================================================ -->
+<section class="screen" id="screen4">
+  <header class="cmd">
+    <div class="logo"><div class="mark">S45</div></div>
+    <span class="crumb" onclick="goScreen(1)"><b>DD Workspace</b></span>
+    <span class="co">MedAxis Systems Pvt. Ltd.</span>
+    <div class="pills">
+      <span class="pill blue"><span class="dot"></span>SME IPO Advisory</span>
+      <span class="pill">CIN U33110MH2014PTC249812</span>
+      <span class="pill">A2.5 Industrial Equipment</span>
+      <span class="pill amber"><span class="dot"></span>Pre-mandate</span>
+      <span class="pill ok"><span class="dot"></span>P42 connected</span>
+      <span class="pill warn"><span class="dot"></span>AOC-4 missing</span>
+      <span class="pill warn"><span class="dot"></span>Banker review required</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="cmd-btns">
+      <button class="cbtn" onclick="switchInsp('evidence')">Sources</button>
+      <button class="cbtn" onclick="switchInsp('askai')">Ask AI</button>
+      <button class="cbtn" onclick="switchInsp('report')">Open Report Builder</button>
+      <button class="cbtn primary" onclick="downloadWorkspaceSnapshot('internal_snapshot')">↓ Export Snapshot</button>
+    </div>
+  </header>
+  <div class="shell">
+    <!-- LEFT RAIL -->
+    <aside class="rail">
+      <div class="rail-sec cmd-summary">
+        <div class="rail-h"><span class="ix">A</span>Company Command</div>
+        <div class="co-name">MedAxis Systems Pvt. Ltd.</div>
+        <div class="co-desc">Manufactures diagnostic imaging accessories and hospital-grade patient monitoring systems for institutional buyers.</div>
+        <div class="kv"><span class="k">Mandate</span><span class="v">SME IPO Advisory</span></div>
+        <div class="kv"><span class="k">Stage</span><span class="v">Pre-mandate</span></div>
+        <div class="kv"><span class="k">Primary source</span><span class="v">Probe42 / P42</span></div>
+        <div class="kv"><span class="k">Export state</span><span class="v export">Internal-only draft</span></div>
+        <div class="kv"><span class="k">Active workstream</span><span class="v">Due Diligence</span></div>
+        <div class="kv"><span class="k">Next step</span><span class="v next">Resolve evidence gaps</span></div>
+      </div>
+      <div class="rail-sec">
+        <div class="rail-h"><span class="ix">B</span>Source Register<span class="spacer"></span><span class="lnk" onclick="switchInsp('evidence')">Inspect</span></div>
+        <div class="sreg" id="sourceReg"></div>
+      </div>
+      <div class="rail-sec">
+        <div class="rail-h"><span class="ix">C</span>Banker Action Queue</div>
+        <div class="aq" id="actionQueue"></div>
+      </div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="center" id="center4">
+      <div class="cp">
+        <div class="cp-head">
+          <h1>Due Diligence Workspace</h1>
+          <p>A banker-AI investigation workspace. Modules produce editable drafts, evidence-backed findings, artifacts and report-ready blocks. Banker review controls what moves downstream.</p>
+        </div>
+
+        <div class="brief">
+          <h3>Transaction State Brief</h3>
+          <p class="bl">Project is in <b>pre-mandate due diligence</b>. P42 is connected and available as the primary pre-mandate source.</p>
+          <p class="bl warn">AOC-4 is <b>missing</b>, so audited financials are not externally usable.</p>
+          <p class="bl warn">A <b>FY25 revenue conflict</b> exists between P42 (₹118.2 Cr) and the management model (₹126.6 Cr).</p>
+          <p class="bl">Company Overview can be <b>drafted internally with caveats</b> and routed downstream.</p>
+          <p class="bl lock">Financial Analysis, IPO Eligibility and Valuation are <b>gated by source resolution</b>.</p>
+          <p class="bl lock">Recommendations to Management is <b>locked</b> until all prior modules are complete.</p>
+        </div>
+
+        <div id="moduleGroups"></div>
+
+        <div class="grp" style="margin-top:30px;">
+          <div class="grp-h"><span class="gt">Context Flow</span><span class="gr"></span><span class="gc">Independent execution · shared context store</span></div>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 0 13px;max-width:680px;">Modules are independent execution units but not analytically isolated. Each writes key outputs to a shared context store; downstream modules read it before running. Editing an upstream module flags dependents as <b style="color:var(--brown)">stale</b>.</p>
+          <div class="cflow" id="contextFlow"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT INSPECTOR -->
+    <aside class="inspector">
+      <div class="insp-tabs">
+        <button class="itab active" data-tab="askai" onclick="switchInsp('askai')">Ask AI</button>
+        <button class="itab" data-tab="issues" onclick="switchInsp('issues')">Issues<span class="ct" id="issCount">8</span></button>
+        <button class="itab" data-tab="evidence" onclick="switchInsp('evidence')">Evidence</button>
+        <button class="itab" data-tab="artifacts" onclick="switchInsp('artifacts')">Artifacts</button>
+        <button class="itab" data-tab="report" onclick="switchInsp('report')">Report</button>
+        <button class="itab" data-tab="activity" onclick="switchInsp('activity')">Activity</button>
+      </div>
+      <div class="insp-body" id="inspBody"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN 5 — MODULE WORKBENCH PREVIEW
+============================================================ -->
+<section class="screen" id="screen5">
+  <header class="cmd">
+    <div class="logo"><div class="mark">S45</div></div>
+    <span class="crumb" onclick="goScreen(4)">DD Workspace / <b>Module 00</b></span>
+    <span class="co">MedAxis Systems Pvt. Ltd.</span>
+    <div class="pills">
+      <span class="pill blue"><span class="dot"></span>SME IPO Advisory</span>
+      <span class="pill amber"><span class="dot"></span>Pre-mandate</span>
+      <span class="pill ok"><span class="dot"></span>P42 connected</span>
+      <span class="pill warn"><span class="dot"></span>AOC-4 missing</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="cmd-btns">
+      <button class="cbtn" onclick="goScreen(4)">← Back to Workspace</button>
+      <button class="cbtn primary" onclick="downloadCompanyOverviewDoc()">↓ Download Word Draft</button>
+    </div>
+  </header>
+  <div class="shell">
+    <main class="center" id="center5">
+      <div class="wb-head">
+        <div class="wb-crumb">Module 00 · Company Overview</div>
+        <h1 class="wb-title">Build the first company view</h1>
+        <p class="wb-sub">AI has drafted the first version. The banker edits paragraphs directly, verifies evidence, approves, and exports a Word draft. This is the editable banker memo that the full workbench expands on.</p>
+        <div class="wb-actions">
+          <button class="gbtn" onclick="toast('Re-generating section from latest sources…')">↻ Re-generate</button>
+          <button class="gbtn" onclick="toast('Section marked reviewed')">✓ Mark reviewed</button>
+          <button class="gbtn amber" onclick="downloadCompanyOverviewDoc()">↓ Download Word Draft (.doc)</button>
+        </div>
+      </div>
+      <div class="wb-body">
+        <div class="paper">
+          <div class="doc-title">Company Overview</div>
+          <div class="doc-sub">MedAxis Systems Pvt. Ltd. &nbsp;|&nbsp; SME IPO Advisory &nbsp;|&nbsp; Draft under banker review</div>
+          <div id="wbSections"></div>
+        </div>
+      </div>
+    </main>
+    <aside class="inspector">
+      <div class="insp-tabs">
+        <button class="itab active" data-tab="wbev" onclick="switchWB('wbev')">Evidence</button>
+        <button class="itab" data-tab="wbcm" onclick="switchWB('wbcm')">Comments</button>
+        <button class="itab" data-tab="wbex" onclick="switchWB('wbex')">Export</button>
+      </div>
+      <div class="insp-body" id="wbInsp"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- overlay modal -->
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ============================================================
+   ICONS
+============================================================ */
+const ICO={
+  doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  table:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="20"/></svg>',
+  sheet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="12" y1="3" x2="12" y2="21"/></svg>',
+  deck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>',
+  bank:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><path d="M5 21V10M19 21V10M9 21V10M15 21V10"/><path d="M3 10l9-6 9 6"/></svg>',
+  scroll:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg>',
+  arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  word:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13l1.5 5L11 14l1.5 4L14 13"/></svg>',
+  html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  print:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+  send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+  rb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+  chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
+};
+
+/* ============================================================
+   SOURCE DATA (screen 2 + register)
+============================================================ */
+const SOURCES=[
+  {id:'p42',name:'Probe42 / P42',ic:'table',state:'Connected',sc:'st-conn',role:'Primary pre-mandate source',feeds:'Company Overview, Governance, RPT, Legal, Credit History, Statutory Compliance, Financial cross-check',reg:'Connected',regTag:'st-conn',regKind:'Primary'},
+  {id:'aoc4',name:'AOC-4 / Audited Financial Statements',ic:'doc',state:'Missing',sc:'st-miss',role:'Authoritative audited financial source',feeds:'Financial Analysis, IPO Eligibility, RPT, Credit History',warn:'Blocks audited financial confirmation',reg:'Missing',regTag:'st-miss',regKind:'Authoritative'},
+  {id:'model',name:'Excel Financial Model',ic:'sheet',state:'Uploaded',sc:'st-up',role:'Management-stated historicals and projections',feeds:'Projections DD, Valuation, Financial Analysis cross-check',warn:'Historical actuals require audit reconciliation',reg:'Uploaded',regTag:'st-up',regKind:'Mgmt-stated'},
+  {id:'deck',name:'Pitch Deck',ic:'deck',state:'Uploaded',sc:'st-up',role:'Management narrative',feeds:'Industry, Business Model, Product description, Management story',reg:'Uploaded',regTag:'st-up',regKind:'Mgmt-stated'},
+  {id:'im',name:'Information Memorandum',ic:'doc',state:'Missing',sc:'st-miss',role:'Post-mandate company and transaction source',feeds:'Company Overview, Business Model, Transaction Assessment, Valuation',warn:'Blocks use-of-proceeds and funding requirement',reg:'Missing',regTag:'st-miss',regKind:'Mgmt-stated'},
+  {id:'drhp',name:'DRHP',ic:'scroll',state:'Not uploaded',sc:'st-none',role:'Comprehensive disclosure source if available',feeds:'All modules',note:'Supersedes pitch deck and IM on overlapping data',reg:'Not uploaded',regTag:'st-none',regKind:'Authoritative'},
+  {id:'sanction',name:'Sanction Letters',ic:'bank',state:'Missing',sc:'st-miss',role:'Debt terms and covenants',feeds:'Credit History, Financial Analysis',warn:'Limits debt terms analysis',reg:'Missing',regTag:'st-miss',regKind:'Authoritative'},
+  {id:'other',name:'Other Documents',ic:'plus',state:'None uploaded',sc:'st-none',role:'Banker-tagged supporting evidence',feeds:'Manually tagged to relevant modules',reg:'None uploaded',regTag:'st-none',regKind:'—'}
+];
+
+/* ============================================================
+   PROCESSING DATA (screen 3)
+============================================================ */
+const PROC_STEPS=['Creating company object','Parsing P42 source','Building source register','Extracting identity, GSTIN, directors, charges, shareholding','Detecting missing source coverage','Creating Module 00 Company Overview draft','Initializing 13 DD modules','Building dependency graph','Writing context store','Preparing banker action queue'];
+const PROC_RESULTS=[
+  {t:'P42 connected',c:'ok'},{t:'AOC-4 missing',c:'warn'},{t:'IM missing',c:'warn'},
+  {t:'FY25 revenue conflict detected',c:'warn'},{t:'Archetype A2.5 assigned — banker approval required',c:'amber'},
+  {t:'Company Overview draft created',c:'ok'},{t:'Financial Analysis blocked by source conflict',c:'warn'},
+  {t:'IPO Eligibility blocked by audited financials',c:'warn'},{t:'Valuation locked until Financial Analysis',c:'lock'}
+];
+
+/* ============================================================
+   MODULE LEDGER DATA (screen 4)
+============================================================ */
+const GROUPS=[
+  {name:'Foundation',mods:[
+    {n:'00',hero:true,t:'Company Overview',p:'Builds first evidence-backed company view and routes context downstream.',state:'Draft under banker review',sc:'ms-draft',src:'P42, website, IM/AOC-4 pending',dep:'none',art:'identity card, footprint reconciliation, overview draft',action:'Open Company Overview Workbench',open:true},
+    {n:'01',t:'Industry Analysis',p:'Market sizing, growth drivers, regulation, competitive landscape, profit pool.',state:'Not started',sc:'ms-none',src:'industry reports, web, filings, management materials',dep:'none',art:'market size chart, competitive positioning table, growth driver summary',action:'Ready to run'},
+    {n:'02',t:'Business Model & Operations',p:'Business archetype, revenue streams, value chain, unit economics, operating structure.',state:'Waiting for archetype approval',sc:'ms-wait',src:'P42, website, pitch deck, IM',dep:'Company Overview, Industry Analysis',art:'revenue mix chart, value chain diagram, unit economics table',action:'Blocked — why?'}
+  ]},
+  {name:'Core Diligence',mods:[
+    {n:'03',t:'Financial Analysis',p:'Revenue quality, growth, margins, working capital, cash flow, leverage.',state:'Blocked by AOC-4 / source conflict',sc:'ms-block',src:'AOC-4, P42, management model',dep:'Company Overview, Industry, Business Model, RPT',art:'trend charts, margin waterfall, CCC chart, cash flow bridge, leverage table',action:'Blocked — why?'},
+    {n:'04',t:'Management & Governance',p:'Promoter profiles, board composition, committees, remuneration, governance risk.',state:'Pending Corporate Structure',sc:'ms-pend',src:'P42, MCA, DRHP/IM if available',dep:'Company Overview ownership/director context',art:'governance scorecard, promoter network summary',action:'Blocked — why?'},
+    {n:'05',t:'Related Party Transactions',p:'RPT identification, materiality, arm’s-length review, conflict flags.',state:'Waiting for Governance context',sc:'ms-wait',src:'AOC-4 notes, P42, DRHP, management inputs',dep:'Management & Governance',art:'RPT summary table, materiality chart',action:'Blocked — why?'},
+    {n:'06',t:'Legal & Litigation',p:'Active/historical cases, exposure, auditor opinion history, compliance summary.',state:'Not started',sc:'ms-none',src:'P42 legal history, DRHP, legal documents',dep:'none',art:'legal status table, audit opinion log',action:'Ready to run'},
+    {n:'07',t:'Credit History',p:'Ratings, charge register, lender relationships, debt servicing, secured borrowing.',state:'P42 charges available',sc:'ms-avail',src:'P42 Charge Details, sanction letters, financials',dep:'Financial Analysis for leverage context',art:'charge timeline, debt structure table',action:'Run with P42'},
+    {n:'08',t:'Statutory Compliance',p:'GST, EPFO, MSME dues, income tax, penalties/show-cause orders.',state:'P42 GST/EPFO available',sc:'ms-avail',src:'P42, GST/EPFO, tax documents',dep:'Governance context',art:'compliance timeline, filing discipline scorecard',action:'Run with P42'}
+  ]},
+  {name:'Transaction Outputs',mods:[
+    {n:'09',t:'IPO Eligibility',p:'Checks SEBI ICDR criteria for Main Board, BSE SME, NSE SME.',state:'Blocked by audited financials',sc:'ms-block',src:'AOC-4, Financial Analysis, Company Overview',dep:'Financial Analysis',art:'eligibility scorecard, blocker action list',action:'Blocked — why?'},
+    {n:'10',t:'Peer Benchmarking',p:'Listed peer selection and comparison of financials/valuation metrics.',state:'Waiting for Industry + Financials',sc:'ms-wait',src:'listed company filings, market data, Financial Analysis',dep:'Industry Analysis, Financial Analysis',art:'peer financials table, valuation multiple scatter, margin comparison bar',action:'Blocked — why?'},
+    {n:'11',t:'Projections DD',p:'Extracts and tests management model assumptions, scenarios, sensitivities.',state:'Waiting for model review',sc:'ms-wait',src:'Excel financial model',dep:'Business Model, Financial Analysis',art:'assumptions table, scenario chart, sensitivity tornado',action:'Blocked — why?'},
+    {n:'12',t:'Valuation',p:'Relative valuation, DCF, blended range, IPO band, discount rationale.',state:'Locked until Financial Analysis',sc:'ms-lock',src:'Financial Analysis, Peer Benchmarking, Projections DD',dep:'Financial Analysis, Peer Benchmarking, Projections DD',art:'football field, sensitivity table, DCF bridge',action:'Locked'}
+  ]},
+  {name:'Synthesis',mods:[
+    {n:'13',t:'Recommendations to Management',p:'Synthesizes all prior modules into prioritized actions for management.',state:'Locked until all modules complete',sc:'ms-lock',src:'all module outputs',dep:'all 12 modules',art:'action plan table, issue severity heatmap',action:'Locked'}
+  ]}
+];
+
+const CONTEXT_FLOW=[
+  {from:'Industry + Business Model + RPT',to:'Financial Analysis',note:'sector baseline, model archetype, RPT materiality'},
+  {from:'Financial Analysis',to:'IPO Eligibility · Peer Benchmarking · Projections DD · Valuation',note:'audited actuals, margins, leverage'},
+  {from:'Management & Governance',to:'RPT · Statutory Compliance',note:'promoter & director context, compliance flags'},
+  {from:'Company Overview',to:'Business Model · Management & Governance · Credit History',note:'archetype, ownership, charge proxy'},
+  {from:'All 12 modules',to:'Recommendations to Management',note:'runs last — full synthesis'}
+];
+
+/* ============================================================
+   ACTION QUEUE (screen 4)
+============================================================ */
+const ACTIONS=[
+  {n:1,sev:'high',t:'Resolve FY25 revenue conflict',d:'P42 and management model differ by ₹8.4 Cr.',mods:'Financial Analysis, IPO Eligibility, Valuation',req:'Upload AOC-4 or select temporary source treatment',go:true},
+  {n:2,sev:'med',t:'Approve S45 archetype A2.5',d:'Drives downstream diligence routing & peer selection.',mods:'Business Model, Peer Benchmarking, Financial Analysis context',req:'Banker approve or override'},
+  {n:3,sev:'med',t:'Confirm operational footprint',d:'GSTIN list is proxy-only; website shows Bengaluru without matching GSTIN.',mods:'Business Model, Statutory Compliance',req:'Confirm via IM or management'},
+  {n:4,sev:'med',t:'Complete Corporate Structure extraction',d:'Required for ownership & director linkage.',mods:'Management & Governance, RPT, Ownership, Directors & KMP',req:'Run Corporate Structure submodule'},
+  {n:5,sev:'high',t:'Upload IM / objects-of-issue',d:'Blocks transaction assessment & use-of-proceeds.',mods:'Transaction Assessment, IPO use-of-proceeds',req:'Upload IM, DRHP or objects-of-issue table'}
+];
+
+/* ============================================================
+   ISSUES (screen 4 inspector)
+============================================================ */
+let ISSUES=[
+  {id:1,sev:'high',t:'FY25 revenue contradiction',mods:'Financial Analysis, IPO Eligibility, Valuation',req:'Upload AOC-4 or banker-select temporary source treatment',resolved:false},
+  {id:2,sev:'high',t:'AOC-4 missing',mods:'Financial Analysis, IPO Eligibility, RPT, Credit History',req:'Upload audited financial statements',resolved:false},
+  {id:3,sev:'high',t:'IM missing for transaction assessment',mods:'Transaction Assessment, Valuation',req:'Upload IM, DRHP or objects-of-issue table',resolved:false},
+  {id:4,sev:'med',t:'Archetype approval pending',mods:'Business Model, Peer Benchmarking, Financial routing',req:'Banker approve or override A2.5',resolved:false},
+  {id:5,sev:'med',t:'Corporate Structure upstream pending',mods:'Management & Governance, RPT, Ownership, Directors',req:'Complete Corporate Structure extraction',resolved:false},
+  {id:6,sev:'med',t:'Bengaluru footprint mismatch',mods:'Business Model, Statutory Compliance',req:'Confirm Bengaluru location via IM/management',resolved:false},
+  {id:7,sev:'lock',t:'Valuation locked',mods:'Valuation',req:'Resolve Financial Analysis to unlock',resolved:false},
+  {id:8,sev:'lock',t:'Recommendations locked until all modules complete',mods:'Recommendations to Management',req:'Complete all 12 prior modules',resolved:false}
+];
+
+const ARTIFACTS=[
+  {t:'Company identity card',ic:'doc',origin:'Company Overview',state:'Available',badge:'es-ready'},
+  {t:'GSTIN footprint reconciliation',ic:'table',origin:'Company Overview',state:'Internal-only',badge:'es-internal'},
+  {t:'Financial source conflict card',ic:'chart',origin:'Company Overview / Financial Analysis',state:'Internal-only',badge:'es-internal'},
+  {t:'Charge timeline',ic:'bank',origin:'Credit History',state:'Available from P42',badge:'es-ready'},
+  {t:'Eligibility blocker list',ic:'scroll',origin:'IPO Eligibility',state:'Locked',badge:'es-lock'},
+  {t:'Valuation football field',ic:'chart',origin:'Valuation',state:'Locked',badge:'es-lock'},
+  {t:'Management recommendations heatmap',ic:'table',origin:'Recommendations',state:'Locked',badge:'es-lock'}
+];
+
+const ACTIVITY=[
+  {t:'Project created from CIN and company details',c:'ok',time:'Today · 09:42'},
+  {t:'P42 connected',c:'ok',time:'Today · 09:42'},
+  {t:'Source register created',c:'ok',time:'Today · 09:43'},
+  {t:'Company Overview generated',c:'ok',time:'Today · 09:43'},
+  {t:'FY25 revenue contradiction detected',c:'warn',time:'Today · 09:43'},
+  {t:'Archetype A2.5 assigned by AI, awaiting banker approval',c:'amber',time:'Today · 09:43'},
+  {t:'AOC-4 marked missing',c:'warn',time:'Today · 09:43'},
+  {t:'Financial Analysis marked blocked',c:'warn',time:'Today · 09:44'},
+  {t:'IPO Eligibility marked blocked',c:'warn',time:'Today · 09:44'},
+  {t:'Valuation locked',c:'amber',time:'Today · 09:44'},
+  {t:'Banker opened Company Overview workbench',c:'ok',time:'Today · 09:51'},
+  {t:'Report Builder internal draft available',c:'ok',time:'Today · 09:52'}
+];
+
+const AI_PROMPTS=['What should I work on next?','Which modules are blocked and why?','What can be included in an internal draft today?','What source gaps prevent IPO Eligibility?','Generate a management ask list from all blocked modules.','Explain downstream impact of FY25 revenue conflict.','Prepare a 2-minute partner briefing from current workspace state.','Which modules can run with P42 only?'];
+const AI_ANSWERS={
+  'What should I work on next?':{h:'Recommended next actions',list:['<b>Resolve FY25 revenue conflict</b> — it gates Financial Analysis, IPO Eligibility and Valuation','<b>Approve archetype A2.5</b> — unblocks Business Model & Peer routing','<b>Run Credit History & Statutory Compliance</b> — both can proceed on P42 today'],note:'Highest leverage: the revenue conflict unblocks three downstream modules.'},
+  'Which modules are blocked and why?':{h:'5 blocked / waiting',list:['Financial Analysis — AOC-4 missing + FY25 conflict','IPO Eligibility — depends on audited Financial Analysis','Valuation — locked until Financial Analysis resolves','Business Model & Peer — waiting on archetype approval','RPT — waiting on Governance, which needs Corporate Structure'],note:'Most blocks trace to two gaps: AOC-4 and archetype approval.'},
+  'What can be included in an internal draft today?':{h:'Internal draft scope (with caveats)',list:['Company Overview — caveated, internal-only','Source coverage summary','Open issues list','Credit charge timeline from P42','Statutory compliance preliminary view'],note:'Nothing audited can be marked externally usable until AOC-4 arrives.'},
+  'What source gaps prevent IPO Eligibility?':{h:'IPO Eligibility blockers',list:['AOC-4 missing — no audited track record, NTA, net worth, operating profit','FY25 revenue unresolved — eligibility math cannot be trusted','Financial Analysis not run — ICDR criteria depend on it'],note:'Upload AOC-4 to unblock the chain; criterion-level pass/fail will populate after Financial Analysis.'},
+  'Generate a management ask list from all blocked modules.':{h:'Consolidated management asks',list:['Provide audited AOC-4 (FY23–FY25)','Reconcile FY25 revenue (model ₹126.6 Cr vs P42 ₹118.2 Cr)','Provide IM / objects-of-issue and use-of-proceeds','Confirm Bengaluru operating location + GSTIN','Provide cap table with pledge status','Clarify FY21/FY24 charges — drawn vs sanctioned'],note:'Push to management ask list from the Issues tab, or export as .doc.'},
+  'Explain downstream impact of FY25 revenue conflict.':{h:'FY25 conflict — downstream impact',list:['Financial Analysis — cannot compute trusted margins/growth','IPO Eligibility — track-record & profit tests unreliable','Valuation — relative & DCF base year contaminated','Projections DD — historical base for scenarios in doubt'],note:'System will not silently resolve — banker must select source treatment or upload AOC-4.'},
+  'Prepare a 2-minute partner briefing from current workspace state.':{h:'Partner briefing · 5 points',list:['MedTech manufacturer (A2.5), MH-incorporated 2014, SME IPO track','P42 connected; AOC-4 + IM missing — diligence is internal-only','FY25 revenue unresolved: ₹118.2 Cr (P42) vs ₹126.6 Cr (model)','Company Overview drafted with caveats; archetype awaits approval','Financial Analysis, IPO Eligibility, Valuation gated on source resolution'],note:'Generated from current workspace state. Not export-approved.'},
+  'Which modules can run with P42 only?':{h:'Runnable on P42 today',list:['<b>Credit History</b> — charge register & timeline from P42','<b>Statutory Compliance</b> — GST/EPFO filing history from P42','<b>Company Overview</b> — internal draft with caveats','<b>Legal & Litigation</b> — P42 legal history (preliminary)'],note:'These produce internal-only outputs until externally confirmed.'}
+};
+
+/* ============================================================
+   COMPANY OVERVIEW SECTIONS (screen 5 workbench)
+============================================================ */
+const WB_SECTIONS=[
+  {id:'identity',num:'01',title:'Company Identity',badge:'confirmed',status:'Confirmed · review pending',sources:['P42 Key Statistics','P42 Company Status'],
+   text:`MedAxis Systems Pvt. Ltd. is an active private company incorporated on 14 February 2014 and registered in Maharashtra. Legal identity fields — CIN, legal name, incorporation date, company type, registered office and status — are sourced from P42 structured company master data.`,
+   ev:{src:'P42 Key Statistics · Company Status',conf:'High',estate:'Confirmed',rule:'Exportable after banker review. No conflicts detected.'}},
+  {id:'footprint',num:'02',title:'Registered & Operational Footprint',badge:'proxy',status:'Proxy-only',sources:['P42 GSTIN section','Website scrape'],
+   text:`The registered office is in Maharashtra. P42 shows active GSTINs in Maharashtra and Gujarat. The website also lists a Bengaluru service office, which does not reconcile with active GSTIN records. This footprint should be treated as proxy-only until confirmed through IM or management.`,
+   ev:{src:'P42 GSTIN section',conf:'High',estate:'Proxy-only',rule:'Internal-only unless IM or management confirms operational footprint.'}},
+  {id:'ownership',num:'03',title:'Ownership & Control',badge:'review',status:'Upstream pending',sources:['P42 shareholding','Corporate Structure (pending)'],
+   text:`Ownership and capital structure are pending upstream Corporate Structure extraction. Preliminary P42 data indicates paid-up capital of ₹4.82 Cr and promoter holding of 61.4 percent. These figures should not be treated as approved until Corporate Structure submodules are reviewed.`,
+   ev:{src:'P42 shareholding pattern',conf:'Medium',estate:'Inferred · upstream pending',rule:'Locked until Corporate Structure submodule completes.'}},
+  {id:'archetype',num:'04',title:'Industry & Archetype',badge:'review',status:'Review required',sources:['P42 NIC fields','Website','S45 taxonomy'],
+   text:`MedAxis operates as an industrial equipment / component manufacturer serving institutional healthcare buyers. The current S45 archetype is A2.5 Industrial Equipment. This classification should be banker-approved because it drives downstream diligence routing, peer selection and financial metric expectations.`,
+   ev:{src:'P42 NIC · website · S45 taxonomy',conf:'Medium',estate:'Review required',rule:'Drives downstream routing — requires explicit banker approval.'}},
+  {id:'financial',num:'05',title:'Financial Snapshot',badge:'contra',status:'Contradictory · internal only',sources:['P42 financials','Management model','AOC-4 missing'],missingSrc:['AOC-4 missing'],
+   text:`FY25 revenue is currently contradictory across sources. P42 indicates ₹118.2 Cr while the management model indicates ₹126.6 Cr. Until AOC-4 is uploaded, the financial snapshot should remain internal-only and must not be exported as approved. Financial Analysis, IPO Eligibility and Valuation should not consume final FY25 actuals until this conflict is resolved.`,
+   ev:{src:'P42 financials vs management model',conf:'Contradictory',estate:'Contradictory',rule:'Internal-only. Not exportable as approved until AOC-4 resolves the conflict.'}},
+  {id:'transaction',num:'06',title:'Transaction Assessment',badge:'review',status:'Waiting for IM',sources:['Project setup','IM missing','DRHP missing'],missingSrc:['IM missing','DRHP missing'],
+   text:`The project is marked as SME IPO Advisory. However, no Information Memorandum, DRHP draft or objects-of-issue table has been uploaded. Use-of-proceeds, total funding requirement, debt repayment plan, ICDR checks and post-raise leverage cannot run until source documents are available.`,
+   ev:{src:'Project setup',conf:'—',estate:'Missing source',rule:'Locked. Use-of-proceeds & ICDR checks cannot run until documents available.'}}
+];
+
+/* ============================================================
+   RUNTIME STATE
+============================================================ */
+let currentScreen=1;
+let currentTab='askai';
+let wbTab='wbev';
+let selectedSource=null;
+let selectedWB='identity';
+let WB_COMMENTS=[];
+const wbState={};
+WB_SECTIONS.forEach(s=>wbState[s.id]={edited:false,approved:false});
+
+/* ============================================================
+   NAV
+============================================================ */
+function goScreen(n){
+  currentScreen=n;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen'+n).classList.add('active');
+  window.scrollTo(0,0);
+  renderStepper();
+  if(n===4){renderWorkspace();}
+  if(n===5){renderWorkbench();}
+}
+function renderStepper(){
+  const steps=['Project','Sources','Build'];
+  [1,2,3].forEach(sc=>{
+    const el=document.getElementById('stepper'+sc);if(!el)return;
+    el.innerHTML=steps.map((s,i)=>{
+      const idx=i+1;let cls=idx<sc?'done':idx===sc?'active':'';
+      return `<div class="stp ${cls}"><span class="sd">${idx<sc?'✓':idx}</span>${s}</div>`+(i<2?'<span class="stp-line"></span>':'');
+    }).join('');
+  });
+}
+
+/* segmented controls */
+document.querySelectorAll('.seg').forEach(seg=>{
+  seg.addEventListener('click',e=>{
+    if(e.target.tagName!=='BUTTON')return;
+    seg.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+    e.target.classList.add('on');seg.dataset.val=e.target.textContent;
+  });
+});
+
+/* ============================================================
+   SCREEN 2 render
+============================================================ */
+function renderSources(){
+  document.getElementById('sourceList').innerHTML=SOURCES.map(s=>`
+    <div class="src-row">
+      <div class="src-ic">${ICO[s.ic]}</div>
+      <div class="src-main">
+        <div class="src-name">${s.name}<span class="sstate ${s.sc}">${s.state}</span></div>
+        <div class="src-role">${s.role}</div>
+        <div class="src-feeds">Feeds: <b>${s.feeds}</b></div>
+        ${s.warn?`<div class="src-warn">⚠ ${s.warn}</div>`:''}
+        ${s.note?`<div class="src-warn note">› ${s.note}</div>`:''}
+      </div>
+      <button class="src-toggle" onclick="event.stopPropagation();toast('${(s.state==='Missing'||s.state==='Not uploaded'||s.state==='None uploaded')?'Upload / connect '+s.name:s.name+' is available'}')">${(s.state==='Missing'||s.state==='Not uploaded'||s.state==='None uploaded')?'Upload':'Manage'}</button>
+    </div>`).join('');
+}
+
+/* ============================================================
+   SCREEN 3 processing
+============================================================ */
+function startProcessing(){
+  goScreen(3);
+  const stepsEl=document.getElementById('procSteps');
+  const resEl=document.getElementById('procResults');
+  stepsEl.innerHTML=PROC_STEPS.map((s,i)=>`<div class="pstep" id="ps-${i}"><span class="pi">${i+1}</span>${s}</div>`).join('');
+  resEl.innerHTML=PROC_RESULTS.map((r,i)=>`<div class="pres" id="pr-${i}"><span class="pd ${r.c}"></span><span class="pt">${r.t}</span></div>`).join('');
+  let i=0;
+  const tick=()=>{
+    if(i>0)document.getElementById('ps-'+(i-1)).classList.replace('run','done');
+    if(i<PROC_STEPS.length){
+      const el=document.getElementById('ps-'+i);el.classList.add('run');
+      // reveal results progressively
+      if(i>=2 && i-2<PROC_RESULTS.length)setTimeout(()=>{const pr=document.getElementById('pr-'+(i-2));if(pr)pr.classList.add('show');},120);
+      i++;
+      setTimeout(tick,i<=2?420:560);
+    } else {
+      // reveal remaining results
+      PROC_RESULTS.forEach((r,k)=>setTimeout(()=>{const pr=document.getElementById('pr-'+k);if(pr)pr.classList.add('show');},k*70));
+      setTimeout(()=>goScreen(4),1100);
+    }
+  };
+  setTimeout(tick,400);
+}
+
+/* ============================================================
+   SCREEN 4 render
+============================================================ */
+function renderWorkspace(){
+  renderSourceReg();renderActionQueue();renderModuleGroups();renderContextFlow();renderInsp();updateCounts();
+}
+function renderSourceReg(){
+  document.getElementById('sourceReg').innerHTML=SOURCES.map(s=>`
+    <div class="sreg-row ${selectedSource===s.id?'active':''}" onclick="selectSource('${s.id}')">
+      <span class="sn">${s.name.split(' / ')[0].replace(' / Audited Financial Statements','')}</span>
+      <span class="stag ${s.regTag}">${s.reg}</span>
+    </div>`).join('');
+}
+function selectSource(id){selectedSource=id;renderSourceReg();switchInsp('evidence');}
+function renderActionQueue(){
+  document.getElementById('actionQueue').innerHTML=ACTIONS.map(a=>`
+    <div class="aq-item">
+      <div class="aq-top"><div class="aq-n ${a.sev}">${a.n}</div><div class="aq-t">${a.t}</div></div>
+      <div class="aq-d">${a.d}</div>
+      <div class="aq-mods">Affects: <b>${a.mods}</b></div>
+      <div class="aq-mods">Required: ${a.req}</div>
+      <div class="aq-btns">
+        <button class="aq-btn go" onclick="${a.go?"goScreen(5)":"explainBlock('"+a.t.replace(/'/g,'')+"')"}">Open module</button>
+        <button class="aq-btn" onclick="addMgmtAsk('${a.t.replace(/'/g,'')}')">Management ask</button>
+        <button class="aq-btn" onclick="switchInsp('askai');askAI('${a.t.replace(/'/g,'')}')">Ask AI</button>
+      </div>
+    </div>`).join('');
+}
+function renderModuleGroups(){
+  document.getElementById('moduleGroups').innerHTML=GROUPS.map(g=>`
+    <div class="grp">
+      <div class="grp-h"><span class="gt">${g.name}</span><span class="gr"></span><span class="gc">${g.mods.length} module${g.mods.length>1?'s':''}</span></div>
+      <div class="mled">
+        ${g.mods.map(m=>`
+          <div class="mrow ${m.hero?'hero foundation':''}" onclick="${m.open?"window.open('Company Overview Workbench.html','_blank')":'moduleClick(this)'}" data-mod="${m.t}" data-state="${m.state}" data-dep="${m.dep}" data-src="${m.src}" data-action="${m.action}">
+            <div class="mnum">${m.n}</div>
+            <div class="mbody">
+              <div class="mhead"><span class="mtitle">${m.t}</span></div>
+              <div class="mpurpose">${m.p}</div>
+              <div class="mmeta">
+                <span>Sources: <b>${m.src}</b></span>
+                <span>Depends: <b>${m.dep}</b></span>
+              </div>
+            </div>
+            <div class="mright">
+              <span class="mstate ${m.sc}">${m.state}</span>
+              ${m.open?`<span class="maction" onclick="event.stopPropagation();window.open('Company Overview Workbench.html','_blank')">${ICO.arrow} Open Workbench</span>`:`<span class="maction" onclick="event.stopPropagation();${m.action.includes('Blocked')?"moduleClick(this.closest('.mrow'))":m.action.includes('Locked')?"moduleClick(this.closest('.mrow'))":"toast('"+m.action+" — "+m.t+"')"}">${m.action.includes('Locked')?ICO.lock+' Locked':m.action}</span>`}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+function moduleClick(row){
+  openModal({
+    kind:'Module',title:row.dataset.mod,
+    rows:[['State',row.dataset.state],['Sources',row.dataset.src],['Dependencies',row.dataset.dep],['Next action',row.dataset.action]],
+    foot:`<button class="btn ghost" onclick="closeModal()">Close</button><div class="spacer"></div><button class="btn" onclick="closeModal();switchInsp('askai');askAI('Which modules are blocked and why?')">Ask AI why</button><button class="btn primary" onclick="closeModal();switchInsp('issues')">View issues</button>`
+  });
+}
+function explainBlock(t){switchInsp('askai');askAI('Which modules are blocked and why?');}
+function renderContextFlow(){
+  document.getElementById('contextFlow').innerHTML=CONTEXT_FLOW.map(c=>`
+    <div class="cflow-row">
+      <span class="cflow-from">${c.from}</span>
+      <span class="cflow-arrow">${ICO.arrow}</span>
+      <span class="cflow-to">${c.to}<div class="cflow-note">${c.note}</div></span>
+    </div>`).join('');
+}
+
+/* ============================================================
+   RIGHT INSPECTOR (screen 4)
+============================================================ */
+function switchInsp(tab){
+  currentTab=tab;
+  document.querySelectorAll('#screen4 .itab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  renderInsp();
+}
+function renderInsp(){
+  const el=document.getElementById('inspBody');
+  if(currentTab==='askai')el.innerHTML=renderAskAI();
+  else if(currentTab==='issues')el.innerHTML=renderIssues();
+  else if(currentTab==='evidence')el.innerHTML=renderEvidence();
+  else if(currentTab==='artifacts')el.innerHTML=renderArtifacts();
+  else if(currentTab==='report')el.innerHTML=renderReportBuilder();
+  else if(currentTab==='activity')el.innerHTML=renderActivity();
+}
+function renderAskAI(){
+  return `<p class="insp-h">Workspace Copilot</p>
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:13px;line-height:1.45;">Knows company details, sources, module states, open issues and outputs.</div>
+    <div class="ai-prompts">${AI_PROMPTS.map(p=>`<button class="ai-prompt" onclick="askAI(this.dataset.q)" data-q="${p.replace(/"/g,'&quot;')}">${p}</button>`).join('')}</div>
+    <div class="ai-log" id="aiLog"></div>
+    <div class="ai-ask"><input id="aiInput" placeholder="Ask the copilot…" onkeydown="if(event.key==='Enter')askAI(this.value)"><button onclick="askAI(document.getElementById('aiInput').value)">↑</button></div>`;
+}
+function askAI(q){
+  if(!q||!q.trim())return;q=q.trim();
+  if(currentTab!=='askai')switchInsp('askai');
+  const log=document.getElementById('aiLog');const inp=document.getElementById('aiInput');if(inp)inp.value='';
+  log.innerHTML+=`<div class="ai-msg u">${q}</div><div class="ai-msg a" id="aiPending"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  document.getElementById('inspBody').scrollTop=99999;
+  setTimeout(()=>{
+    const pend=document.getElementById('aiPending');if(!pend)return;
+    let ans=AI_ANSWERS[q];
+    if(!ans){
+      const k=Object.keys(AI_ANSWERS).find(key=>q.toLowerCase().includes(key.toLowerCase().slice(0,14)));
+      ans=k?AI_ANSWERS[k]:{h:'Workspace Copilot',list:['I reason over the live workspace: sources, module states, issues and context flow.','Try a suggested prompt above for a grounded answer.'],note:'Every answer is traceable to the source register.'};
+    }
+    pend.innerHTML=`<div class="ah">${ICO.ai} S45 Copilot · ${ans.h}</div><ul>${ans.list.map(l=>`<li>${l}</li>`).join('')}</ul><div style="margin-top:8px;font-size:11px;color:var(--muted);">${ans.note}</div>`;
+    pend.id='';document.getElementById('inspBody').scrollTop=99999;
+  },650);
+}
+function renderIssues(){
+  const open=ISSUES.filter(i=>!i.resolved).length;
+  return `<p class="insp-h">Unresolved issues · ${open} open</p>`+ISSUES.map(i=>`
+    <div class="iss sev-${i.sev} ${i.resolved?'resolved':''}">
+      <div class="iss-hd"><span class="iss-t">${i.t}</span><span class="sev ${i.sev}">${i.sev==='high'?'HIGH':i.sev==='med'?'MED':'LOCKED'}</span></div>
+      <div class="iss-meta">Affects: <b>${i.mods}</b><br>Required: ${i.req}</div>
+      <div class="iss-btns">
+        <button class="ibtn" onclick="toast('Task created: ${i.t.replace(/'/g,'')}')">Create task</button>
+        <button class="ibtn" onclick="switchInsp('askai');askAI('Explain ${i.t.replace(/'/g,'')}')">Ask AI</button>
+        <button class="ibtn res" onclick="resolveIssue(${i.id})">${i.resolved?'Reopen':'Mark resolved'}</button>
+        <button class="ibtn" onclick="addMgmtAsk('${i.t.replace(/'/g,'')}')">Management ask</button>
+      </div>
+    </div>`).join('');
+}
+function resolveIssue(id){const i=ISSUES.find(x=>x.id===id);i.resolved=!i.resolved;updateCounts();renderInsp();toast(i.resolved?'Issue marked resolved':'Issue reopened');}
+function addMgmtAsk(t){toast('Added to management ask list: '+t);}
+function renderEvidence(){
+  const src=selectedSource?SOURCES.find(s=>s.id===selectedSource):null;
+  let sel='';
+  if(src)sel=`<div class="ev-block"><h5>Selected source</h5>
+    <div style="background:#f4eee2;border-left:3px solid var(--amber);padding:10px 12px;border-radius:0 6px 6px 0;font-size:12.5px;">
+    <b>${src.name}</b><br><span style="color:var(--muted);font-size:11.5px;">${src.role}</span><br>
+    <span style="font-size:11px;color:var(--brown);">Feeds: ${src.feeds}</span><br>
+    <span class="sstate ${src.regTag}" style="margin-top:6px;display:inline-block;">${src.reg} · ${src.regKind}</span></div></div>`;
+  return `<p class="insp-h">Project evidence coverage</p>${sel}
+    <div class="ev-block"><h5>Available sources</h5>
+      <div class="ev-item"><span class="ed" style="background:var(--green)"></span>Probe42 / P42<span class="em t-conf" style="background:var(--green-bg);color:var(--green)">Connected</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--blue)"></span>Excel Financial Model<span class="em" style="background:var(--blue-bg);color:var(--blue)">Mgmt-stated</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--blue)"></span>Pitch Deck<span class="em" style="background:var(--blue-bg);color:var(--blue)">Mgmt-stated</span></div>
+    </div>
+    <div class="ev-block"><h5>Missing sources</h5>
+      <div class="ev-item"><span class="ed" style="background:var(--red)"></span>AOC-4 (authoritative)<span class="em" style="background:var(--red-bg);color:var(--red)">Missing</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--red)"></span>Information Memorandum<span class="em" style="background:var(--red-bg);color:var(--red)">Missing</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--red)"></span>Sanction Letters<span class="em" style="background:var(--red-bg);color:var(--red)">Missing</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--muted-2)"></span>DRHP<span class="em" style="background:#e9e3d6;color:var(--muted)">Not uploaded</span></div>
+    </div>
+    <div class="ev-block"><h5>Contradictions &amp; flags</h5>
+      <div class="ev-item"><span class="ed" style="background:var(--red)"></span>FY25 revenue: P42 vs model<span class="em" style="background:var(--red-bg);color:var(--red)">Contradictory</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--blue)"></span>GSTIN footprint<span class="em" style="background:var(--blue-bg);color:var(--blue)">Proxy-only</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--blue)"></span>Charge register (sanctioned)<span class="em" style="background:var(--blue-bg);color:var(--blue)">Proxy-only</span></div>
+      <div class="ev-item"><span class="ed" style="background:var(--amber)"></span>Archetype A2.5<span class="em" style="background:var(--amber-bg);color:var(--amber)">Approval pending</span></div>
+    </div>
+    <div class="hier-mini"><h5>⚖ Source hierarchy</h5><ul>
+      <li>AOC-4 is authoritative for audited financials.</li>
+      <li>P42 is default pre-mandate source where AOC-4 unavailable.</li>
+      <li>DRHP supersedes IM and pitch deck on overlapping disclosure.</li>
+      <li>IM is management-stated unless externally verified.</li>
+      <li>Website is company-stated public information.</li>
+      <li>GSTIN states are proxy-only for operational footprint.</li>
+      <li>Charge creation is proxy for sanctioned debt/security, not drawn debt.</li>
+      <li>Management model is management-stated unless reconciled to audited figures.</li>
+      <li class="crit">The system must never silently resolve contradictions.</li>
+    </ul></div>`;
+}
+function renderArtifacts(){
+  return `<p class="insp-h">Artifact gallery</p>`+ARTIFACTS.map(a=>`
+    <div class="art">
+      <div class="art-ic">${ICO[a.ic]}</div>
+      <div class="art-b">
+        <div class="art-t">${a.t}</div>
+        <div class="art-m">Origin: <b>${a.origin}</b></div>
+        <span class="art-badge" style="${badgeStyle(a.badge)}">${a.state}</span>
+      </div></div>`).join('');
+}
+function badgeStyle(b){
+  if(b==='es-ready')return 'background:var(--green-bg);color:var(--green)';
+  if(b==='es-internal')return 'background:#39312a;color:#e7c98f';
+  if(b==='es-lock')return 'background:#e6e1d6;color:var(--muted)';
+  return 'background:var(--amber-bg);color:var(--amber)';
+}
+function renderReportBuilder(){
+  const avail=['Company Overview with caveats','Source coverage','Open issues list','Credit charge timeline from P42','Statutory compliance preliminary view'];
+  const lock=['Approved Financial Analysis','IPO Eligibility','Valuation','Recommendations to Management','Use of proceeds','Funding adequacy'];
+  return `<p class="insp-h">Report Builder · readiness</p>
+    <div class="rb-grp avail"><h5>${ICO.check} Available for internal draft</h5>
+      ${avail.map(x=>`<div class="rb-item"><span class="ri" style="color:var(--green)">${ICO.check}</span>${x}</div>`).join('')}</div>
+    <div class="rb-grp lock"><h5>${ICO.lock} Locked / cannot include</h5>
+      ${lock.map(x=>`<div class="rb-item lk"><span class="ri">${ICO.lock}</span>${x}</div>`).join('')}</div>
+    <div class="exp-btns">
+      <button class="ebtn primary" onclick="downloadWorkspaceSnapshot('internal_snapshot')">${ICO.word}Internal workspace snapshot (.doc)</button>
+      <button class="ebtn" onclick="downloadWorkspaceSnapshot('approved_outputs_only')">${ICO.word}Approved module outputs only (.doc)</button>
+      <button class="ebtn" onclick="downloadWorkspaceSnapshot('management_asks')">${ICO.send}Issue list as management asks (.doc)</button>
+      <button class="ebtn" onclick="downloadWorkspaceHTML()">${ICO.html}Download HTML snapshot</button>
+      <button class="ebtn" onclick="window.print()">${ICO.print}Print / Save as PDF</button>
+      <button class="ebtn" onclick="toast('Opening full Report Builder…')">${ICO.rb}Open full Report Builder</button>
+    </div>`;
+}
+function renderActivity(){
+  return `<p class="insp-h">Activity · audit trail</p><div class="act">${ACTIVITY.map(a=>`
+    <div class="act-item ${a.c}"><div class="act-t">${a.t}</div><div class="act-time">${a.time}</div></div>`).join('')}</div>`;
+}
+function updateCounts(){
+  const el=document.getElementById('issCount');const open=ISSUES.filter(i=>!i.resolved).length;
+  el.textContent=open;el.style.display=open?'':'none';
+}
+
+/* ============================================================
+   SCREEN 5 workbench
+============================================================ */
+function renderWorkbench(){renderWBSections();renderWBInsp();}
+function renderWBSections(){
+  document.getElementById('wbSections').innerHTML=WB_SECTIONS.map(s=>{
+    const st=wbState[s.id];
+    let badges=`<span class="badge bg-${s.badge}">${s.status}</span>`;
+    if(st.approved)badges+=` <span class="badge bg-approved">✓ Banker approved</span>`;
+    if(st.edited)badges+=` <span class="badge bg-edited">Banker edited</span>`;
+    if(s.id==='financial')badges+=` <span class="badge bg-internal">Internal only</span>`;
+    const chips=s.sources.map(src=>`<span class="chip ${(s.missingSrc||[]).includes(src)?'missing':''}">${src}</span>`).join('');
+    return `<div class="wsec" id="ws-${s.id}">
+      <div class="wsec-hd"><span class="wsec-num">${s.num}</span><span class="wsec-title">${s.title}</span>${badges}</div>
+      <p class="wpara ${st.approved?'approved':''}" id="wp-${s.id}" contenteditable="true" onfocus="selectWB('${s.id}')" oninput="wbEdit('${s.id}')" onclick="selectWB('${s.id}')">${s.text}</p>
+      <div class="wfoot no-print">
+        <div class="chips">${chips}</div>
+        <div class="wpc">
+          <button class="pc appr" onclick="wbApprove('${s.id}')">${ICO.check} Approve</button>
+          <button class="pc" onclick="wbComment('${s.id}')">＋ Comment</button>
+          <button class="pc" onclick="selectWB('${s.id}');switchWB('wbev')">⊙ Evidence</button>
+        </div>
+      </div></div>`;
+  }).join('');
+}
+function selectWB(id){selectedWB=id;if(wbTab==='wbev')renderWBInsp();}
+function wbEdit(id){if(!wbState[id].edited){wbState[id].edited=true;refreshWB(id);}}
+function refreshWB(id){
+  const s=WB_SECTIONS.find(x=>x.id===id);const st=wbState[id];
+  const hd=document.querySelector('#ws-'+id+' .wsec-hd');if(!hd)return;
+  let badges=`<span class="wsec-num">${s.num}</span><span class="wsec-title">${s.title}</span><span class="badge bg-${s.badge}">${s.status}</span>`;
+  if(st.approved)badges+=` <span class="badge bg-approved">✓ Banker approved</span>`;
+  if(st.edited)badges+=` <span class="badge bg-edited">Banker edited</span>`;
+  if(s.id==='financial')badges+=` <span class="badge bg-internal">Internal only</span>`;
+  hd.innerHTML=badges;
+}
+function wbApprove(id){wbState[id].approved=true;const p=document.getElementById('wp-'+id);if(p)p.classList.add('approved');refreshWB(id);toast('Paragraph approved');if(wbTab==='wbex')renderWBInsp();}
+function wbComment(id){selectWB(id);switchWB('wbcm');setTimeout(()=>{const ta=document.getElementById('wbNewCmt');if(ta)ta.focus();},80);}
+function switchWB(tab){wbTab=tab;document.querySelectorAll('#screen5 .itab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));renderWBInsp();}
+function renderWBInsp(){
+  const el=document.getElementById('wbInsp');
+  if(wbTab==='wbev'){
+    const s=WB_SECTIONS.find(x=>x.id===selectedWB);const e=s.ev;
+    el.innerHTML=`<p class="insp-h">Evidence · ${s.title}</p>
+      <div style="background:#f4eee2;border-left:3px solid var(--amber);padding:11px 13px;border-radius:0 6px 6px 0;font-family:var(--serif);font-size:14px;line-height:1.5;margin-bottom:14px;color:var(--ink);">${s.text.slice(0,160)}…</div>
+      <div class="ev-item" style="border-bottom:1px solid var(--line)"><span style="color:var(--muted);flex:1">Source</span><b style="text-align:right">${e.src}</b></div>
+      <div class="ev-item" style="border-bottom:1px solid var(--line)"><span style="color:var(--muted);flex:1">Confidence</span><b>${e.conf}</b></div>
+      <div class="ev-item" style="border-bottom:1px solid var(--line)"><span style="color:var(--muted);flex:1">Evidence state</span><b>${e.estate}</b></div>
+      <div class="hier-mini" style="margin-top:14px"><h5>Export rule</h5><div style="font-size:12px;color:var(--brown);line-height:1.5">${e.rule}</div></div>`;
+  } else if(wbTab==='wbcm'){
+    const s=WB_SECTIONS.find(x=>x.id===selectedWB);
+    const list=WB_COMMENTS.length?WB_COMMENTS.map(c=>`<div class="art" style="display:block"><div style="font-size:11px;font-weight:600;color:var(--amber);cursor:pointer;margin-bottom:4px" onclick="document.getElementById('ws-${c.sec}').scrollIntoView({block:'center'})">↳ ${c.secT}</div><div style="font-size:12.5px;color:var(--ink-2);line-height:1.5">${c.text}</div></div>`).join(''):'<div style="font-size:12px;color:var(--muted);margin-bottom:14px">No comments yet.</div>';
+    el.innerHTML=`<p class="insp-h">Comments</p>${list}
+      <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Comment on <b style="color:var(--amber)">${s.title}</b></div>
+      <textarea id="wbNewCmt" style="width:100%;border:1px solid var(--line-2);border-radius:7px;padding:9px;font-size:12px;min-height:58px;background:var(--paper);resize:vertical" placeholder="Add a banker comment…"></textarea>
+      <button class="ebtn primary" style="margin-top:7px;justify-content:center" onclick="wbPostComment()">Post comment</button>`;
+  } else {
+    el.innerHTML=`<p class="insp-h">Export · Company Overview</p>
+      <div class="exp-btns" style="margin-top:0">
+        <button class="ebtn primary" onclick="downloadCompanyOverviewDoc()">${ICO.word}Download Word Draft (.doc)</button>
+        <button class="ebtn" onclick="downloadCompanyOverviewDoc(true)">${ICO.word}Approved paragraphs only (.doc)</button>
+        <button class="ebtn" onclick="window.print()">${ICO.print}Print / Save as PDF</button>
+        <button class="ebtn" onclick="goScreen(4)">${ICO.rb}Back to Workspace</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5">This is the lighter inline workbench. The full Company Overview Workbench (source table, context outputs, report preview, artifacts, AI rewrite) exists as a separate surface.</div>`;
+  }
+}
+function wbPostComment(){
+  const ta=document.getElementById('wbNewCmt');const txt=ta.value.trim();if(!txt)return;
+  const s=WB_SECTIONS.find(x=>x.id===selectedWB);
+  WB_COMMENTS.push({sec:selectedWB,secT:s.title,text:txt});
+  toast('Comment added to '+s.title);renderWBInsp();
+}
+
+/* ============================================================
+   MODAL
+============================================================ */
+function openModal(cfg){
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-top"><div class="mk">${cfg.kind}</div><h3>${cfg.title}</h3></div>
+    <div class="modal-body">${cfg.rows.map(r=>`<div class="mrow2"><span class="mk2">${r[0]}</span><span class="mv2">${r[1]}</span></div>`).join('')}</div>
+    <div class="modal-foot">${cfg.foot}</div>`;
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');}
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
+
+/* ============================================================
+   WORD / HTML / PRINT EXPORT
+============================================================ */
+function wordWrap(title,sub,body){
+  return `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${title}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+<style>@page{size:A4;margin:2.2cm;}body{font-family:'Martina Plantijn',Georgia,'Times New Roman',serif;color:#2C2C2B;}h1{font-size:20pt;text-align:center;margin:0 0 2pt;}h2{font-size:13.5pt;margin:16pt 0 2pt;}.sub{text-align:center;font-family:Arial;font-size:9pt;color:#91918E;border-bottom:1px solid #ccc;padding-bottom:10pt;margin-bottom:8pt;}.meta{font-size:8pt;color:#91918E;font-family:Arial;margin:0 0 6pt;}.cav{font-size:9pt;color:#E56458;font-family:Arial;border-left:3px solid #E56458;padding-left:8pt;margin:5pt 0 0;}.wm{text-align:center;font-family:Arial;font-size:8.5pt;color:#E56458;border:1px solid #E56458;padding:6pt;margin:0 0 14pt;}</style>
+</head><body><h1>${title}</h1><div class="sub">${sub}</div>${body}</body></html>`;
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dl(blob,name){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove();},400);}
+const DATE=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+function moduleStatesBody(){
+  let b='<h2>Module States</h2>';
+  GROUPS.forEach(g=>{b+=`<p class="meta"><b>${g.name.toUpperCase()}</b></p>`;g.mods.forEach(m=>{b+=`<p style="font-size:10.5pt;margin:0 0 3pt;"><b>${m.n} ${m.t}</b> — ${m.state}</p>`;});});
+  return b;
+}
+function issuesBody(){
+  const open=ISSUES.filter(i=>!i.resolved);
+  let b=`<h2>Unresolved Issues (${open.length})</h2><ol>`;
+  open.forEach(i=>{b+=`<li style="font-size:10.5pt;margin-bottom:5pt;"><b>[${i.sev.toUpperCase()}] ${i.t}</b> — affects ${i.mods}. Required: ${i.req}</li>`;});
+  return b+'</ol>';
+}
+function downloadWorkspaceSnapshot(mode){
+  mode=mode||'internal_snapshot';
+  const title='MedAxis Systems Pvt. Ltd. — DD Workspace';
+  const sub=`SME IPO Advisory · Pre-mandate · ${DATE}`;
+  let body='',sfx='';
+  if(mode==='management_asks'){
+    sfx='Management_Asks';
+    body=`<div class="wm">MANAGEMENT ASK LIST · ${DATE}</div>
+      <h2>Outstanding Management Requests</h2><ol>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>Audited AOC-4</b> (FY23–FY25) — required before audited financials can be marked externally usable.</li>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>Information Memorandum / objects-of-issue table</b> — required for transaction assessment and use-of-proceeds.</li>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>FY25 revenue reconciliation</b> — management model ₹126.6 Cr vs P42 ₹118.2 Cr (variance ₹8.4 Cr).</li>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>Bengaluru office confirmation</b> — operating location with no matching GSTIN.</li>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>Corporate Structure / cap table confirmation</b> — promoter holding and pledge status.</li>
+      <li style="font-size:11pt;margin-bottom:6pt;"><b>Debt / charge reconciliation</b> — confirm FY21/FY24 charges reflect drawn vs sanctioned limits.</li>
+      </ol>`;
+  } else if(mode==='approved_outputs_only'){
+    sfx='Approved';
+    const appr=WB_SECTIONS.filter(s=>wbState[s.id].approved);
+    body=`<h2>Approved Module Outputs</h2><p class="meta">Includes only banker-approved or available outputs.</p>`;
+    if(appr.length){appr.forEach(s=>{body+=`<h2>${s.num} ${s.title}</h2><p class="meta">Status: BANKER APPROVED</p><p style="font-size:11.5pt;line-height:1.6">${esc(getWBText(s.id))}</p>`;});}
+    else body+=`<p style="font-size:11pt;color:#E56458">No paragraphs have been banker-approved yet. Approve content in the Company Overview Workbench to populate this export.</p>`;
+    body+=`<h2>Available (P42-backed) outputs</h2><p style="font-size:10.5pt">Credit charge timeline · Statutory compliance preliminary view — available from P42, internal-only.</p>`;
+  } else {
+    sfx='Internal_Snapshot';
+    body=`<div class="wm">INTERNAL DRAFT · NOT FOR CIRCULATION · ${DATE}</div>
+      <h2>Company Details</h2>
+      <p style="font-size:11pt;margin:0">MedAxis Systems Pvt. Ltd. · CIN U33110MH2014PTC249812 · Incorporated 14 Feb 2014, Maharashtra. Manufactures diagnostic imaging accessories and patient monitoring systems. Mandate: SME IPO Advisory (Pre-mandate). Archetype: A2.5 Industrial Equipment (approval pending).</p>
+      <h2>Source Coverage</h2>
+      <p style="font-size:10.5pt;margin:0">Connected/Uploaded: P42, Excel model, Pitch deck. Missing: AOC-4, IM, Sanction letters. Not uploaded: DRHP.</p>
+      <h2>Transaction State Brief</h2><ul>
+        <li style="font-size:10.5pt">Pre-mandate DD; P42 is primary pre-mandate source.</li>
+        <li style="font-size:10.5pt">AOC-4 missing — audited financials not externally usable.</li>
+        <li style="font-size:10.5pt">FY25 revenue conflict: P42 ₹118.2 Cr vs model ₹126.6 Cr.</li>
+        <li style="font-size:10.5pt">Company Overview drafted internally with caveats.</li>
+        <li style="font-size:10.5pt">Financial Analysis, IPO Eligibility, Valuation gated by source resolution.</li>
+        <li style="font-size:10.5pt">Recommendations to Management locked until all modules complete.</li>
+      </ul>
+      ${moduleStatesBody()}
+      ${issuesBody()}
+      <h2>Available vs Locked Outputs</h2>
+      <p style="font-size:10.5pt;margin:0 0 3pt"><b>Available (internal):</b> Company Overview with caveats, source coverage, open issues, P42 charge timeline, statutory compliance preliminary view.</p>
+      <p style="font-size:10.5pt;margin:0"><b>Locked:</b> Approved Financial Analysis, IPO Eligibility, Valuation, Recommendations, use of proceeds, funding adequacy.</p>`;
+  }
+  const html=wordWrap(title.replace(' — DD Workspace',' — DD Workspace Snapshot'),sub,body);
+  dl(new Blob(['\ufeff',html],{type:'application/msword'}),`MedAxis_DD_${sfx}.doc`);
+  const labels={internal_snapshot:'internal workspace snapshot',approved_outputs_only:'approved outputs only',management_asks:'management ask list'};
+  toast('Word (.doc) downloaded · '+labels[mode]);
+}
+function downloadWorkspaceHTML(){
+  const body=`<div class="wm">INTERNAL DRAFT · NOT FOR CIRCULATION · ${DATE}</div><h2>Company</h2><p>MedAxis Systems Pvt. Ltd. · SME IPO Advisory · Pre-mandate</p>${moduleStatesBody()}${issuesBody()}`;
+  const html=wordWrap('MedAxis DD Workspace Snapshot',`SME IPO Advisory · ${DATE}`,body);
+  dl(new Blob([html],{type:'text/html'}),'MedAxis_DD_Snapshot.html');
+  toast('HTML snapshot downloaded');
+}
+function getWBText(id){const el=document.getElementById('wp-'+id);return el?el.innerText.trim():WB_SECTIONS.find(s=>s.id===id).text;}
+function downloadCompanyOverviewDoc(approvedOnly){
+  let body=`<div class="wm">INTERNAL DRAFT · NOT FOR CIRCULATION · COMPANY OVERVIEW · ${DATE}</div>`;
+  let any=false;
+  WB_SECTIONS.forEach(s=>{
+    const st=wbState[s.id];
+    if(approvedOnly && !st.approved)return;
+    any=true;
+    const tags=[];if(st.approved)tags.push('BANKER APPROVED');if(st.edited)tags.push('BANKER EDITED');tags.push(s.status.toUpperCase());
+    body+=`<h2>${s.num}. ${s.title}</h2><p class="meta">Status: ${tags.join(' · ')}</p>`;
+    body+=`<p style="font-size:11.5pt;line-height:1.6;margin:0">${esc(getWBText(s.id))}</p>`;
+    body+=`<p class="meta"><i>Sources: ${s.sources.join(', ')}</i></p>`;
+    if(!approvedOnly && !st.approved){
+      let cav=s.badge==='contra'?'SOURCE CONFLICT UNRESOLVED — internal only; AOC-4 missing.':s.badge==='proxy'?'PROXY-ONLY — not confirmed through IM or management.':'REVIEW REQUIRED — not export-approved.';
+      body+=`<p class="cav">[ ${cav} ]</p>`;
+    }
+  });
+  if(!any)body+=`<p style="font-size:11pt;color:#E56458">No paragraphs approved yet.</p>`;
+  if(WB_COMMENTS.length && !approvedOnly){body+=`<h2>Banker Comments</h2><ul>`;WB_COMMENTS.forEach(c=>{body+=`<li style="font-size:10.5pt">${esc(c.secT)}: ${esc(c.text)}</li>`;});body+='</ul>';}
+  const html=wordWrap('Company Overview',`MedAxis Systems Pvt. Ltd. | SME IPO Advisory | Draft under banker review | ${DATE}`,body);
+  dl(new Blob(['\ufeff',html],{type:'application/msword'}),`MedAxis_Company_Overview_${approvedOnly?'Approved':'Draft'}.doc`);
+  toast(approvedOnly?'Word Draft (.doc) · approved only':'Word Draft (.doc) downloaded');
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function toast(msg){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');t.className='toast';t.innerHTML=`<span class="tk"></span>${msg}`;w.appendChild(t);
+  setTimeout(()=>{t.style.transition='.3s';t.style.opacity='0';t.style.transform='translateY(8px)';setTimeout(()=>t.remove(),320);},2600);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+renderStepper();renderSources();
+</script>
+</body>
+</html>

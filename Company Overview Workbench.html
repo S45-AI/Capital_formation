@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S45 — Company Overview Workbench · Module 00</title>
+<style>
+:root{
+  --paper:#FFFFFF;
+  --paper-2:#F9F8F7;
+  --doc-paper:#FFFFFF;
+  --ink:#2C2C2B;
+  --ink-2:#2C2C2B;
+  --muted:#91918E;
+  --muted-2:#91918E;
+  --line:#E1DFDB;
+  --line-2:rgba(0,0,0,.0627);
+  --brown:#91918E;
+  --primary:#055D56;
+  --primary-hover:#044842;
+  --amber:#91918E;
+  --amber-bg:rgba(0,0,0,.0627);
+  --red:#E56458;
+  --red-bg:rgba(229,100,88,.10);
+  --green:#055D56;
+  --green-bg:rgba(5,93,86,.10);
+  --blue:#91918E;
+  --blue-bg:rgba(0,0,0,.0627);
+  --shadow:0 1px 2px rgba(44,44,43,.05),0 8px 24px rgba(44,44,43,.06);
+  --sans:'Geist','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --serif:'Martina Plantijn','Charter','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --mono:'Geist Mono','SF Mono','JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  font-size:13px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:rgba(5,93,86,.18);}
+
+/* ---------- scrollbars ---------- */
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.0627);border-radius:6px;border:2px solid transparent;background-clip:content-box;}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.12);background-clip:content-box;}
+::-webkit-scrollbar-track{background:transparent;}
+
+/* ============ COMMAND STRIP ============ */
+.cmd{
+  height:54px;display:flex;align-items:center;gap:14px;padding:0 16px;
+  background:var(--ink);color:#f3ede2;border-bottom:1px solid #000;
+  position:relative;z-index:40;flex-shrink:0;
+}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo .mark{
+  width:30px;height:30px;border-radius:7px;background:var(--primary);
+  color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;
+  letter-spacing:-.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+}
+.logo .wm{font-weight:700;font-size:14px;letter-spacing:.2px;}
+.cmd .crumb{font-size:11px;color:#9a9082;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+.cmd .crumb b{color:#e3dccf;font-weight:600;}
+.cmd .co{font-weight:600;font-size:13.5px;color:#fbf6ec;white-space:nowrap;}
+.cmd .pills{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;}
+.cmd .spacer{flex:1;}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;height:23px;padding:0 9px;border-radius:5px;
+  font-size:11px;font-weight:500;white-space:nowrap;letter-spacing:.01em;
+  background:rgba(255,255,255,.07);color:#d9d0c1;border:1px solid rgba(255,255,255,.09);
+}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.pill.amber{background:rgba(168,116,26,.16);color:#e8c074;border-color:rgba(168,116,26,.35);}
+.pill.blue{background:rgba(110,150,190,.16);color:#a8c4e0;border-color:rgba(110,150,190,.3);}
+.pill.warn{background:rgba(180,80,55,.18);color:#e8a48f;border-color:rgba(180,80,55,.4);}
+.pill.ok{background:rgba(90,150,110,.16);color:#9bd0ac;border-color:rgba(90,150,110,.32);}
+.cmd-btns{display:flex;gap:7px;align-items:center;}
+.cbtn{
+  height:30px;padding:0 12px;border-radius:6px;font-size:12px;font-weight:550;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);color:#ece4d6;display:inline-flex;align-items:center;gap:6px;transition:.13s;
+}
+.cbtn:hover{background:rgba(255,255,255,.12);}
+.cbtn.primary{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:650;}
+.cbtn.primary:hover{background:var(--primary-hover);}
+
+/* ============ MAIN GRID ============ */
+.shell{display:flex;height:calc(100vh - 54px);overflow:hidden;}
+.rail{width:286px;flex-shrink:0;background:var(--paper-2);border-right:1px solid var(--line);overflow-y:auto;}
+.inspector{width:352px;flex-shrink:0;background:var(--paper-2);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;}
+.center{flex:1;min-width:0;overflow-y:auto;background:var(--paper);position:relative;}
+
+/* ============ LEFT RAIL ============ */
+.rail-sec{border-bottom:1px solid var(--line);padding:14px 15px;}
+.rail-h{font-size:10.5px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 11px;display:flex;align-items:center;gap:7px;}
+.rail-h .ix{width:15px;height:15px;border-radius:4px;background:var(--ink);color:var(--paper-2);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+
+.cmd-summary .co-name{font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.2;margin-bottom:5px;}
+.cmd-summary .co-desc{font-size:12px;color:var(--ink-2);line-height:1.45;margin-bottom:12px;}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:11.5px;}
+.kv .k{color:var(--muted);}
+.kv .v{color:var(--ink-2);font-weight:550;text-align:right;}
+.kv .v.export{color:var(--amber);}
+
+/* action queue */
+.aq{display:flex;flex-direction:column;gap:8px;}
+.aq-item{border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:9px 10px;transition:.13s;cursor:pointer;}
+.aq-item:hover{border-color:var(--line-2);background:var(--doc-paper);transform:translateX(1px);}
+.aq-top{display:flex;align-items:flex-start;gap:8px;}
+.aq-n{width:17px;height:17px;border-radius:50%;flex-shrink:0;background:var(--ink);color:var(--paper-2);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.aq-t{font-size:12px;font-weight:600;color:var(--ink);line-height:1.3;}
+.aq-d{font-size:11px;color:var(--muted);line-height:1.38;margin:5px 0 0 25px;}
+.aq-state{margin:7px 0 0 25px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--red);}
+.aq-state.done{color:var(--green);}
+.aq-state .d{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+/* section map */
+.smap{display:flex;flex-direction:column;gap:1px;}
+.srow{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;cursor:pointer;transition:.1s;}
+.srow:hover{background:#efe9dd;}
+.srow.active{background:#ece2cc;box-shadow:inset 2px 0 0 var(--amber);}
+.srow .sn{font-size:10px;font-weight:700;color:var(--muted-2);width:15px;font-variant-numeric:tabular-nums;}
+.srow .st{font-size:12px;color:var(--ink-2);flex:1;line-height:1.25;}
+.srow .sb{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-confirmed{background:var(--green);}
+.dot-proxy{background:var(--blue);}
+.dot-pending{background:var(--muted-2);}
+.dot-review{background:var(--amber);}
+.dot-contra{background:var(--red);}
+.dot-wait{background:#c9b48a;}
+
+/* dd modules */
+.mod{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:5px;font-size:11px;cursor:default;}
+.mod .mn{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--muted-2);width:16px;}
+.mod .mt{flex:1;color:var(--ink-2);line-height:1.2;}
+.mod .ms{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:4px;white-space:nowrap;}
+.ms.s-none{background:#eee7da;color:var(--muted);}
+.ms.s-wait{background:var(--amber-bg);color:var(--amber);}
+.ms.s-block{background:var(--red-bg);color:var(--red);}
+.ms.s-pend{background:#e7e8ec;color:var(--blue);}
+.ms.s-avail{background:var(--green-bg);color:var(--green);}
+.ms.s-lock{background:#e6e1d6;color:var(--muted);}
+
+/* ============ CENTER ============ */
+.canvas-head{padding:20px 40px 0;max-width:920px;margin:0 auto;}
+.ch-crumb{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);font-weight:650;margin-bottom:7px;}
+.ch-title{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1.12;margin:0 0 6px;letter-spacing:-.01em;}
+.ch-sub{font-size:13px;color:var(--muted);line-height:1.5;max-width:680px;margin-bottom:14px;}
+.ch-wf{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--amber);background:var(--amber-bg);border:1px solid #e6d3a8;padding:4px 10px;border-radius:6px;}
+.ch-wf .d{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 2.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.ch-actions{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 0;}
+.gbtn{height:29px;padding:0 11px;border-radius:6px;font-size:11.5px;font-weight:550;border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;transition:.12s;}
+.gbtn:hover{background:#fff;border-color:var(--brown);color:var(--ink);}
+.gbtn.amber{background:var(--ink);color:#f0e9da;border-color:var(--ink);}
+.gbtn.amber:hover{background:#2c241a;}
+.gbtn svg{width:13px;height:13px;}
+
+/* mode tabs */
+.modes{display:flex;gap:2px;padding:16px 40px 0;max-width:920px;margin:18px auto 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:10;}
+.mode-tab{padding:9px 15px;font-size:12.5px;font-weight:550;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.12s;}
+.mode-tab:hover{color:var(--ink-2);}
+.mode-tab.active{color:var(--ink);border-bottom-color:var(--amber);font-weight:650;}
+
+.mode-body{max-width:920px;margin:0 auto;padding:26px 40px 120px;}
+
+/* ===== DOC PAPER ===== */
+.paper{
+  background:var(--doc-paper);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow);
+  padding:54px 60px 60px;font-family:var(--serif);color:var(--ink);
+}
+.doc-title{font-size:30px;font-weight:600;text-align:center;letter-spacing:-.01em;margin:0 0 8px;}
+.doc-sub{text-align:center;font-family:var(--sans);font-size:12px;color:var(--muted);letter-spacing:.02em;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:6px;}
+
+.sec{padding-top:26px;scroll-margin-top:70px;position:relative;}
+.sec-rule{border-radius:6px;margin:0 -16px;padding:0 16px;transition:background .25s,box-shadow .25s;}
+.sec.flash .sec-rule{background:#f6edd6;box-shadow:0 0 0 1px #e6d3a8;}
+.sec-hd{display:flex;align-items:baseline;gap:11px;margin-bottom:10px;flex-wrap:wrap;}
+.sec-num{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--muted-2);font-variant-numeric:tabular-nums;}
+.sec-title{font-size:18px;font-weight:650;letter-spacing:-.005em;}
+.badge{font-family:var(--sans);font-size:10px;font-weight:650;padding:2.5px 8px;border-radius:5px;letter-spacing:.02em;display:inline-flex;align-items:center;gap:4px;}
+.bg-confirmed{background:var(--green-bg);color:var(--green);}
+.bg-proxy{background:var(--blue-bg);color:var(--blue);}
+.bg-pending{background:#e7e8ec;color:#5a6878;}
+.bg-review{background:var(--amber-bg);color:var(--amber);}
+.bg-contra{background:var(--red-bg);color:var(--red);}
+.bg-wait{background:#efe6d2;color:var(--brown);}
+.bg-edited{background:#e8ddf0;color:#6a4a86;}
+.bg-approved{background:var(--green);color:#fff;}
+.bg-internal{background:#39312a;color:#e7c98f;}
+
+.para{
+  font-size:15.5px;line-height:1.72;color:var(--ink-2);margin:0;padding:8px 12px;border-radius:5px;
+  border:1px solid transparent;transition:.12s;outline:none;position:relative;cursor:text;
+}
+.para:hover{background:#faf5ea;}
+.para.selected{background:#f6efe0;border-color:#e4d6b4;box-shadow:0 0 0 1px #e4d6b4;}
+.para[contenteditable]:focus{background:#fff;border-color:var(--amber);box-shadow:0 0 0 2px rgba(168,116,26,.15);}
+.para.approved{border-left:3px solid var(--green);}
+.para ul{margin:6px 0 0;padding-left:22px;}
+.para li{margin-bottom:7px;line-height:1.6;}
+
+.cmt-marker{display:inline-block;vertical-align:super;font-family:var(--sans);font-size:9px;font-weight:700;color:#fff;background:var(--amber);border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;margin-left:3px;cursor:pointer;}
+
+.para-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;padding:0 12px;}
+.src-chips{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:140px;}
+.chip{font-family:var(--sans);font-size:10px;font-weight:550;color:var(--brown);background:#f0e9da;border:1px solid var(--line-2);padding:2px 8px;border-radius:11px;display:inline-flex;align-items:center;gap:4px;}
+.chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--brown);opacity:.6;}
+.chip.missing{color:var(--red);background:var(--red-bg);border-color:#e3c4ba;}
+.chip.missing::before{background:var(--red);}
+.pctrl{display:flex;gap:3px;font-family:var(--sans);}
+.pc{font-size:10.5px;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;padding:3px 8px;border-radius:5px;display:inline-flex;align-items:center;gap:4px;transition:.1s;}
+.pc:hover{background:#efe7d8;color:var(--ink-2);}
+.pc.appr:hover{color:var(--green);background:var(--green-bg);}
+.pc svg{width:12px;height:12px;}
+
+/* AI rewrite box */
+.rewrite{margin:6px 12px 4px;border:1px dashed var(--amber);background:#fbf4e3;border-radius:7px;padding:12px 14px;font-family:var(--sans);animation:slideIn .2s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+.rewrite .rh{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.rewrite .rt{font-family:var(--serif);font-size:14.5px;line-height:1.6;color:var(--ink-2);}
+.rewrite .rb{display:flex;gap:7px;margin-top:11px;}
+.rmini{height:27px;padding:0 12px;border-radius:5px;font-size:11.5px;font-weight:600;border:1px solid var(--line-2);background:#fff;color:var(--ink-2);}
+.rmini.acc{background:var(--green);color:#fff;border-color:var(--green);}
+.rmini:hover{filter:brightness(.97);}
+
+/* source table */
+.tbl-wrap{background:var(--doc-paper);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);overflow:hidden;}
+table.src{width:100%;border-collapse:collapse;font-size:12px;}
+.src th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:11px 13px;border-bottom:1.5px solid var(--line-2);background:#f4eee2;white-space:nowrap;}
+.src td{padding:10px 13px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;}
+.src tr:last-child td{border-bottom:none;}
+.src tr:hover td{background:#faf5ea;}
+.src td.fld{font-weight:600;color:var(--ink);}
+.src td.val{font-variant-numeric:tabular-nums;}
+.tag{font-size:9.5px;font-weight:650;padding:2px 7px;border-radius:4px;white-space:nowrap;display:inline-block;}
+.t-high{background:var(--green-bg);color:var(--green);}
+.t-med{background:var(--amber-bg);color:var(--amber);}
+.t-low{background:var(--red-bg);color:var(--red);}
+.t-conf{background:var(--green-bg);color:var(--green);}
+.t-proxy{background:var(--blue-bg);color:var(--blue);}
+.t-mgmt{background:#ece3f0;color:#6a4a86;}
+.t-contra{background:var(--red-bg);color:var(--red);}
+.t-miss{background:#e6e1d6;color:var(--muted);}
+.t-pend{background:#e7e8ec;color:#5a6878;}
+
+/* context outputs */
+.ctx-card{background:var(--doc-paper);border:1px solid var(--line);border-radius:8px;padding:15px 17px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--shadow);}
+.ctx-arrow{flex-shrink:0;width:34px;height:34px;border-radius:8px;background:var(--ink);color:var(--amber-bg);display:flex;align-items:center;justify-content:center;}
+.ctx-arrow svg{width:17px;height:17px;}
+.ctx-body{flex:1;}
+.ctx-to{font-size:13.5px;font-weight:650;margin-bottom:3px;}
+.ctx-passes{font-size:12px;color:var(--ink-2);line-height:1.5;}
+.ctx-passes b{color:var(--brown);font-weight:600;}
+.ctx-state{margin-top:8px;display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;}
+
+/* report preview */
+.rep{background:var(--doc-paper);border:1px solid var(--line);border-radius:3px;box-shadow:var(--shadow);padding:48px 56px;font-family:var(--serif);}
+.rep-watermark{font-family:var(--sans);text-align:center;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);border:1px solid #e3c4ba;background:var(--red-bg);padding:7px;border-radius:5px;margin-bottom:30px;}
+.rep h2{font-size:26px;text-align:center;font-weight:600;margin:0 0 4px;}
+.rep .rep-meta{text-align:center;font-family:var(--sans);font-size:11px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:8px;}
+.rep-sec{padding-top:22px;}
+.rep-sec h3{font-size:15px;font-weight:650;margin:0 0 3px;display:flex;align-items:center;gap:9px;}
+.rep-sec .stamp{font-family:var(--sans);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.03em;}
+.rep-sec p{font-size:14px;line-height:1.65;color:var(--ink-2);margin:5px 0 0;}
+.rep-caveat{font-family:var(--sans);font-size:11px;color:var(--red);background:var(--red-bg);border-left:3px solid var(--red);padding:7px 11px;border-radius:0 5px 5px 0;margin-top:8px;}
+
+/* ============ RIGHT INSPECTOR ============ */
+.insp-tabs{display:flex;border-bottom:1px solid var(--line);background:var(--paper-2);flex-shrink:0;overflow-x:auto;}
+.itab{flex:1;padding:11px 4px;font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:.12s;position:relative;}
+.itab:hover{color:var(--ink-2);}
+.itab.active{color:var(--ink);border-bottom-color:var(--amber);}
+.itab .ct{position:absolute;top:5px;right:8px;font-size:8px;font-weight:700;background:var(--red);color:#fff;border-radius:8px;padding:0 4px;min-width:13px;height:13px;line-height:13px;}
+.insp-body{flex:1;overflow-y:auto;padding:16px;}
+.insp-h{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+
+/* evidence */
+.ev-claim{font-family:var(--serif);font-size:14.5px;line-height:1.5;color:var(--ink);background:#f4eee2;border-left:3px solid var(--amber);padding:11px 13px;border-radius:0 6px 6px 0;margin-bottom:14px;}
+.ev-claim .lbl{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:5px;}
+.ev-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.ev-row .k{color:var(--muted);font-weight:550;}
+.ev-row .v{color:var(--ink-2);font-weight:600;text-align:right;max-width:60%;}
+.ev-rule{background:var(--amber-bg);border:1px solid #e6d3a8;border-radius:7px;padding:11px 13px;margin-top:14px;}
+.ev-rule .lbl{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:5px;}
+.ev-rule .txt{font-size:12px;color:var(--brown);line-height:1.5;}
+
+/* comments */
+.cmt{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;margin-bottom:9px;}
+.cmt-hd{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.cmt-av{width:23px;height:23px;border-radius:50%;background:var(--brown);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.cmt-who{font-size:12px;font-weight:650;}
+.cmt-on{font-size:10px;color:var(--muted-2);margin-left:auto;}
+.cmt-ref{font-size:10px;font-weight:600;color:var(--amber);margin-bottom:5px;cursor:pointer;}
+.cmt-txt{font-size:12.5px;color:var(--ink-2);line-height:1.5;}
+.cmt-new{margin-top:6px;}
+.cmt-new textarea{width:100%;border:1px solid var(--line-2);border-radius:7px;padding:9px;font-family:inherit;font-size:12px;resize:vertical;min-height:58px;background:var(--paper);color:var(--ink);}
+.cmt-new textarea:focus{outline:none;border-color:var(--amber);}
+
+/* ask ai */
+.ai-prompts{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.ai-prompt{text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--ink-2);line-height:1.4;transition:.12s;display:flex;gap:8px;align-items:center;}
+.ai-prompt:hover{border-color:var(--amber);background:#fbf4e3;color:var(--ink);}
+.ai-prompt::before{content:'⌖';color:var(--amber);font-size:13px;}
+.ai-log{display:flex;flex-direction:column;gap:10px;}
+.ai-msg{font-size:12.5px;line-height:1.55;}
+.ai-msg.u{align-self:flex-end;background:var(--ink);color:#f0e9da;padding:8px 12px;border-radius:12px 12px 3px 12px;max-width:88%;}
+.ai-msg.a{background:#f4eee2;border:1px solid var(--line);padding:11px 13px;border-radius:12px 12px 12px 3px;color:var(--ink-2);}
+.ai-msg.a .ah{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.ai-msg.a ul{margin:6px 0 0;padding-left:18px;}
+.ai-msg.a li{margin-bottom:4px;}
+.ai-typing{display:inline-flex;gap:3px;}
+.ai-typing span{width:5px;height:5px;border-radius:50%;background:var(--amber);animation:blink 1.2s infinite;}
+.ai-typing span:nth-child(2){animation-delay:.2s;}
+.ai-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,60%,100%{opacity:.25;}30%{opacity:1;}}
+.ai-ask{display:flex;gap:6px;margin-top:12px;}
+.ai-ask input{flex:1;border:1px solid var(--line-2);border-radius:7px;padding:8px 10px;font-family:inherit;font-size:12px;background:var(--paper);}
+.ai-ask input:focus{outline:none;border-color:var(--amber);}
+.ai-ask button{width:34px;border-radius:7px;background:var(--ink);color:#f0e9da;border:none;}
+
+/* issues */
+.iss{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;margin-bottom:9px;}
+.iss.sev-high{border-left:3px solid var(--red);}
+.iss.sev-med{border-left:3px solid var(--amber);}
+.iss.resolved{opacity:.55;}
+.iss-hd{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;}
+.iss-t{font-size:12.5px;font-weight:650;flex:1;line-height:1.3;}
+.sev{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.03em;flex-shrink:0;}
+.sev.high{background:var(--red-bg);color:var(--red);}
+.sev.med{background:var(--amber-bg);color:var(--amber);}
+.iss-meta{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:8px;}
+.iss-meta b{color:var(--ink-2);font-weight:600;}
+.iss-btns{display:flex;flex-wrap:wrap;gap:5px;}
+.ibtn{font-size:10px;font-weight:600;color:var(--muted);background:#f0e9da;border:1px solid var(--line-2);border-radius:5px;padding:4px 8px;transition:.1s;}
+.ibtn:hover{background:#e7dcc6;color:var(--ink-2);}
+.ibtn.res:hover{background:var(--green-bg);color:var(--green);border-color:#bcd4c2;}
+
+/* export */
+.exp-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+.exp-row .en{font-size:12px;font-weight:600;color:var(--ink-2);}
+.exp-state{font-size:9.5px;font-weight:650;padding:2px 7px;border-radius:4px;text-align:right;white-space:nowrap;}
+.es-ready{background:var(--green-bg);color:var(--green);}
+.es-internal{background:#39312a;color:#e7c98f;}
+.es-lock{background:#e6e1d6;color:var(--muted);}
+.es-review{background:var(--amber-bg);color:var(--amber);}
+.exp-btns{display:flex;flex-direction:column;gap:7px;margin-top:16px;}
+.ebtn{height:34px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line-2);background:var(--paper);color:var(--ink-2);display:flex;align-items:center;gap:8px;padding:0 12px;transition:.12s;text-align:left;}
+.ebtn:hover{border-color:var(--brown);background:#fff;}
+.ebtn.primary{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:700;}
+.ebtn.primary:hover{background:var(--primary-hover);}
+.ebtn svg{width:14px;height:14px;flex-shrink:0;}
+
+/* artifacts */
+.art{border:1px solid var(--line);background:var(--paper);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.art-thumb{height:74px;background:repeating-linear-gradient(135deg,#efe8da,#efe8da 9px,#e9e1d0 9px,#e9e1d0 18px);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);}
+.art-thumb .lbl{font-family:var(--mono);font-size:10px;color:var(--brown);background:rgba(253,251,246,.85);padding:3px 9px;border-radius:4px;font-weight:600;}
+.art-body{padding:10px 12px;}
+.art-t{font-size:12.5px;font-weight:650;margin-bottom:4px;}
+.art-meta{font-size:10.5px;color:var(--muted);line-height:1.5;}
+.art-meta b{color:var(--ink-2);font-weight:600;}
+.art-badges{display:flex;gap:5px;margin-top:7px;}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--ink);color:#f3ede2;font-size:12.5px;font-weight:550;padding:11px 18px;border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.28);display:flex;align-items:center;gap:9px;animation:tin .25s ease;border:1px solid #000;}
+.toast .tk{width:7px;height:7px;border-radius:50%;background:var(--green);}
+@keyframes tin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+.hidden{display:none!important;}
+
+/* print */
+@media print{
+  body{overflow:visible;background:#fff;}
+  .cmd,.rail,.inspector,.modes,.canvas-head,.no-print{display:none!important;}
+  .shell{display:block;height:auto;}
+  .center{overflow:visible;}
+  .mode-body{padding:0;max-width:100%;}
+  .paper,.rep{box-shadow:none;border:none;padding:0;}
+  .para-foot,.cmt-marker{display:none!important;}
+  .para{border:none!important;background:none!important;box-shadow:none!important;}
+}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;right:0;height:44px;z-index:99999;background:#FFFFFF;border-bottom:1px solid #E1DFDB;display:flex;align-items:center;justify-content:center;font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow-x:auto;white-space:nowrap;box-shadow:0 1px 2px rgba(44,44,43,.04);"><div onclick="location.href='S45 Market Creation OS Fi.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;">1</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Market Creation</span></div><span style="width:28px;height:1px;background:#055D56;flex-shrink:0;"></span><div onclick="location.href='DD Workspace Journey.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#055D56;color:#fff;box-shadow:0 0 0 3px rgba(5,93,86,.18);">2</span><span style="font-size:12.5px;white-space:nowrap;font-weight:600;color:#2C2C2B;">Due Diligence</span></div><span style="width:28px;height:1px;background:#E1DFDB;flex-shrink:0;"></span><div onclick="location.href='S45 DRHP Workspace F.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#FFFFFF;color:#91918E;border:1px solid #E1DFDB;">3</span><span style="font-size:12.5px;white-space:nowrap;font-weight:400;color:#91918E;">DRHP</span></div><span style="width:28px;height:1px;background:#E1DFDB;flex-shrink:0;"></span><div onclick="location.href='S45 Capital OS Final.html'" style="display:flex;align-items:center;gap:7px;cursor:pointer;padding:0 14px;height:44px;flex-shrink:0;"><span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;flex-shrink:0;background:#FFFFFF;color:#91918E;border:1px solid #E1DFDB;">4</span><span style="font-size:12.5px;white-space:nowrap;font-weight:400;color:#91918E;">Distribution</span></div></div>
+<style>body{margin-top:44px !important;height:calc(100% - 44px) !important;}</style>
+
+
+
+<!-- ============ COMMAND STRIP ============ -->
+<header class="cmd">
+  <div class="logo"><div class="mark">S45</div><span class="wm">S45</span></div>
+  <span class="crumb">DD Workspace · <b>Module 00</b></span>
+  <span class="co">MedAxis Systems Pvt. Ltd.</span>
+  <div class="pills">
+    <span class="pill blue"><span class="dot"></span>SME IPO Advisory</span>
+    <span class="pill">CIN U33110MH2014PTC249812</span>
+    <span class="pill">Archetype A2.5</span>
+    <span class="pill amber"><span class="dot"></span>Pre-mandate</span>
+    <span class="pill ok"><span class="dot"></span>P42 connected</span>
+    <span class="pill warn"><span class="dot"></span>AOC-4 missing</span>
+    <span class="pill warn"><span class="dot"></span>Banker review required</span>
+  </div>
+  <div class="spacer" style="flex:1"></div>
+  <div class="cmd-btns">
+    <button class="cbtn" onclick="switchInsp('evidence');toast('Source register opened in Evidence panel')">Sources</button>
+    <button class="cbtn" onclick="switchInsp('askai')">Ask AI</button>
+    <button class="cbtn primary" onclick="downloadWordDraft('all_with_caveats')">↓ Download Word Draft</button>
+    <button class="cbtn" onclick="switchInsp('export')">Export Draft</button>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- ============ LEFT RAIL ============ -->
+  <aside class="rail">
+    <!-- A. Command summary -->
+    <div class="rail-sec cmd-summary">
+      <div class="rail-h"><span class="ix">A</span>Company Command</div>
+      <div class="co-name">MedAxis Systems Pvt. Ltd.</div>
+      <div class="co-desc">Manufactures diagnostic imaging accessories and hospital-grade patient monitoring systems for institutional buyers.</div>
+      <div class="kv"><span class="k">Mandate</span><span class="v">SME IPO Advisory</span></div>
+      <div class="kv"><span class="k">Primary source</span><span class="v">Probe42 / P42</span></div>
+      <div class="kv"><span class="k">Current module</span><span class="v">00 · Company Overview</span></div>
+      <div class="kv"><span class="k">Export state</span><span class="v export">Internal-only draft</span></div>
+    </div>
+
+    <!-- B. Action queue -->
+    <div class="rail-sec">
+      <div class="rail-h"><span class="ix">B</span>Banker Action Queue</div>
+      <div class="aq" id="actionQueue"></div>
+    </div>
+
+    <!-- C. Section map -->
+    <div class="rail-sec">
+      <div class="rail-h"><span class="ix">C</span>Company Overview Map</div>
+      <div class="smap" id="sectionMap"></div>
+    </div>
+
+    <!-- D. DD modules -->
+    <div class="rail-sec">
+      <div class="rail-h"><span class="ix">D</span>Full DD Module Map</div>
+      <div id="moduleMap"></div>
+    </div>
+  </aside>
+
+  <!-- ============ CENTER CANVAS ============ -->
+  <main class="center" id="center">
+    <div class="canvas-head">
+      <div class="ch-crumb">Module 00 · Company Overview</div>
+      <h1 class="ch-title">Build the first company view</h1>
+      <p class="ch-sub">AI has drafted the first version. The banker edits the section, verifies evidence, and approves what can flow downstream into the full DD workspace.</p>
+      <span class="ch-wf"><span class="d"></span>Draft under banker review</span>
+      <div class="ch-actions">
+        <button class="gbtn" onclick="regenerate()">↻ Re-generate section</button>
+        <button class="gbtn" onclick="markAllReviewed()">✓ Mark reviewed</button>
+        <button class="gbtn" onclick="switchInsp('comments')">＋ Add comment</button>
+        <button class="gbtn" onclick="createManagementAsk()">＋ Management ask</button>
+        <button class="gbtn amber" onclick="downloadWordDraft('all_with_caveats')">↓ Download Word Draft</button>
+        <button class="gbtn" onclick="downloadWordDraft('approved_only')">Export approved only</button>
+      </div>
+    </div>
+
+    <nav class="modes">
+      <button class="mode-tab active" data-mode="draft" onclick="switchMode('draft')">Draft document</button>
+      <button class="mode-tab" data-mode="source" onclick="switchMode('source')">Source table</button>
+      <button class="mode-tab" data-mode="context" onclick="switchMode('context')">Context outputs</button>
+      <button class="mode-tab" data-mode="report" onclick="switchMode('report')">Report preview</button>
+    </nav>
+
+    <div class="mode-body" id="modeBody"></div>
+  </main>
+
+  <!-- ============ RIGHT INSPECTOR ============ -->
+  <aside class="inspector">
+    <div class="insp-tabs" id="inspTabs">
+      <button class="itab active" data-tab="evidence" onclick="switchInsp('evidence')">Evidence</button>
+      <button class="itab" data-tab="comments" onclick="switchInsp('comments')">Comments<span class="ct" id="cmtCount">0</span></button>
+      <button class="itab" data-tab="askai" onclick="switchInsp('askai')">Ask AI</button>
+      <button class="itab" data-tab="issues" onclick="switchInsp('issues')">Issues<span class="ct" id="issCount">6</span></button>
+      <button class="itab" data-tab="export" onclick="switchInsp('export')">Export</button>
+      <button class="itab" data-tab="artifacts" onclick="switchInsp('artifacts')">Artifacts</button>
+    </div>
+    <div class="insp-body" id="inspBody"></div>
+  </aside>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ===================================================================
+   S45 — Company Overview Workbench · Module 00
+   Single-file prototype. No frameworks, no external assets.
+=================================================================== */
+
+/* ---------- DATA: draft document sections ---------- */
+const SECTIONS = [
+  {
+    id:'identity', num:'01', title:'Company Identity', status:'Confirmed · banker review pending', badge:'confirmed',
+    text:`MedAxis Systems Pvt. Ltd. is an active private company incorporated on 14 February 2014 and registered in Maharashtra. The company's legal identity fields, including CIN, legal name, incorporation date, company type, registered office and company status, are sourced from P42 structured company master data.`,
+    sources:['P42 Key Statistics','P42 Company Status']
+  },
+  {
+    id:'footprint', num:'02', title:'Registered & Operational Footprint', status:'Proxy-only', badge:'proxy',
+    text:`The company's registered office is in Maharashtra. P42 shows active GSTINs in Maharashtra and Gujarat. The company website also lists a Bengaluru service office, which currently does not reconcile with active GSTIN records. This footprint should be treated as proxy-only until confirmed through IM or management.`,
+    sources:['P42 GSTIN section','Company website scrape']
+  },
+  {
+    id:'ownership', num:'03', title:'Ownership & Control', status:'Upstream pending', badge:'pending',
+    text:`Ownership and capital structure are pending upstream Corporate Structure extraction. Preliminary P42 data indicates paid-up capital of ₹4.82 Cr and promoter holding of 61.4 percent. These figures should not be treated as approved until Corporate Structure submodules are reviewed.`,
+    sources:['P42 shareholding pattern','Corporate Structure (pending)']
+  },
+  {
+    id:'directors', num:'04', title:'Directors & KMP', status:'Upstream pending', badge:'pending',
+    text:`Director and KMP linkage is pending Corporate Structure submodule review. Once complete, this section should show director names, DINs, designation, shareholding, independence status, RPT linkage, P42 director flags and role-change flags.`,
+    sources:['P42 director data','Corporate Structure (pending)']
+  },
+  {
+    id:'history', num:'05', title:'History & Track Record', status:'Review required', badge:'review',
+    text:`The company was incorporated in 2014 and appears to have transitioned from diagnostic accessories trading to manufacturing patient-monitoring hardware. P42 securities allotment data indicates material equity issuances in FY19 and FY22. Manufacturing start-date requires banker review because the website narrative and filings do not fully reconcile.`,
+    sources:['P42 company description','P42 Securities Allotment','Company website']
+  },
+  {
+    id:'corpactions', num:'06', title:'Corporate Actions & Fundraising', status:'Review required', badge:'review',
+    text:`P42 securities allotment data indicates material equity issuances in FY19 and FY22. P42 charge records show secured borrowing activity in FY21 and FY24, which should be treated as a proxy for sanctioned debt / security creation rather than drawn debt. Investor names, round valuations, acquisitions and divestments require IM or management confirmation.`,
+    sources:['P42 Securities Allotment','P42 Charge Details','P42 Related Corporates']
+  },
+  {
+    id:'compliance', num:'07', title:'Compliance Hygiene', status:'Pending module', badge:'pending',
+    text:`Company-level compliance hygiene is not independently assessed in this section. AGM compliance, auditor status and charge status should be rendered from Management & Governance and Credit History modules once available. Any repeated auditor changes or unresolved charge issues should surface here as summary flags.`,
+    sources:['Mgmt & Governance (pending)','Credit History (pending)']
+  },
+  {
+    id:'archetype', num:'08', title:'Industry & Archetype', status:'Review required', badge:'review',
+    text:`MedAxis appears to operate as an industrial equipment / component manufacturer serving institutional healthcare buyers. The current S45 archetype is A2.5 Industrial Equipment. This classification should be banker-approved because it drives downstream diligence routing, peer selection, financial metric expectations and business model analysis.`,
+    sources:['P42 NIC fields','Company website','S45 taxonomy']
+  },
+  {
+    id:'products', num:'09', title:'Products, Services & IP', status:'Review required', badge:'review',
+    text:`The company's stated product set includes diagnostic imaging accessories, patient monitoring systems and hospital equipment modules. The end-market appears to include hospitals, distributors and government procurement buyers. Preliminary IP review indicates a trademark-led profile with no active patents found under the company name, subject to broader related-entity checks.`,
+    sources:['P42 company description','Website product pages','IP India preliminary search']
+  },
+  {
+    id:'financial', num:'10', title:'Financial Snapshot', status:'Contradictory · internal only', badge:'contra',
+    text:`FY25 revenue is currently contradictory across available sources. P42 indicates ₹118.2 Cr while the management model indicates ₹126.6 Cr. Until AOC-4 is uploaded, the financial snapshot should remain internal-only and should not be exported as approved. Financial Analysis, IPO Eligibility and Valuation should not consume final FY25 actuals until this conflict is resolved.`,
+    sources:['P42 financials','Management model','AOC-4 missing'], missingSrc:['AOC-4 missing']
+  },
+  {
+    id:'transaction', num:'11', title:'Transaction Assessment', status:'Waiting for IM', badge:'wait',
+    text:`The project is marked as SME IPO Advisory. However, no Information Memorandum, DRHP draft or objects-of-issue table has been uploaded. Use-of-proceeds, total funding requirement, debt repayment plan, ICDR checks and post-raise leverage cannot run until source documents are available.`,
+    sources:['Project setup','IM missing','DRHP missing'], missingSrc:['IM missing','DRHP missing']
+  },
+  {
+    id:'review', num:'12', title:'Open Review Items', status:'Review required', badge:'review',
+    bullets:[
+      'Resolve FY25 revenue conflict between P42 and management model',
+      'Upload AOC-4 before audited financials are marked externally usable',
+      'Confirm Bengaluru operating location',
+      'Approve S45 archetype A2.5',
+      'Complete Corporate Structure upstream module',
+      'Upload IM or objects-of-issue table',
+      'Confirm whether charge records reflect current debt or historical sanctioned limits'
+    ],
+    sources:['Compiled from open issues']
+  }
+];
+
+/* alternate "AI rewrite" versions — more conservative banker-memo tone */
+const REWRITES = {
+  identity:`MedAxis Systems Pvt. Ltd. is recorded as an active private company, incorporated on 14 February 2014 in Maharashtra (company age 11 years). Core identity fields — CIN, legal name, company type, registered office and active-compliance status — are drawn from P42 structured master data and are internally consistent. No identity-level conflicts are noted; pending only banker sign-off.`,
+  footprint:`Per P42, the registered office and active GSTIN footprint span Maharashtra and Gujarat. The company website additionally references a Bengaluru service office for which no corresponding active GSTIN is present. Absent IM or management confirmation, the operational footprint should be characterised as proxy-only, and the Bengaluru presence should not be represented as a confirmed operating location in any externally shared output.`,
+  archetype:`On the basis of P42 NIC fields, website disclosures and S45 taxonomy mapping, MedAxis is provisionally classified as A2.5 — Industrial Equipment, serving institutional healthcare buyers. Because this archetype governs downstream peer selection, expected financial metrics and business-model treatment, it is recommended that the banker formally approve or override the classification before any dependent module is run.`,
+  financial:`A material discrepancy exists in FY25 revenue: P42 reports ₹118.2 Cr against ₹126.6 Cr in the management model — a difference of ₹8.4 Cr. Pending receipt of the audited AOC-4, this snapshot must remain internal-only and must not be represented as approved figures. Downstream Financial Analysis, IPO Eligibility and Valuation modules are to be held from consuming final FY25 actuals until the conflict is reconciled to an audited source.`
+};
+
+/* per-section evidence */
+const EVIDENCE = {
+  identity:{claim:'Active private company incorporated 14 Feb 2014, registered in Maharashtra.',source:'P42 Key Statistics · P42 Company Status',stype:'Structured',method:'API field extraction',conf:'High',estate:'Confirmed',rstate:'Banker review pending',fresh:'Pulled today',impact:'All downstream modules · Company Overview report',rule:'Exportable after banker review. No conflicts detected.'},
+  footprint:{claim:'P42 shows active GSTINs in Maharashtra and Gujarat.',source:'P42 GSTIN section',stype:'Structured',method:'API field extraction',conf:'High',estate:'Proxy-only for operating footprint',rstate:'Banker review pending',fresh:'Pulled today',impact:'Business Model · Statutory Compliance · Company Overview report',rule:'Internal-only unless IM or management confirms operational footprint.'},
+  ownership:{claim:'Paid-up capital ₹4.82 Cr; promoter holding 61.4%.',source:'P42 shareholding pattern',stype:'Structured',method:'API field extraction',conf:'Medium',estate:'Inferred · upstream pending',rstate:'Locked — Corporate Structure pending',fresh:'Pulled today',impact:'Management & Governance · RPT · IPO Eligibility',rule:'Locked until Corporate Structure submodule completes.'},
+  directors:{claim:'Director / KMP linkage pending extraction.',source:'P42 director data',stype:'Structured',method:'API field extraction',conf:'—',estate:'Missing · upstream pending',rstate:'Locked — Corporate Structure pending',fresh:'Pulled today',impact:'Management & Governance · RPT',rule:'Locked until Corporate Structure submodule completes.'},
+  history:{claim:'Transition from diagnostic accessories trading to manufacturing; equity issuances FY19 & FY22.',source:'P42 company description · Securities Allotment · website',stype:'Mixed (structured + scrape)',method:'API + web extraction',conf:'Low',estate:'Inferred · contradictory narrative',rstate:'Review required',fresh:'Pulled today',impact:'Business Model · Company Overview report',rule:'Manufacturing start-date unverifiable pre-IM. Review required before export.'},
+  corpactions:{claim:'Secured borrowing activity FY21 & FY24 per charge records.',source:'P42 Charge Details · Securities Allotment',stype:'Structured',method:'API field extraction',conf:'Medium',estate:'Proxy-only (sanctioned, not drawn)',rstate:'Review required',fresh:'Pulled today',impact:'Credit History · Company Overview report',rule:'Charge creation is proxy for sanctioned debt/security, not drawn debt.'},
+  compliance:{claim:'Compliance hygiene summarises upstream module flags.',source:'Mgmt & Governance · Credit History',stype:'Derived',method:'Module roll-up',conf:'—',estate:'Missing · pending module',rstate:'Pending module',fresh:'—',impact:'Company Overview report',rule:'No independent analysis here — renders upstream flags when available.'},
+  archetype:{claim:'S45 archetype A2.5 — Industrial Equipment.',source:'P42 NIC fields · website · S45 taxonomy',stype:'Mixed',method:'Classification model + taxonomy map',conf:'Medium',estate:'Review required',rstate:'Banker approval pending',fresh:'Pulled today',impact:'Business Model · Peer Benchmarking · Financial Analysis routing',rule:'Drives downstream routing — requires explicit banker approval.'},
+  products:{claim:'Trademark-led profile; no active patents under company name.',source:'P42 desc · website · IP India search',stype:'Mixed',method:'API + registry search',conf:'Medium',estate:'Inferred · review required',rstate:'Review required',fresh:'Pulled today',impact:'Business Model · Valuation (IP)',rule:'IP assessment conditional on archetype. Subject to related-entity checks.'},
+  financial:{claim:'FY25 revenue: P42 ₹118.2 Cr vs management model ₹126.6 Cr.',source:'P42 financials · management model',stype:'Structured + management',method:'API + model parse',conf:'Contradictory',estate:'Contradictory',rstate:'Review required — source conflict open',fresh:'Pulled today',impact:'Financial Analysis · IPO Eligibility · Valuation',rule:'Internal-only. Not exportable as approved until AOC-4 resolves the conflict.'},
+  transaction:{claim:'SME IPO Advisory mandate; no IM / DRHP / objects-of-issue uploaded.',source:'Project setup',stype:'Project metadata',method:'Workspace config',conf:'—',estate:'Missing source',rstate:'Locked — awaiting IM/DRHP',fresh:'—',impact:'IPO Eligibility · Valuation',rule:'Locked. Use-of-proceeds & ICDR checks cannot run until documents available.'},
+  review:{claim:'Seven open review items compiled across the section.',source:'Open issue register',stype:'Derived',method:'Issue roll-up',conf:'—',estate:'Review required',rstate:'Open',fresh:'Live',impact:'Report Builder gating',rule:'Section cannot be export-approved while items remain open.'}
+};
+
+/* action queue */
+const ACTIONS = [
+  {n:1,t:'Resolve FY25 revenue conflict',d:'P42 and management model differ by ₹8.4 Cr.',sec:'financial',state:'Open'},
+  {n:2,t:'Confirm operational footprint',d:'GSTIN state list is proxy-only; website shows Bengaluru office without matching GSTIN.',sec:'footprint',state:'Open'},
+  {n:3,t:'Approve archetype routing',d:'A2.5 drives downstream financial, peer, and business model logic.',sec:'archetype',state:'Open'},
+  {n:4,t:'Upload AOC-4',d:'Required before audited financials can be marked externally usable.',sec:'financial',state:'Open'}
+];
+
+/* section map (left rail C) */
+const SMAP = [
+  {n:'01',t:'Legal Identity',dot:'confirmed',sec:'identity'},
+  {n:'02',t:'Registered & Operational Footprint',dot:'proxy',sec:'footprint'},
+  {n:'03',t:'Ownership & Capital',dot:'pending',sec:'ownership'},
+  {n:'04',t:'Directors & KMP',dot:'pending',sec:'directors'},
+  {n:'05',t:'History & Track Record',dot:'review',sec:'history'},
+  {n:'06',t:'Corporate Actions & Fundraising',dot:'review',sec:'corpactions'},
+  {n:'07',t:'Compliance Hygiene',dot:'pending',sec:'compliance'},
+  {n:'08',t:'Industry & Archetype',dot:'review',sec:'archetype'},
+  {n:'09',t:'Products, Services & IP',dot:'review',sec:'products'},
+  {n:'10',t:'Financial Snapshot',dot:'contra',sec:'financial'},
+  {n:'11',t:'Transaction Assessment',dot:'wait',sec:'transaction'}
+];
+
+/* full DD module map (left rail D) */
+const MODULES = [
+  {n:'01',t:'Industry Analysis',s:'Not started',c:'s-none'},
+  {n:'02',t:'Business Model & Operations',s:'Awaiting archetype',c:'s-wait'},
+  {n:'03',t:'Financial Analysis',s:'Blocked · AOC-4',c:'s-block'},
+  {n:'04',t:'Management & Governance',s:'Pending Corp. Structure',c:'s-pend'},
+  {n:'05',t:'Related Party Transactions',s:'Waiting · Governance',c:'s-wait'},
+  {n:'06',t:'Legal & Litigation',s:'Not started',c:'s-none'},
+  {n:'07',t:'Credit History',s:'P42 charges available',c:'s-avail'},
+  {n:'08',t:'Statutory Compliance',s:'P42 GST/EPFO available',c:'s-avail'},
+  {n:'09',t:'IPO Eligibility',s:'Blocked · audited fin.',c:'s-block'},
+  {n:'10',t:'Peer Benchmarking',s:'Waiting · Ind.+Fin.',c:'s-wait'},
+  {n:'11',t:'Projections DD',s:'Waiting · model review',c:'s-wait'},
+  {n:'12',t:'Valuation',s:'Locked · Fin. Analysis',c:'s-lock'},
+  {n:'13',t:'Recommendations',s:'Locked · all modules',c:'s-lock'}
+];
+
+/* source table */
+const SRC_ROWS = [
+  ['CIN','U33110MH2014PTC249812','P42 Key Statistics','High','t-conf','Confirmed','All modules'],
+  ['Legal name','MedAxis Systems Pvt. Ltd.','P42 Company Master','High','t-conf','Confirmed','All modules'],
+  ['Incorporation date','14 Feb 2014','P42 Key Statistics','High','t-conf','Confirmed','IPO Eligibility (age)'],
+  ['Company status','Active','P42 Company Status','High','t-conf','Confirmed','Company Overview'],
+  ['Active compliance','AGM/auditor pending','Mgmt & Governance','—','t-pend','Pending module','Compliance Hygiene'],
+  ['Registered state','Maharashtra','P42 Registered Address','High','t-conf','Confirmed','Statutory Compliance'],
+  ['GSTIN states','Maharashtra, Gujarat','P42 GSTIN section','High','t-proxy','Proxy-only','Statutory Compliance'],
+  ['Website locations','Mumbai, Pune, Bengaluru','Website scrape','Low','t-proxy','Proxy-only · mismatch','Business Model'],
+  ['Paid-up capital','₹4.82 Cr','P42 shareholding','Medium','t-pend','Upstream pending','IPO Eligibility'],
+  ['Promoter holding','61.4%','P42 shareholding','Medium','t-pend','Upstream pending','Mgmt & Governance · RPT'],
+  ['Archetype','A2.5 Industrial Equipment','S45 taxonomy','Medium','t-med','Review required','Routing · Peer set'],
+  ['FY25 revenue','₹118.2 Cr / ₹126.6 Cr','P42 vs Mgmt model','Contradictory','t-contra','Contradictory','Fin. · IPO · Valuation'],
+  ['Net debt','Not reconciled','P42 charges (proxy)','Low','t-proxy','Proxy-only','Credit History'],
+  ['Use of proceeds','Not provided','IM / DRHP','—','t-miss','Missing','Transaction · IPO Eligibility'],
+  ['Funding requirement','Not provided','IM / DRHP','—','t-miss','Missing','Transaction Assessment']
+];
+
+/* context outputs */
+const CONTEXT = [
+  {to:'Business Model & Operations',passes:'archetype, product categories, end markets, value chain position',state:'review',label:'Held until archetype approved'},
+  {to:'Financial Analysis',passes:'selected financial source, revenue conflict state, archetype context',state:'contra',label:'Blocked · source conflict'},
+  {to:'Management & Governance',passes:'directors / KMP and promoter summary once Corporate Structure completes',state:'pending',label:'Awaiting Corporate Structure'},
+  {to:'Related Party Transactions',passes:'promoter, shareholder and related-entity context',state:'pending',label:'Awaiting Governance context'},
+  {to:'Credit History',passes:'charge timeline proxy',state:'proxy',label:'Proxy context available'},
+  {to:'Statutory Compliance',passes:'GSTIN states and compliance status',state:'proxy',label:'Proxy context available'},
+  {to:'IPO Eligibility',passes:'mandate type, incorporation age, paid-up capital and financials when approved',state:'review',label:'Partial · financials held'},
+  {to:'Peer Benchmarking',passes:'archetype and industry context',state:'review',label:'Held until archetype approved'},
+  {to:'Valuation',passes:'remains locked until Financial Analysis resolves actuals',state:'lock',label:'Locked'},
+  {to:'Report Builder',passes:'only banker-approved or caveated content flows through',state:'review',label:'Gated on approval'}
+];
+
+/* issues */
+let ISSUES = [
+  {id:1,t:'FY25 revenue contradiction',sev:'high',sec:'financial',secT:'Financial Snapshot',action:'Upload AOC-4 or banker-select temporary source treatment',resolved:false},
+  {id:2,t:'GSTIN vs website footprint mismatch',sev:'med',sec:'footprint',secT:'Registered & Operational Footprint',action:'Confirm Bengaluru location through IM or management',resolved:false},
+  {id:3,t:'Archetype approval pending',sev:'med',sec:'archetype',secT:'Industry & Archetype',action:'Banker approval required before downstream module routing',resolved:false},
+  {id:4,t:'Corporate Structure upstream pending',sev:'med',sec:'ownership',secT:'Ownership & Control / Directors & KMP',action:'Complete Corporate Structure extraction',resolved:false},
+  {id:5,t:'IM missing for Transaction Assessment',sev:'high',sec:'transaction',secT:'Transaction Assessment',action:'Upload IM, DRHP or objects-of-issue table',resolved:false},
+  {id:6,t:'AOC-4 missing',sev:'high',sec:'financial',secT:'Financial Snapshot',action:'Upload audited financials',resolved:false}
+];
+
+/* export readiness */
+const EXPORTS = [
+  {n:'Legal Identity',state:'Ready after review',c:'es-review'},
+  {n:'Footprint',state:'Internal-only · proxy',c:'es-internal'},
+  {n:'Ownership',state:'Locked',c:'es-lock'},
+  {n:'Directors & KMP',state:'Locked',c:'es-lock'},
+  {n:'History',state:'Review required',c:'es-review'},
+  {n:'Business Description',state:'Review required',c:'es-review'},
+  {n:'Financial Snapshot',state:'Internal-only · conflict',c:'es-internal'},
+  {n:'Transaction Assessment',state:'Locked · IM/DRHP',c:'es-lock'}
+];
+
+/* artifacts */
+const ARTIFACTS = [
+  {t:'Company identity card',thumb:'identity_card.svg',origin:'Legal Identity',src:'Confirmed',ready:'Ready after review'},
+  {t:'GSTIN footprint reconciliation',thumb:'gstin_recon.table',origin:'Footprint',src:'Proxy-only',ready:'Internal-only'},
+  {t:'Ownership hierarchy',thumb:'ownership_tree.svg',origin:'Ownership & Control',src:'Upstream pending',ready:'Locked'},
+  {t:'Corporate actions timeline',thumb:'corp_actions.timeline',origin:'Corporate Actions',src:'Proxy-only',ready:'Review required'},
+  {t:'Product / service matrix',thumb:'product_matrix.table',origin:'Products & IP',src:'Inferred',ready:'Review required'},
+  {t:'Financial source conflict card',thumb:'fy25_conflict.card',origin:'Financial Snapshot',src:'Contradictory',ready:'Internal-only'},
+  {t:'Objects-of-issue placeholder',thumb:'objects_of_issue.empty',origin:'Transaction Assessment',src:'Missing',ready:'Locked'}
+];
+
+const AI_PROMPTS = [
+  'Rewrite this paragraph in banker memo style.',
+  'Show every proxy-only claim in this section.',
+  'Draft management questions for unresolved Company Overview items.',
+  'Which paragraphs are not export-ready?',
+  'Explain why Financial Snapshot is contradictory.',
+  'Convert this Company Overview into a 5-bullet partner briefing.',
+  'Make this paragraph more conservative.',
+  'Show downstream modules affected by this edit.',
+  'Prepare a founder-facing management ask list.'
+];
+
+/* ---------- runtime state ---------- */
+let selectedSec = 'identity';
+let currentMode = 'draft';
+let currentTab = 'evidence';
+let COMMENTS = [];   // {id, sec, secT, text, who}
+const state = {};    // per-section: {edited, approved, commented}
+SECTIONS.forEach(s=>state[s.id]={edited:false,approved:false,commented:false});
+
+/* ===================================================================
+   RENDER — left rail
+=================================================================== */
+function renderActionQueue(){
+  document.getElementById('actionQueue').innerHTML = ACTIONS.map(a=>`
+    <div class="aq-item" onclick="selectSection('${a.sec}',true)">
+      <div class="aq-top"><div class="aq-n">${a.n}</div><div class="aq-t">${a.t}</div></div>
+      <div class="aq-d">${a.d}</div>
+      <span class="aq-state"><span class="d"></span>${a.state}</span>
+    </div>`).join('');
+}
+function renderSectionMap(){
+  document.getElementById('sectionMap').innerHTML = SMAP.map(s=>`
+    <div class="srow ${s.sec===selectedSec?'active':''}" data-sec="${s.sec}" onclick="selectSection('${s.sec}',true)">
+      <span class="sn">${s.n}</span><span class="st">${s.t}</span><span class="sb dot-${s.dot}"></span>
+    </div>`).join('');
+}
+function renderModuleMap(){
+  document.getElementById('moduleMap').innerHTML = MODULES.map(m=>`
+    <div class="mod"><span class="mn">${m.n}</span><span class="mt">${m.t}</span><span class="ms ${m.c}">${m.s}</span></div>`).join('');
+}
+
+/* ===================================================================
+   RENDER — center modes
+=================================================================== */
+function switchMode(mode){
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));
+  renderMode();
+}
+function renderMode(){
+  const el = document.getElementById('modeBody');
+  if(currentMode==='draft') el.innerHTML = renderDraft();
+  else if(currentMode==='source') el.innerHTML = renderSource();
+  else if(currentMode==='context') el.innerHTML = renderContext();
+  else if(currentMode==='report') el.innerHTML = renderReport();
+  if(currentMode==='draft') wireDraft();
+}
+
+function badgeFor(sec){
+  const st = state[sec.id];
+  let chips = `<span class="badge bg-${sec.badge}">${sec.status}</span>`;
+  if(st.approved) chips += ` <span class="badge bg-approved">✓ Banker approved</span>`;
+  if(st.edited) chips += ` <span class="badge bg-edited">Banker edited</span>`;
+  if(sec.id==='financial') chips += ` <span class="badge bg-internal">Internal only</span>`;
+  return chips;
+}
+
+function renderDraft(){
+  let html = `<div class="paper">
+    <div class="doc-title">Company Overview</div>
+    <div class="doc-sub">MedAxis Systems Pvt. Ltd.&nbsp;&nbsp;|&nbsp;&nbsp;SME IPO Advisory&nbsp;&nbsp;|&nbsp;&nbsp;Draft under banker review</div>`;
+  SECTIONS.forEach(sec=>{
+    const st = state[sec.id];
+    let body;
+    if(sec.bullets){
+      body = `<div class="para" id="p-${sec.id}" data-sec="${sec.id}" onclick="selectSection('${sec.id}')"><ul>${sec.bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>`;
+    } else {
+      body = `<p class="para ${st.approved?'approved':''}" id="p-${sec.id}" data-sec="${sec.id}" contenteditable="true"
+        onfocus="selectSection('${sec.id}')" oninput="markEdited('${sec.id}')" onclick="selectSection('${sec.id}')">${sec.text}</p>`;
+    }
+    const chips = (sec.sources||[]).map(s=>{
+      const miss = (sec.missingSrc||[]).includes(s);
+      return `<span class="chip ${miss?'missing':''}">${s}</span>`;
+    }).join('');
+    html += `<div class="sec" id="sec-${sec.id}" data-sec="${sec.id}">
+      <div class="sec-rule">
+        <div class="sec-hd"><span class="sec-num">${sec.num}</span><span class="sec-title">${sec.title}</span>${badgeFor(sec)}</div>
+        ${body}
+        <div class="rewrite-slot" id="rw-${sec.id}"></div>
+        <div class="para-foot no-print">
+          <div class="src-chips">${chips}</div>
+          <div class="pctrl">
+            <button class="pc appr" onclick="approvePara('${sec.id}')" title="Approve paragraph">${ICO.check} Approve</button>
+            <button class="pc" onclick="askRewrite('${sec.id}')" title="Ask AI to rewrite">${ICO.ai} Rewrite</button>
+            <button class="pc" onclick="addCommentFor('${sec.id}')" title="Add comment">${ICO.cmt} Comment</button>
+            <button class="pc" onclick="selectSection('${sec.id}');switchInsp('evidence')" title="Inspect evidence">${ICO.eye} Evidence</button>
+          </div>
+        </div>
+      </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderSource(){
+  return `<div class="tbl-wrap"><table class="src">
+    <thead><tr><th>Field</th><th>Value</th><th>Source</th><th>Confidence</th><th>Evidence state</th><th>Review state</th><th>Downstream impact</th></tr></thead>
+    <tbody>${SRC_ROWS.map(r=>`<tr>
+      <td class="fld">${r[0]}</td><td class="val">${r[1]}</td><td>${r[2]}</td>
+      <td><span class="tag ${r[3]==='High'?'t-high':r[3]==='Medium'?'t-med':r[3]==='Contradictory'?'t-low':'t-med'}">${r[3]}</span></td>
+      <td><span class="tag ${r[4]}">${r[5]}</span></td><td>${r[5]}</td><td>${r[6]}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderContext(){
+  const sd={review:['var(--amber)','Held'],contra:['var(--red)','Blocked'],pending:['var(--blue)','Pending'],proxy:['var(--blue)','Proxy'],lock:['var(--muted)','Locked']};
+  return `<div style="font-family:var(--serif);font-size:15px;color:var(--ink-2);line-height:1.6;margin-bottom:20px;max-width:680px;">
+    When Module 00 completes, its key outputs are written to the shared project context store. Downstream modules read this store before running; if Company Overview is re-run or banker-edited, dependents are flagged <b>stale</b>. Context is additive and auditable.
+  </div>` + CONTEXT.map(c=>{
+    const [col,word]=sd[c.state];
+    return `<div class="ctx-card">
+      <div class="ctx-arrow">${ICO.flow}</div>
+      <div class="ctx-body">
+        <div class="ctx-to">→ ${c.to}</div>
+        <div class="ctx-passes">Passes <b>${c.passes}</b></div>
+        <div class="ctx-state" style="color:${col}">● ${c.label}</div>
+      </div></div>`;
+  }).join('');
+}
+
+function renderReport(){
+  let html = `<div class="rep">
+    <div class="rep-watermark">⚠ Internal Draft · Not for circulation · Source conflict unresolved · AOC-4 missing</div>
+    <h2>Company Overview</h2>
+    <div class="rep-meta">MedAxis Systems Pvt. Ltd. · SME IPO Advisory · Pre-mandate · Prepared by S45 DD Workspace</div>`;
+  SECTIONS.filter(s=>!s.bullets).forEach(sec=>{
+    const st=state[sec.id];
+    let stamp,scol,caveat='';
+    if(st.approved){stamp='Approved';scol='bg-approved';}
+    else if(sec.badge==='contra'){stamp='Internal-only';scol='bg-internal';caveat='Source conflict unresolved — figures are not approved and must not be circulated externally until AOC-4 reconciles FY25 revenue.';}
+    else if(sec.badge==='wait'||sec.badge==='pending'){stamp='Locked';scol='bg-pending';caveat='Locked — required upstream source or module not yet available.';}
+    else {stamp='Review required';scol='bg-review';caveat='Pending banker review — not yet export-approved.';}
+    const liveText = getLiveText(sec.id) || sec.text;
+    html += `<div class="rep-sec">
+      <h3>${sec.num} ${sec.title}<span class="stamp ${scol}">${stamp}</span></h3>
+      <p>${liveText}</p>
+      ${caveat?`<div class="rep-caveat">⚠ ${caveat}</div>`:''}
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+/* ===================================================================
+   DRAFT interactions
+=================================================================== */
+function wireDraft(){
+  // restore selected highlight
+  highlightSelected();
+}
+function getLiveText(secId){
+  const el=document.getElementById('p-'+secId);
+  return el?el.innerText.trim():'';
+}
+function selectSection(secId, scroll){
+  selectedSec=secId;
+  renderSectionMap();
+  if(currentTab==='evidence') renderInsp();
+  if(currentMode!=='draft' && scroll){switchMode('draft');setTimeout(()=>doScroll(secId),60);return;}
+  highlightSelected();
+  if(scroll) doScroll(secId);
+}
+function doScroll(secId){
+  const sec=document.getElementById('sec-'+secId);
+  if(!sec)return;
+  const center=document.getElementById('center');
+  const top=sec.offsetTop - 80;
+  center.scrollTo({top,behavior:'smooth'});
+  sec.classList.add('flash');
+  setTimeout(()=>sec.classList.remove('flash'),1300);
+}
+function highlightSelected(){
+  document.querySelectorAll('.para').forEach(p=>p.classList.toggle('selected',p.dataset.sec===selectedSec));
+}
+function markEdited(secId){
+  if(!state[secId].edited){state[secId].edited=true;refreshBadges(secId);}
+}
+function refreshBadges(secId){
+  const sec=SECTIONS.find(s=>s.id===secId);
+  const hd=document.querySelector('#sec-'+secId+' .sec-hd');
+  if(!hd)return;
+  // rebuild header badges (keep num + title)
+  hd.innerHTML=`<span class="sec-num">${sec.num}</span><span class="sec-title">${sec.title}</span>${badgeFor(sec)}`;
+}
+function approvePara(secId){
+  state[secId].approved=true;
+  const p=document.getElementById('p-'+secId);
+  if(p)p.classList.add('approved');
+  refreshBadges(secId);
+  toast('Paragraph approved — flows to Report Builder');
+  if(currentTab==='export')renderInsp();
+}
+function askRewrite(secId){
+  selectSection(secId);
+  const slot=document.getElementById('rw-'+secId);
+  const text=REWRITES[secId]||genericRewrite(getLiveText(secId));
+  slot.innerHTML=`<div class="rewrite">
+    <div class="rh">${ICO.ai} AI suggested rewrite · more conservative banker-memo tone</div>
+    <div class="rt">${text}</div>
+    <div class="rb">
+      <button class="rmini acc" onclick="acceptRewrite('${secId}')">Accept</button>
+      <button class="rmini" onclick="dismissRewrite('${secId}')">Dismiss</button>
+    </div></div>`;
+  slot.dataset.text=text;
+}
+function genericRewrite(t){
+  return 'For the purposes of this draft, the following should be read as provisional and subject to banker verification: '+t.replace(/\bappears to\b/g,'is provisionally assessed to').replace(/\bindicates\b/g,'reports');
+}
+function acceptRewrite(secId){
+  const slot=document.getElementById('rw-'+secId);
+  const text=slot.dataset.text;
+  const p=document.getElementById('p-'+secId);
+  if(p&&text){p.innerText=text;markEdited(secId);}
+  slot.innerHTML='';
+  toast('Rewrite accepted — marked Banker edited');
+}
+function dismissRewrite(secId){document.getElementById('rw-'+secId).innerHTML='';}
+
+function addCommentFor(secId){
+  selectSection(secId);
+  switchInsp('comments');
+  setTimeout(()=>{const ta=document.getElementById('newCmt');if(ta)ta.focus();},80);
+}
+
+/* ===================================================================
+   RIGHT INSPECTOR
+=================================================================== */
+function switchInsp(tab){
+  currentTab=tab;
+  document.querySelectorAll('.itab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  renderInsp();
+}
+function renderInsp(){
+  const el=document.getElementById('inspBody');
+  if(currentTab==='evidence') el.innerHTML=renderEvidence();
+  else if(currentTab==='comments') el.innerHTML=renderComments();
+  else if(currentTab==='askai') el.innerHTML=renderAskAI();
+  else if(currentTab==='issues') el.innerHTML=renderIssues();
+  else if(currentTab==='export') el.innerHTML=renderExport();
+  else if(currentTab==='artifacts') el.innerHTML=renderArtifacts();
+}
+function renderEvidence(){
+  const e=EVIDENCE[selectedSec];const sec=SECTIONS.find(s=>s.id===selectedSec);
+  if(!e)return '<p class="insp-h">Select a paragraph</p>';
+  const row=(k,v)=>`<div class="ev-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  return `<p class="insp-h">Evidence · ${sec.title}</p>
+    <div class="ev-claim"><span class="lbl">Selected claim</span>${e.claim}</div>
+    ${row('Source',e.source)}${row('Source type',e.stype)}${row('Extraction method',e.method)}
+    ${row('Confidence',e.conf)}${row('Evidence state',e.estate)}${row('Review state',e.rstate)}
+    ${row('Freshness',e.fresh)}${row('Downstream impact',e.impact)}
+    <div class="ev-rule"><div class="lbl">Export rule</div><div class="txt">${e.rule}</div></div>`;
+}
+function renderComments(){
+  const list=COMMENTS.length?COMMENTS.map(c=>`
+    <div class="cmt">
+      <div class="cmt-hd"><div class="cmt-av">RB</div><span class="cmt-who">Banker (you)</span><span class="cmt-on">just now</span></div>
+      <div class="cmt-ref" onclick="selectSection('${c.sec}',true)">↳ ${c.secT}</div>
+      <div class="cmt-txt">${c.text}</div>
+    </div>`).join(''):'<div style="font-size:12px;color:var(--muted);margin-bottom:14px;">No comments yet. Comments attach to the selected paragraph.</div>';
+  const sec=SECTIONS.find(s=>s.id===selectedSec);
+  return `<p class="insp-h">Comments</p>${list}
+    <div class="cmt-new">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">Comment on <b style="color:var(--amber)">${sec.title}</b></div>
+      <textarea id="newCmt" placeholder="Add a banker comment…"></textarea>
+      <button class="ebtn primary" style="margin-top:7px;justify-content:center" onclick="submitComment()">Post comment</button>
+    </div>`;
+}
+function submitComment(){
+  const ta=document.getElementById('newCmt');const txt=ta.value.trim();if(!txt)return;
+  const sec=SECTIONS.find(s=>s.id===selectedSec);
+  const cid=COMMENTS.length+1;
+  COMMENTS.push({id:cid,sec:selectedSec,secT:sec.title,text:txt});
+  state[selectedSec].commented=true;
+  // add marker in document
+  const p=document.getElementById('p-'+selectedSec);
+  if(p&&!p.querySelector('.cmt-marker')){
+    const m=document.createElement('span');m.className='cmt-marker';m.textContent=cid;
+    m.title=txt;m.onclick=(ev)=>{ev.stopPropagation();switchInsp('comments');};
+    p.appendChild(m);
+  }
+  updateCounts();renderInsp();toast('Comment added to '+sec.title);
+}
+function renderAskAI(){
+  return `<p class="insp-h">Module Copilot</p>
+    <div class="ai-prompts">${AI_PROMPTS.map(p=>`<button class="ai-prompt" onclick="askAI(this.dataset.q)" data-q="${p.replace(/"/g,'&quot;')}">${p}</button>`).join('')}</div>
+    <div class="ai-log" id="aiLog"></div>
+    <div class="ai-ask"><input id="aiInput" placeholder="Ask the copilot…" onkeydown="if(event.key==='Enter')askAI(this.value)"><button onclick="askAI(document.getElementById('aiInput').value)">↑</button></div>`;
+}
+const AI_ANSWERS = {
+  'Show every proxy-only claim in this section.':{h:'3 proxy-only claims found',list:['<b>Footprint</b> — GSTIN state list (MH, GJ) is proxy for operating footprint','<b>Corporate Actions</b> — charge records proxy sanctioned debt, not drawn debt','<b>Net debt</b> — derived from charges; not reconciled to audited figures'],note:'All three are flagged internal-only until externally confirmed.'},
+  'Which paragraphs are not export-ready?':{h:'8 of 12 sections not export-ready',list:['Financial Snapshot — contradictory, internal-only','Transaction Assessment — locked, IM/DRHP missing','Ownership & Directors — locked, Corporate Structure pending','History, Corporate Actions, Archetype, Products — review required'],note:'Only Legal Identity is review-ready pending sign-off.'},
+  'Explain why Financial Snapshot is contradictory.':{h:'FY25 revenue conflict',list:['P42 reports ₹118.2 Cr','Management model reports ₹126.6 Cr','Variance: ₹8.4 Cr (≈7%)'],note:'No authoritative AOC-4 present to adjudicate. System will not silently resolve — banker must select source treatment or upload audited financials.'},
+  'Draft management questions for unresolved Company Overview items.':{h:'Suggested management asks',list:['Please confirm FY25 audited revenue and provide AOC-4.','Is the Bengaluru office an operating location? Provide GSTIN if applicable.','Confirm promoter holding and any pledged shares.','Do FY21/FY24 charges reflect current drawn debt or historical sanctioned limits?','Provide IM / objects-of-issue and use-of-proceeds detail.'],note:'Added items can be pushed to the management ask list from the Issues tab.'},
+  'Show downstream modules affected by this edit.':{h:'Impact of Company Overview edits',list:['Archetype → Business Model, Peer Benchmarking, Financial routing','FY25 source choice → Financial Analysis, IPO Eligibility, Valuation','Promoter / KMP → Mgmt & Governance, RPT'],note:'Editing approved upstream content flags dependents as stale.'},
+  'Prepare a founder-facing management ask list.':{h:'Founder-facing ask list',list:['Audited AOC-4 for FY23–FY25','Reconciliation of FY25 revenue (model vs filings)','Operating-location confirmation (incl. Bengaluru)','Cap table with pledge status','IM / objects-of-issue draft'],note:'Phrased for external sharing — caveats stripped.'}
+};
+function askAI(q){
+  if(!q||!q.trim())return;
+  q=q.trim();switchInsp('askai');
+  const log=document.getElementById('aiLog');const inp=document.getElementById('aiInput');if(inp)inp.value='';
+  log.innerHTML+=`<div class="ai-msg u">${q}</div><div class="ai-msg a" id="aiPending"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  log.scrollIntoView&&null;document.getElementById('inspBody').scrollTop=99999;
+  setTimeout(()=>{
+    const pend=document.getElementById('aiPending');if(!pend)return;
+    let ans=AI_ANSWERS[q];
+    if(!ans){
+      if(/conservative|memo|rewrite/i.test(q)){askRewriteFromAI();ans={h:'Rewrite drafted',list:['Opened a conservative rewrite suggestion under the '+SECTIONS.find(s=>s.id===selectedSec).title+' paragraph.'],note:'Review Accept / Dismiss in the document.'};}
+      else if(/5-bullet|briefing|partner/i.test(q)){ans={h:'Partner briefing · 5 bullets',list:['Active MedTech manufacturer (A2.5), MH-incorporated 2014, SME IPO track','FY25 revenue unresolved: ₹118.2 Cr (P42) vs ₹126.6 Cr (model)','Promoter ~61.4%; cap table pending Corporate Structure','Footprint proxy-only; Bengaluru office unverified','Blocked: AOC-4 + IM missing — diligence is internal-only'],note:'Generated from current draft. Not export-approved.'};}
+      else ans={h:'Copilot',list:['I work over the current Company Overview draft and its evidence.','Try one of the suggested prompts above for a grounded answer.'],note:'Every answer is traceable to the source register.'};
+    }
+    pend.innerHTML=`<div class="ah">${ICO.ai} S45 Copilot · ${ans.h}</div><ul>${ans.list.map(l=>`<li>${l}</li>`).join('')}</ul><div style="margin-top:8px;font-size:11px;color:var(--muted);">${ans.note}</div>`;
+    pend.id='';document.getElementById('inspBody').scrollTop=99999;
+  },650);
+}
+function askRewriteFromAI(){switchMode('draft');setTimeout(()=>askRewrite(selectedSec),100);}
+
+function renderIssues(){
+  const open=ISSUES.filter(i=>!i.resolved).length;
+  return `<p class="insp-h">Unresolved issues · ${open} open</p>` + ISSUES.map(i=>`
+    <div class="iss sev-${i.sev} ${i.resolved?'resolved':''}">
+      <div class="iss-hd"><span class="iss-t">${i.t}</span><span class="sev ${i.sev}">${i.sev==='high'?'HIGH':'MED'}</span></div>
+      <div class="iss-meta">Affected: <b>${i.secT}</b><br>Required: ${i.action}</div>
+      <div class="iss-btns">
+        <button class="ibtn" onclick="createTaskFromIssue(${i.id})">Create task</button>
+        <button class="ibtn" onclick="selectSection('${i.sec}',true);switchInsp('askai');askAI('Explain ${i.t.replace(/'/g,'')}')">Ask AI</button>
+        <button class="ibtn res" onclick="resolveIssue(${i.id})">${i.resolved?'Reopen':'Mark resolved'}</button>
+        <button class="ibtn" onclick="mgmtAsk(${i.id})">Management ask</button>
+      </div>
+    </div>`).join('');
+}
+function resolveIssue(id){const i=ISSUES.find(x=>x.id===id);i.resolved=!i.resolved;updateCounts();renderInsp();toast(i.resolved?'Issue marked resolved':'Issue reopened');}
+function createTaskFromIssue(id){const i=ISSUES.find(x=>x.id===id);toast('Task created: '+i.t);}
+function mgmtAsk(id){const i=ISSUES.find(x=>x.id===id);toast('Added to management ask list: '+i.t);}
+
+function renderExport(){
+  return `<p class="insp-h">Export readiness</p>
+    ${EXPORTS.map(e=>`<div class="exp-row"><span class="en">${e.n}</span><span class="exp-state ${e.c}">${e.state}</span></div>`).join('')}
+    <div class="exp-btns">
+      <button class="ebtn primary" onclick="downloadWordDraft('all_with_caveats')">${ICO.word}Download Word Draft (.doc)</button>
+      <button class="ebtn" onclick="downloadWordDraft('approved_only')">${ICO.word}Approved paragraphs only (.doc)</button>
+      <button class="ebtn" onclick="downloadWordDraft('internal_draft')">${ICO.word}Internal draft with caveats (.doc)</button>
+      <button class="ebtn" onclick="downloadHTMLDraft()">${ICO.html}Download HTML Draft</button>
+      <button class="ebtn" onclick="window.print()">${ICO.print}Print / Save as PDF</button>
+      <button class="ebtn" onclick="saveVersion()">${ICO.save}Save version</button>
+      <button class="ebtn" onclick="sendUnresolved()">${ICO.send}Send unresolved to management ask</button>
+    </div>`;
+}
+function saveVersion(){const v='v'+(Math.floor(Math.random()*9)+2)+'.0';toast('Draft snapshot saved · '+v);}
+function sendUnresolved(){const n=ISSUES.filter(i=>!i.resolved).length;toast(n+' unresolved items sent to management ask list');}
+
+function renderArtifacts(){
+  return `<p class="insp-h">Company Overview artifacts</p>` + ARTIFACTS.map(a=>`
+    <div class="art">
+      <div class="art-thumb"><span class="lbl">${a.thumb}</span></div>
+      <div class="art-body">
+        <div class="art-t">${a.t}</div>
+        <div class="art-meta">Origin: <b>${a.origin}</b> · Source: <b>${a.src}</b></div>
+        <div class="art-badges"><span class="exp-state ${a.ready==='Locked'?'es-lock':a.ready==='Internal-only'?'es-internal':a.ready.includes('Ready')?'es-ready':'es-review'}">${a.ready}</span></div>
+      </div></div>`).join('');
+}
+
+function updateCounts(){
+  document.getElementById('cmtCount').textContent=COMMENTS.length;
+  const issEl=document.getElementById('issCount');
+  const open=ISSUES.filter(i=>!i.resolved).length;
+  issEl.textContent=open;issEl.style.display=open?'':'none';
+  document.getElementById('cmtCount').style.display=COMMENTS.length?'':'none';
+}
+
+/* ===================================================================
+   Top-level actions
+=================================================================== */
+function regenerate(){toast('Re-generating current section from latest sources…');setTimeout(()=>toast('Section regenerated · review changes'),1200);}
+function markAllReviewed(){SECTIONS.forEach(s=>{if(!s.bullets&&['identity','footprint','history','corpactions','archetype','products'].includes(s.id))state[s.id].approved=false;});toast('Section marked reviewed by banker');}
+function createManagementAsk(){switchInsp('issues');toast('Open issues ready to push as management asks');}
+
+/* ===================================================================
+   EXPORT — Word (.doc), HTML, Print
+=================================================================== */
+function getSectionForExport(sec, mode){
+  const st=state[sec.id];
+  const liveText=getLiveText(sec.id)|| (sec.text||'');
+  // approved_only: include only banker-approved
+  if(mode==='approved_only' && !st.approved) return null;
+  return {sec,st,liveText};
+}
+function caveatFor(sec,st){
+  if(st.approved)return null;
+  if(sec.badge==='contra')return 'SOURCE CONFLICT UNRESOLVED — internal only. FY25 revenue not reconciled; AOC-4 missing.';
+  if(sec.badge==='wait'||sec.badge==='pending')return 'LOCKED — required upstream source/module not yet available.';
+  if(sec.badge==='proxy')return 'PROXY-ONLY — not confirmed through IM or management.';
+  return 'REVIEW REQUIRED — not export-approved.';
+}
+
+function buildDocHTML(mode){
+  const title='MedAxis Systems Pvt. Ltd. — Company Overview';
+  let body = '';
+  const modeLabel = mode==='approved_only'?'Approved paragraphs only':mode==='internal_draft'?'Internal draft with caveats':'Full draft with caveats';
+  SECTIONS.forEach(sec=>{
+    const got=getSectionForExport(sec,mode);
+    if(!got)return;
+    const {st,liveText}=got;
+    let badges=[];
+    if(st.approved)badges.push('BANKER APPROVED');
+    if(st.edited)badges.push('BANKER EDITED');
+    badges.push(sec.status.toUpperCase());
+    body+=`<h2 style="font-size:14pt;color:#2C2C2B;margin:18pt 0 2pt;">${sec.num}. ${sec.title}</h2>`;
+    body+=`<p style="font-size:8pt;color:#91918E;margin:0 0 6pt;font-family:Arial;">Status: ${badges.join(' · ')}</p>`;
+    if(sec.bullets){
+      body+='<ul>'+sec.bullets.map(b=>`<li style="font-size:11pt;margin-bottom:4pt;">${b}</li>`).join('')+'</ul>';
+    } else {
+      body+=`<p style="font-size:11.5pt;line-height:1.6;color:#222;margin:0;">${escapeHTML(liveText)}</p>`;
+    }
+    if(sec.sources)body+=`<p style="font-size:8pt;color:#91918E;margin:4pt 0 0;font-family:Arial;"><i>Sources: ${sec.sources.join(', ')}</i></p>`;
+    if(mode!=='approved_only'){
+      const cav=caveatFor(sec,st);
+      if(cav)body+=`<p style="font-size:9pt;color:#E56458;margin:5pt 0 0;font-family:Arial;border-left:3px solid #E56458;padding-left:8pt;">[ ${cav} ]</p>`;
+    }
+  });
+  // unresolved issues for internal/full
+  if(mode==='internal_draft'||mode==='all_with_caveats'){
+    const open=ISSUES.filter(i=>!i.resolved);
+    if(open.length){
+      body+=`<h2 style="font-size:14pt;color:#E56458;margin:22pt 0 4pt;">Unresolved Issues (${open.length})</h2><ol>`;
+      open.forEach(i=>{body+=`<li style="font-size:10.5pt;margin-bottom:5pt;"><b>[${i.sev.toUpperCase()}] ${i.t}</b> — ${i.secT}. Required action: ${i.action}</li>`;});
+      body+='</ol>';
+    }
+  }
+  // comments appendix
+  if(COMMENTS.length && mode!=='approved_only'){
+    body+=`<h2 style="font-size:14pt;margin:22pt 0 4pt;">Banker Comments</h2><ul>`;
+    COMMENTS.forEach(c=>{body+=`<li style="font-size:10.5pt;margin-bottom:4pt;"><b>${c.secT}:</b> ${escapeHTML(c.text)}</li>`;});
+    body+='</ul>';
+  }
+
+  const watermark = mode==='approved_only'
+    ? ''
+    : `<p style="text-align:center;font-family:Arial;font-size:8.5pt;color:#E56458;border:1px solid #E56458;padding:6pt;margin:0 0 14pt;">INTERNAL DRAFT · NOT FOR CIRCULATION · ${modeLabel.toUpperCase()}</p>`;
+
+  return `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${title}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+<style>@page{size:A4;margin:2.2cm;} body{font-family:'Martina Plantijn',Georgia,'Times New Roman',serif;color:#2C2C2B;} h1{font-size:20pt;text-align:center;margin:0 0 2pt;} .docsub{text-align:center;font-family:Arial;font-size:9pt;color:#91918E;border-bottom:1px solid #ccc;padding-bottom:10pt;margin-bottom:8pt;}</style>
+</head><body>
+<h1>Company Overview</h1>
+<div class="docsub">MedAxis Systems Pvt. Ltd. &nbsp;|&nbsp; SME IPO Advisory &nbsp;|&nbsp; Draft under banker review &nbsp;|&nbsp; ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+${watermark}
+${body}
+</body></html>`;
+}
+function escapeHTML(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function downloadWordDraft(mode){
+  mode=mode||'all_with_caveats';
+  const html=buildDocHTML(mode);
+  const blob=new Blob(['\ufeff',html],{type:'application/msword'});
+  const suffix=mode==='approved_only'?'Approved':mode==='internal_draft'?'Internal':'Draft';
+  triggerDownload(blob,`MedAxis_Company_Overview_${suffix}.doc`);
+  const label=mode==='approved_only'?'approved paragraphs only':mode==='internal_draft'?'internal draft with caveats':'full draft with caveats';
+  const n=mode==='approved_only'?SECTIONS.filter(s=>state[s.id].approved).length:SECTIONS.length;
+  toast(`Word Draft (.doc) downloaded · ${label}${mode==='approved_only'?' · '+n+' approved':''}`);
+}
+function downloadHTMLDraft(){
+  const html=buildDocHTML('all_with_caveats');
+  const blob=new Blob([html],{type:'text/html'});
+  triggerDownload(blob,'MedAxis_Company_Overview_Draft.html');
+  toast('HTML Draft downloaded');
+}
+function triggerDownload(blob,name){
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},400);
+}
+
+/* ===================================================================
+   Toast
+=================================================================== */
+function toast(msg){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');t.className='toast';t.innerHTML=`<span class="tk"></span>${msg}`;
+  w.appendChild(t);
+  setTimeout(()=>{t.style.transition='.3s';t.style.opacity='0';t.style.transform='translateY(8px)';setTimeout(()=>t.remove(),320);},2600);
+}
+
+/* ===================================================================
+   Icons (inline svg strings)
+=================================================================== */
+const ICO={
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg>',
+  cmt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  flow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  word:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13l1.5 5L11 14l1.5 4L14 13"/></svg>',
+  html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  print:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+  save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>',
+  send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
+};
+
+/* ===================================================================
+   INIT
+=================================================================== */
+function init(){
+  renderActionQueue();renderSectionMap();renderModuleMap();
+  renderMode();renderInsp();updateCounts();
+}
+init();
+</script>
+</body>
+</html>
